@@ -1,0 +1,684 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="../reset-meyer.css">
+<script src="https://d3js.org/d3.v7.min.js"></script>
+
+<link rel="stylesheet" href=
+"https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+		integrity=
+"sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+		crossorigin="anonymous">
+
+	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+		integrity=
+"sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+		crossorigin="anonymous">
+	</script>
+	
+	<script src=
+"https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+		integrity=
+"sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+		crossorigin="anonymous">
+	</script>
+	
+	<script src=
+"https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+		integrity=
+"sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+		crossorigin="anonymous">
+	</script>
+
+<script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<script>
+	(function(document) {
+		'use strict';
+
+		var TableFilter = (function(myArray) {
+			var search_input;
+
+			function _onInputSearch(e) {
+				search_input = e.target;
+				var tables = document.getElementsByClassName(search_input.getAttribute('data-table'));
+				myArray.forEach.call(tables, function(table) {
+					myArray.forEach.call(table.tBodies, function(tbody) {
+						myArray.forEach.call(tbody.rows, function(row) {
+							var text_content = row.textContent.toLowerCase();
+							var search_val = search_input.value.toLowerCase();
+							row.style.display = text_content.indexOf(search_val) > -1 ? '' : 'none';
+						});
+					});
+				});
+			}
+
+			return {
+				init: function() {
+					var inputs = document.getElementsByClassName('search-input');
+					myArray.forEach.call(inputs, function(input) {
+						input.oninput = _onInputSearch;
+					});
+				}
+			};
+		})(Array.prototype);
+
+		document.addEventListener('readystatechange', function() {
+			if (document.readyState === 'complete') {
+				TableFilter.init();
+			}
+		});
+
+	})(document);
+</script>
+<style type="text/css">
+body {
+	margin:10px;
+	font-family:"Arial Rounded MT Bold", Arial, Helvetica, sans-serif
+}
+h3 span {
+	font-size: 22px;
+}
+h3 input.search-input {
+	width: 300px;
+	margin-left: auto;
+	float: right
+}
+.mt32 {
+	margin-top: 32px;
+}
+
+.wrapper {
+	height: 500px;
+    width: 100%;
+	display: flex;
+	background-image:url('map.png');
+	background-size: cover;
+	padding:20px;
+}
+
+.box0 {
+	width:100%;
+	height:100%;
+	margin:5px;
+	padding:0px;
+	background-color: rgba(0, 0, 0, 0.5);
+}
+
+.box1 {
+	width:50%;
+	height:100%;
+	margin:5px;
+	padding:5px;
+	background-color: rgba(191, 191, 191, 0.5);
+}
+.box2 {
+	width:320px;
+	height:180px;
+	background: #c00;
+	padding:5px 10px 5px 10px;
+	border-radius: 0px 25px 25px 0px;
+    background-color: rgba(191, 191, 191, 0.8);
+    color: rgb(0, 0, 0);
+}
+.box3 {
+	width:100%;
+	height:50%;
+	margin:5px;
+	padding:5px;
+	background-color: rgba(138, 28, 28, 0.5);
+}
+.boxRoute {
+	width:340px;
+	height:180px;
+	background: #c00;
+	padding:5px 10px 5px 10px;
+	border-radius: 0px 25px 25px 0px;
+    background-color: rgba(191, 191, 191, 0.8);
+    color: rgb(0, 0, 0);
+}
+.boxBEB {
+	width:320px;
+	height:180px;
+	background: #c00;
+	padding:5px 10px 5px 10px;
+	border-radius: 0px 25px 25px 0px;
+    background-color: rgba(191, 191, 191, 0.8);
+    color: rgb(0, 0, 0);
+}
+
+.boxCS {
+	width:210px;
+	float:right;
+	height:240px;
+	background: #c00;
+	padding:10px 5px 10px 5px;
+	border-radius: 0px 25px 25px 0px;
+    background-color: rgba(191, 191, 191, 0.8);
+    color: rgb(0, 0, 0);
+}
+
+.tableFixHead {
+        overflow-y: auto;
+        height: 128px;
+      }
+      .tableFixHead thead th {
+        position: sticky;
+        top: 0;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+      th,
+      td {
+        padding: 0.25rem;
+        border: 1px solid rgb(0, 0, 0);
+		text-align:center;
+      }
+	  th {
+        background: rgb(77, 77, 77);
+		color: #fff;
+      }
+
+.header {
+  overflow: hidden;
+  background-color: rgba(191, 191, 191, 0.8);
+  padding: 5px 5px;
+}
+.header a {
+  float: left;
+  color: black;
+  text-align: center;
+  padding: 5px;
+  text-decoration: none;
+  font-size: 16px; 
+  line-height: 20px;
+  border-radius: 5px;
+}
+.header a.logo {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.header a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+.header a.active {
+  background-color: dodgerblue;
+  color: white;
+}
+
+.header-right {
+  float: right;
+  padding: 0px 10px;
+}
+
+div.right {float: right;}
+
+
+
+@media screen and (max-width: 500px) {
+  .header a {
+    float: none;
+    display: block;
+    text-align: left;
+  }
+  
+  .header-right {
+    float: right !important;
+  }
+}
+p.ex1 {
+  font-size: 15px;	
+  margin: 0px;	
+  padding: 10px;
+}
+.slidecontainer {
+  width: 100%;
+  padding: 5px;
+}
+
+.slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 10px;
+  border-radius: 5px;
+  background: #808080;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+.slider:hover {
+  opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #0423aa;
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: #04AA6D;
+  cursor: pointer;
+}
+
+
+
+
+.wrap {
+        background-color: rgba(191, 191, 191, 0.8);
+        width: 100%;
+        height: 40px;
+        margin: 0;
+        z-index: 99;
+        position: relative;
+      }
+      .wrap a.logo {
+        font-size: 16px;
+        font-weight: bold;
+        background-color: rgba(191, 191, 191, 0);
+        
+        }
+      .navbar {
+        height: 50px;
+        padding: 4px;
+        margin: 0;
+        position: absolute;
+      }
+      .navbar li {
+        height: 30;
+        width: 100px;
+        float: left;
+        text-align: center;
+        list-style: none;
+        font: normal bold 16px;
+        padding: 5px;
+        border-radius: 5px;
+      }
+
+      .navbar li.active {
+        background-color: dodgerblue;
+        font: normal bold 16px;
+        color: white;
+        }
+
+
+      .navbar a {
+        color: black;
+        text-align: center;
+        padding: 5px;
+        text-decoration: none;
+        font-size: 16px; 
+        border-radius: 5px;
+      }
+      .navbar a:hover {
+        background-color: #ddd;
+        color: black;
+        }
+
+        .navbar a.active {
+        color: white;
+        }
+      .navbar li ul {
+        display: none;
+        height: auto;
+        margin: 0;
+        padding: 0;
+      }
+      .navbar li:hover ul {
+        background-color: #ddd;
+        display: block;
+      }
+      .navbar li ul li a {
+        border-left: 0px solid #444444;
+        border-right: 0px solid #444444;
+        border-top: 0px solid #c9d4d8;
+        border-bottom: 0px solid #444444;
+      }
+      .navbar li ul li a:hover {
+        background-color: #ddd;
+      }
+
+	  .nav-item.dropdown.show a {
+            color: rgb(0, 0, 0) !important;
+        }
+  
+        #navbarDropdown {
+            color: rgb(0, 0, 0);
+        }
+
+		div.dropdown-menu {
+    background-color: #3b3b3b98;
+	color: rgb(255, 248, 248) ;
+	min-width: 5rem;
+	
+}
+
+a.a1.dropdown-item {	color: rgb(255, 248, 248) ;
+	border-style: solid;
+	border-radius: 5px;}
+
+
+hr {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  border: 0;
+  border-top: 1px solid #444444;
+}
+
+div.round {
+  border: 1px solid;
+  border-radius: 8px;
+  padding: 5px;
+}
+
+p.round {
+  border: 1px solid;
+  border-radius: 8px;
+  padding: 5px;
+}
+
+.dropbtn1 {
+  background-color: #4CAF50;
+  color: white;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
+
+
+
+
+</style>
+<title>Rounded Corner Boxes</title>
+</head>
+<body>
+<div class="header">
+	<ul class="nav nav-pills">
+        <li role="presentation" class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+            Plans <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu">
+            <a class="dropdown-item"
+            href="#">Plan A</a>
+			<div class="dropdown-divider"></div>
+            <a class="dropdown-item"
+			href="#">Plan A</a>
+			<div class="dropdown-divider"></div>
+            <a class="dropdown-item"
+			href="#">Plan A</a>
+          </ul>
+        </li>
+		<div class=" round col-6 slidecontainer" style="height:32px">
+			<input type="range" min="0" max="24" value="0" step="0.5" class="slider" id="myRange">
+		</div>
+		<div>
+			<p class="round col-sm-12" style= padding:4px>Time: <span id="demo"></span></p>
+		</div>
+
+		<div class="header-right">
+			<a href="#contact">Static Data</a>
+			<a href="#about">About</a>
+		</div>
+
+		<div style="float:right;">
+			<button class="dropbtn1">Right</button>
+		  </div>
+
+      </ul>
+
+	  
+
+	  
+
+
+
+
+<!--div class="wrapper">
+	<div class="box1">
+	<div class="box2">
+		<div class="row">
+			<div class="col-sm-6"><p style = font-size:80% class="ex1"><b>BEB Route Infromation</b></p></div>
+			<div class="col-sm-6"><input type="search" placeholder="Search..." class="form-control search-input" data-table="customers-list" font-size:50%/></div>
+		  </div>
+		<div class="tableFixHead">
+		<table style = font-size:90% class = "sortable table-striped customers-list"> 
+			<thead> 
+			<tr> 
+				<th>BEB #</th> 
+				<th>SOC %</th> 
+				<th>Mileage</th> 
+				<th>Route</th> 
+				<th>xxx</th> 
+			</tr> 
+			</thead> 
+			<tbody> 
+			<tr> 
+				<td>1001</td> 
+				<td>50</td> 
+				<td>10</td> 
+				<td>46</td> 
+				<td>xxx</td> 
+			</tr> 
+			<tr> 
+				<td>1002</td> 
+				<td>40</td> 
+				<td>10</td> 
+				<td>45</td> 
+				<td>xx</td> 
+			</tr> 
+			<tr> 
+				<td>1003</td> 
+				<td>30</td> 
+				<td>10</td> 
+				<td>45</td> 
+				<td>xx</td> 
+			</tr> 
+			<tr> 
+				<td>1004</td> 
+				<td>20</td> 
+				<td>10</td> 
+				<td>45</td> 
+				<td>xx</td> 
+			</tr> 
+			<tr> 
+				<td>1005</td> 
+				<td>60</td> 
+				<td>10</td> 
+				<td>45</td> 
+				<td>xx</td> 
+			</tr>
+			<tr> 
+				<td>1001</td> 
+				<td>50</td> 
+				<td>10</td> 
+				<td>45</td> 
+				<td>xx</td> 
+			</tr>
+			</tbody> 
+			</table> 
+		</div>
+	</div>
+</div>
+	<div class="box1">
+		<div class="dropdown">
+			<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			  Dropdown button
+			</button>
+			<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+			  <a class="a1 dropdown-item" href="#">Action</a>
+			  <a class="dropdown-item" href="#">Another action</a>
+			  <a class="dropdown-item" href="#">Something else here</a>
+			</div>
+		  </div>
+	</div>
+	
+
+</div-->
+
+  
+
+
+	
+	
+<div class="wrapper">
+		<div class="box1">
+			<div class="box3"  class="col-sm-6">
+				<div class="boxRoute">
+					<div class="row">
+						<div class="col-sm-6"><p class="ex1"><b>BEB Route Info</b></p></div>
+						<div class="col-sm-6"><input type="search" placeholder="Search..." class="form-control search-input" data-table="customers-list" font-size:50%/></div>
+					  </div>
+					<div class="tableFixHead">
+					<table style = font-size:80% class = "sortable table-striped customers-list"> 
+						<thead> 
+						<tr> 
+							<th>BEB #</th> 
+							<th>SOC %</th> 
+							<th>Mileage</th> 
+							<th>Route</th> 
+							<th>xxx</th> 
+						</tr> 
+						</thead> 
+						<tbody> 
+						<tr> 
+							<td>1001</td> 
+							<td>50</td> 
+							<td>10</td> 
+							<td>46</td> 
+							<td>xxx</td> 
+						</tr> 
+						<tr> 
+							<td>1002</td> 
+							<td>40</td> 
+							<td>10</td> 
+							<td>45</td> 
+							<td>xx</td> 
+						</tr> 
+						<tr> 
+							<td>1003</td> 
+							<td>30</td> 
+							<td>10</td> 
+							<td>45</td> 
+							<td>xx</td> 
+						</tr> 
+						<tr> 
+							<td>1004</td> 
+							<td>20</td> 
+							<td>10</td> 
+							<td>45</td> 
+							<td>xx</td> 
+						</tr> 
+						<tr> 
+							<td>1005</td> 
+							<td>60</td> 
+							<td>10</td> 
+							<td>45</td> 
+							<td>xx</td> 
+						</tr>
+						<tr> 
+							<td>1001</td> 
+							<td>50</td> 
+							<td>10</td> 
+							<td>45</td> 
+							<td>xx</td> 
+						</tr>
+						</tbody> 
+						</table> 
+					</div>
+			
+				</div>
+			
+			</div>
+			<div class="box3" class="col-sm-6">
+				<div class="boxBEB">
+						<div class="row">
+							<div class="col-sm-6"><p class="ex1"><b>BEB Info</b></p></div>
+							<div class="dropdown">
+								<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								  BEB #
+								</button>
+								<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+								  <a class="a1 dropdown-item" href="#">1011</a>
+								  <a class="a1 dropdown-item" href="#">1012</a>
+								  <a class="a1 dropdown-item" href="#">1013</a>
+								</div>
+							  </div>
+						</div>
+					</div>
+				</div>
+			
+			</div>
+	
+
+		<div class="box1">
+			<div class="box3">
+				<div class="boxCS">
+					<div class="row">
+						<div class="col-sm-12"><p class="ex1"><b>Charging Station</b></p></div>
+					</div>
+					<div class="row">
+						<div class="col-sm-6">
+						<div class="dropdown">
+							<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							  CE #
+							</button>
+							<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+							  <a class="a1 dropdown-item" href="#">1011</a>
+							  <a class="a1 dropdown-item" href="#">1012</a>
+							  <a class="a1 dropdown-item" href="#">1013</a>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-sm-6">
+						  
+						  <span class="badge badge-success">Free</span>
+						</div>
+					</div>
+					
+
+			
+				</div>
+			
+			</div>
+			
+		</div>
+	</div>
+
+</div>
+
+
+<script>
+	var slider = document.getElementById("myRange");
+	var output = document.getElementById("demo");
+	output.innerHTML = slider.value;
+	
+	slider.oninput = function() {
+	  output.innerHTML = this.value;
+	}
+	</script>
+</body>
+</html>
+	
