@@ -109,22 +109,40 @@ h3 input.search-input {
 }
 
 .box1 {
-	width:50%;
-	height:100%;
+	width:211px;
+	height:244px;
 	margin:5px;
 	padding:5px;
 	background-color: rgba(191, 191, 191, 0);
+	position: absolute;
+	right: 150px;
+	top: -10px;
 }
 
 .box3 {
-	width:340px;
-	height:50%;
+	width:332px;
+	height:181px;
 	margin:5px;
 	padding:5px;
 	background-color: rgba(138, 28, 28, 0);
-	position: relative;
+	position: absolute;
 	z-index: 9999999999;
+	top: 100px;
+	left: 10px;
 }
+
+.box3b {
+	width:332px;
+	height:181px;
+	margin:5px;
+	padding:5px;
+	background-color: rgba(138, 28, 28, 0);
+	position: absolute;
+	z-index: 9999999999;
+	left: 10px;
+	bottom: 50px;
+}
+
 .boxRoute {
 	width:340px;
 	height:180px;
@@ -150,7 +168,7 @@ h3 input.search-input {
 	height:240px;
 	background: #c00;
 	padding:10px 5px 10px 5px;
-	border-radius: 0px 25px 25px 0px;
+	border-radius: 25px 0px 0px 25px;
     background-color: rgba(191, 191, 191, 0.8);
     color: rgb(0, 0, 0);
 }
@@ -323,7 +341,7 @@ div.dropdown-menu {
 
 <div id="wrap2" style="width:100%; height:95% ;">
 
-	<div id='map' style="width:100%; height:95% ;position: absolute;"></div>
+	<div id='map' style="width:100%; height:95% ;position: fixed;"></div>
 	
 	<div class="box3">
 		<div class="boxRoute">
@@ -393,21 +411,22 @@ div.dropdown-menu {
 	
 	</div>
 		
-	<div class="box3">
+	<div class="box3b">
 		<div class="boxBEB">
-				<div class="row">
-					<div class="col-sm-6"><p class="ex1"><b>BEB Info</b></p></div>
-					<div class="dropdown">
-						<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						BEB #
-						</button>
-						<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+			<div class="row">
+				<div class="col-sm-6"><p class="ex1"><b>BEB Info</b></p></div>
+				<div class="dropdown">
+					<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					BEB #
+					</button>
+					<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 						<a class="a1 dropdown-item" href="#">1011</a>
 						<a class="a1 dropdown-item" href="#">1012</a>
 						<a class="a1 dropdown-item" href="#">1013</a>
-						</div>
 					</div>
 				</div>
+			</div>
+		</div>
 	</div>
 
 	<div class="box1">
@@ -416,16 +435,16 @@ div.dropdown-menu {
 				<div class="row">
 					<div class="col-sm-12"><p class="ex1"><b>Charging Station</b></p></div>
 				</div>
-					<div class="row">
-						<div class="col-sm-6">
+				<div class="row">
+					<div class="col-sm-6">
 						<div class="dropdown">
 							<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 							CE #
 							</button>
 							<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-							<a class="a1 dropdown-item" href="#">1011</a>
-							<a class="a1 dropdown-item" href="#">1012</a>
-							<a class="a1 dropdown-item" href="#">1013</a>
+								<a class="a1 dropdown-item" href="#">x011</a>
+								<a class="a1 dropdown-item" href="#">x012</a>
+								<a class="a1 dropdown-item" href="#">x013</a>
 							</div>
 						</div>
 					</div>
@@ -434,13 +453,8 @@ div.dropdown-menu {
 						<span class="badge badge-success">Free</span>
 					</div>
 				</div>
-				
-
-		
 			</div>
-		
 		</div>
-		
 	</div>
 
 </div>
