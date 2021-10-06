@@ -86,13 +86,11 @@ h3 span {
 	font-size: 22px;
 }
 h3 input.search-input {
-	width: 300px;
+	width: 20px;
 	margin-left: auto;
 	float: right
 }
-.mt32 {
-	margin-top: 32px;
-}
+
 
 .wrapper {
 	height: 500px;
@@ -103,36 +101,20 @@ h3 input.search-input {
 	padding:20px;
 }
 
-.box0 {
-	width:100%;
-	height:100%;
-	margin:5px;
-	padding:0px;
-	background-color: rgba(0, 0, 0, 0.5);
-}
-
 .box1 {
 	width:50%;
 	height:100%;
 	margin:5px;
 	padding:5px;
-	background-color: rgba(191, 191, 191, 0.5);
+	background-color: rgba(191, 191, 191, 0);
 }
-.box2 {
-	width:320px;
-	height:180px;
-	background: #c00;
-	padding:5px 10px 5px 10px;
-	border-radius: 0px 25px 25px 0px;
-    background-color: rgba(191, 191, 191, 0.8);
-    color: rgb(0, 0, 0);
-}
+
 .box3 {
 	width:100%;
 	height:50%;
 	margin:5px;
 	padding:5px;
-	background-color: rgba(138, 28, 28, 0.5);
+	background-color: rgba(138, 28, 28, 0);
 }
 .boxRoute {
 	width:340px;
@@ -282,97 +264,6 @@ p.ex1 {
 }
 
 
-
-
-.wrap {
-        background-color: rgba(191, 191, 191, 0.8);
-        width: 100%;
-        height: 40px;
-        margin: 0;
-        z-index: 99;
-        position: relative;
-      }
-      .wrap a.logo {
-        font-size: 16px;
-        font-weight: bold;
-        background-color: rgba(191, 191, 191, 0);
-        
-        }
-      .navbar {
-        height: 50px;
-        padding: 4px;
-        margin: 0;
-        position: absolute;
-      }
-      .navbar li {
-        height: 30;
-        width: 100px;
-        float: left;
-        text-align: center;
-        list-style: none;
-        font: normal bold 16px;
-        padding: 5px;
-        border-radius: 5px;
-      }
-
-      .navbar li.active {
-        background-color: dodgerblue;
-        font: normal bold 16px;
-        color: white;
-        }
-
-
-      .navbar a {
-        color: black;
-        text-align: center;
-        padding: 5px;
-        text-decoration: none;
-        font-size: 16px; 
-        border-radius: 5px;
-      }
-      .navbar a:hover {
-        background-color: #ddd;
-        color: black;
-        }
-
-        .navbar a.active {
-        color: white;
-        }
-      .navbar li ul {
-        display: none;
-        height: auto;
-        margin: 0;
-        padding: 0;
-      }
-      .navbar li:hover ul {
-        background-color: #ddd;
-        display: block;
-      }
-      .navbar li ul li a {
-        border-left: 0px solid #444444;
-        border-right: 0px solid #444444;
-        border-top: 0px solid #c9d4d8;
-        border-bottom: 0px solid #444444;
-      }
-      .navbar li ul li a:hover {
-        background-color: #ddd;
-      }
-
-	  .nav-item.dropdown.show a {
-            color: rgb(0, 0, 0) !important;
-        }
-  
-        #navbarDropdown {
-            color: rgb(0, 0, 0);
-        }
-
-		div.dropdown-menu {
-    background-color: #3b3b3b98;
-	color: rgb(255, 248, 248) ;
-	min-width: 5rem;
-	
-}
-
 a.a1.dropdown-item {	color: rgb(255, 248, 248) ;
 	border-style: solid;
 	border-radius: 5px;}
@@ -406,8 +297,10 @@ p.round {
   cursor: pointer;
 }
 
-
-
+div.dropdown-menu {
+    background-color: #3b3b3b98;
+	color: rgb(255, 248, 248) ;
+	min-width: 5rem;
 
 </style>
 <title>Rounded Corner Boxes</title>
@@ -442,105 +335,7 @@ p.round {
 			<a href="#about">About</a>
 		</div>
 
-		<div style="float:right;">
-			<button class="dropbtn1">Right</button>
-		  </div>
-
       </ul>
-
-	  
-
-	  
-
-
-
-
-<!--div class="wrapper">
-	<div class="box1">
-	<div class="box2">
-		<div class="row">
-			<div class="col-sm-6"><p style = font-size:80% class="ex1"><b>BEB Route Infromation</b></p></div>
-			<div class="col-sm-6"><input type="search" placeholder="Search..." class="form-control search-input" data-table="customers-list" font-size:50%/></div>
-		  </div>
-		<div class="tableFixHead">
-		<table style = font-size:90% class = "sortable table-striped customers-list"> 
-			<thead> 
-			<tr> 
-				<th>BEB #</th> 
-				<th>SOC %</th> 
-				<th>Mileage</th> 
-				<th>Route</th> 
-				<th>xxx</th> 
-			</tr> 
-			</thead> 
-			<tbody> 
-			<tr> 
-				<td>1001</td> 
-				<td>50</td> 
-				<td>10</td> 
-				<td>46</td> 
-				<td>xxx</td> 
-			</tr> 
-			<tr> 
-				<td>1002</td> 
-				<td>40</td> 
-				<td>10</td> 
-				<td>45</td> 
-				<td>xx</td> 
-			</tr> 
-			<tr> 
-				<td>1003</td> 
-				<td>30</td> 
-				<td>10</td> 
-				<td>45</td> 
-				<td>xx</td> 
-			</tr> 
-			<tr> 
-				<td>1004</td> 
-				<td>20</td> 
-				<td>10</td> 
-				<td>45</td> 
-				<td>xx</td> 
-			</tr> 
-			<tr> 
-				<td>1005</td> 
-				<td>60</td> 
-				<td>10</td> 
-				<td>45</td> 
-				<td>xx</td> 
-			</tr>
-			<tr> 
-				<td>1001</td> 
-				<td>50</td> 
-				<td>10</td> 
-				<td>45</td> 
-				<td>xx</td> 
-			</tr>
-			</tbody> 
-			</table> 
-		</div>
-	</div>
-</div>
-	<div class="box1">
-		<div class="dropdown">
-			<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-			  Dropdown button
-			</button>
-			<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-			  <a class="a1 dropdown-item" href="#">Action</a>
-			  <a class="dropdown-item" href="#">Another action</a>
-			  <a class="dropdown-item" href="#">Something else here</a>
-			</div>
-		  </div>
-	</div>
-	
-
-</div-->
-
-  
-
-
-	
 	
 <div class="wrapper">
 		<div class="box1">
@@ -630,7 +425,6 @@ p.round {
 				</div>
 			
 			</div>
-	
 
 		<div class="box1">
 			<div class="box3">
