@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" type="text/css" href="../reset-meyer.css">
 <script src="https://d3js.org/d3.v7.min.js"></script>
 
 <link rel="stylesheet" href=
@@ -37,6 +36,13 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+	integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+	crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+	integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+	crossorigin=""></script>
 
 <script>
 	(function(document) {
@@ -96,9 +102,10 @@ h3 input.search-input {
 	height: 500px;
     width: 100%;
 	display: flex;
-	background-image:url('map.png');
 	background-size: cover;
 	padding:20px;
+	position: relative;
+	z-index: 999;
 }
 
 .box1 {
@@ -171,8 +178,10 @@ h3 input.search-input {
 
 .header {
   overflow: hidden;
-  background-color: rgba(191, 191, 191, 0.8);
+  background-color: rgba(191, 191, 191, 0);
   padding: 5px 5px;
+  z-index: 9999;
+  position: relative;
 }
 .header a {
   float: left;
@@ -301,168 +310,145 @@ div.dropdown-menu {
     background-color: #3b3b3b98;
 	color: rgb(255, 248, 248) ;
 	min-width: 5rem;
+	position: relative;
+	z-index: 99999;
+}
 
 </style>
 <title>Rounded Corner Boxes</title>
 </head>
 <body>
-<div class="header">
-	<ul class="nav nav-pills">
-        <li role="presentation" class="dropdown">
-          <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-            Plans <span class="caret"></span>
-          </a>
-          <ul class="dropdown-menu">
-            <a class="dropdown-item"
-            href="#">Plan A</a>
-			<div class="dropdown-divider"></div>
-            <a class="dropdown-item"
-			href="#">Plan A</a>
-			<div class="dropdown-divider"></div>
-            <a class="dropdown-item"
-			href="#">Plan A</a>
-          </ul>
-        </li>
-		<div class=" round col-6 slidecontainer" style="height:32px">
-			<input type="range" min="0" max="24" value="0" step="0.5" class="slider" id="myRange">
-		</div>
-		<div>
-			<p class="round col-sm-12" style= padding:4px>Time: <span id="demo"></span></p>
-		</div>
 
-		<div class="header-right">
-			<a href="#contact">Static Data</a>
-			<a href="#about">About</a>
-		</div>
+<div id="wrap2">
 
-      </ul>
-	
-<div class="wrapper">
-		<div class="box1">
-			<div class="box3"  class="col-sm-6">
-				<div class="boxRoute">
-					<div class="row">
-						<div class="col-sm-6"><p class="ex1"><b>BEB Route Info</b></p></div>
-						<div class="col-sm-6"><input type="search" placeholder="Search..." class="form-control search-input" data-table="customers-list" font-size:50%/></div>
-					  </div>
-					<div class="tableFixHead">
-					<table style = font-size:80% class = "sortable table-striped customers-list"> 
-						<thead> 
-						<tr> 
-							<th>BEB #</th> 
-							<th>SOC %</th> 
-							<th>Mileage</th> 
-							<th>Route</th> 
-							<th>xxx</th> 
-						</tr> 
-						</thead> 
-						<tbody> 
-						<tr> 
-							<td>1001</td> 
-							<td>50</td> 
-							<td>10</td> 
-							<td>46</td> 
-							<td>xxx</td> 
-						</tr> 
-						<tr> 
-							<td>1002</td> 
-							<td>40</td> 
-							<td>10</td> 
-							<td>45</td> 
-							<td>xx</td> 
-						</tr> 
-						<tr> 
-							<td>1003</td> 
-							<td>30</td> 
-							<td>10</td> 
-							<td>45</td> 
-							<td>xx</td> 
-						</tr> 
-						<tr> 
-							<td>1004</td> 
-							<td>20</td> 
-							<td>10</td> 
-							<td>45</td> 
-							<td>xx</td> 
-						</tr> 
-						<tr> 
-							<td>1005</td> 
-							<td>60</td> 
-							<td>10</td> 
-							<td>45</td> 
-							<td>xx</td> 
-						</tr>
-						<tr> 
-							<td>1001</td> 
-							<td>50</td> 
-							<td>10</td> 
-							<td>45</td> 
-							<td>xx</td> 
-						</tr>
-						</tbody> 
-						</table> 
-					</div>
-			
-				</div>
-			
-			</div>
-			<div class="box3" class="col-sm-6">
-				<div class="boxBEB">
+	<div class="wrapper">
+	<div id='map' style="width:500px; height:500px ; position: relative;z-index: -999;"></div>
+
+			<div class="box1">
+				<div class="box3"  class="col-sm-6">
+					<div class="boxRoute">
 						<div class="row">
-							<div class="col-sm-6"><p class="ex1"><b>BEB Info</b></p></div>
-							<div class="dropdown">
-								<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-								  BEB #
-								</button>
-								<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-								  <a class="a1 dropdown-item" href="#">1011</a>
-								  <a class="a1 dropdown-item" href="#">1012</a>
-								  <a class="a1 dropdown-item" href="#">1013</a>
-								</div>
-							  </div>
+							<div class="col-sm-6"><p class="ex1"><b>BEB Route Info</b></p></div>
+							<div class="col-sm-6"><input type="search" placeholder="Search..." class="form-control search-input" data-table="customers-list" font-size:50%/></div>
 						</div>
+						<div class="tableFixHead">
+							<table style = font-size:80% class = "sortable table-striped customers-list"> 
+								<thead> 
+								<tr> 
+									<th>BEB #</th> 
+									<th>SOC %</th> 
+									<th>Mileage</th> 
+									<th>Route</th> 
+									<th>xxx</th> 
+								</tr> 
+								</thead> 
+								<tbody> 
+								<tr> 
+									<td>1001</td> 
+									<td>50</td> 
+									<td>10</td> 
+									<td>46</td> 
+									<td>xxx</td> 
+								</tr> 
+								<tr> 
+									<td>1002</td> 
+									<td>40</td> 
+									<td>10</td> 
+									<td>45</td> 
+									<td>xx</td> 
+								</tr> 
+								<tr> 
+									<td>1003</td> 
+									<td>30</td> 
+									<td>10</td> 
+									<td>45</td> 
+									<td>xx</td> 
+								</tr> 
+								<tr> 
+									<td>1004</td> 
+									<td>20</td> 
+									<td>10</td> 
+									<td>45</td> 
+									<td>xx</td> 
+								</tr> 
+								<tr> 
+									<td>1005</td> 
+									<td>60</td> 
+									<td>10</td> 
+									<td>45</td> 
+									<td>xx</td> 
+								</tr>
+								<tr> 
+									<td>1001</td> 
+									<td>50</td> 
+									<td>10</td> 
+									<td>45</td> 
+									<td>xx</td> 
+								</tr>
+								</tbody> 
+								</table> 
+						</div>
+				
 					</div>
+				
 				</div>
-			
-			</div>
-
-		<div class="box1">
-			<div class="box3">
-				<div class="boxCS">
-					<div class="row">
-						<div class="col-sm-12"><p class="ex1"><b>Charging Station</b></p></div>
-					</div>
-					<div class="row">
-						<div class="col-sm-6">
-						<div class="dropdown">
-							<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							  CE #
-							</button>
-							<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-							  <a class="a1 dropdown-item" href="#">1011</a>
-							  <a class="a1 dropdown-item" href="#">1012</a>
-							  <a class="a1 dropdown-item" href="#">1013</a>
+				<div class="box3" class="col-sm-6">
+					<div class="boxBEB">
+							<div class="row">
+								<div class="col-sm-6"><p class="ex1"><b>BEB Info</b></p></div>
+								<div class="dropdown">
+									<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									BEB #
+									</button>
+									<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+									<a class="a1 dropdown-item" href="#">1011</a>
+									<a class="a1 dropdown-item" href="#">1012</a>
+									<a class="a1 dropdown-item" href="#">1013</a>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
-
-					<div class="col-sm-6">
-						  
-						  <span class="badge badge-success">Free</span>
-						</div>
-					</div>
-					
-
-			
+				
 				</div>
-			
+
+			<div class="box1">
+				<div class="box3">
+					<div class="boxCS">
+						<div class="row">
+							<div class="col-sm-12"><p class="ex1"><b>Charging Station</b></p></div>
+						</div>
+							<div class="row">
+								<div class="col-sm-6">
+								<div class="dropdown">
+									<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									CE #
+									</button>
+									<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+									<a class="a1 dropdown-item" href="#">1011</a>
+									<a class="a1 dropdown-item" href="#">1012</a>
+									<a class="a1 dropdown-item" href="#">1013</a>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-sm-6">
+								<span class="badge badge-success">Free</span>
+							</div>
+						</div>
+						
+
+				
+					</div>
+				
+				</div>
+				
 			</div>
-			
 		</div>
+
 	</div>
 
 </div>
-
 
 <script>
 	var slider = document.getElementById("myRange");
@@ -473,6 +459,19 @@ div.dropdown-menu {
 	  output.innerHTML = this.value;
 	}
 	</script>
+
+<script>
+	var map = L.map('map',{maxZoom:14,minZoom:10}).setView([40.7608,-111.8910], 12);
+	L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+		attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+		maxZoom: 18,
+		id: 'mapbox/streets-v11',
+		tileSize: 512,
+		zoomOffset: -1,
+		accessToken: 'pk.eyJ1IjoibHVmZXJvZHJpZ3VleiIsImEiOiJja3RjZ3NhcDUwNXczMnhwaWNsYWoza2g1In0.fKg-OIe61K3QHUHyNmtKaA'
+		}).addTo(map);
+</script>
+
 </body>
 </html>
 	
