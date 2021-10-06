@@ -1,0 +1,29 @@
+<html>
+<head>
+    <script type="text/javascript" src="data.json"></script>
+</head>
+<title>Testing JSON</title>
+
+<body>
+    <div id="map">Henlo</div>
+
+    <script>
+        // Create XMLHttpRequest object.
+        var oXHR = new XMLHttpRequest();
+    
+        // Initiate request.
+        oXHR.onreadystatechange = reportStatus;
+        oXHR.open("GET", "data.json", true);  // get json file.
+        oXHR.send();
+    
+        function reportStatus() {
+            if (oXHR.readyState == 4) {		// Check if request is complete.
+                var mydata = JSON.parse(this.responseText)
+                document.getElementById('map').innerHTML = mydata[0].name;
+            }
+        }
+    </script>
+
+</body>
+
+</html>
