@@ -50,18 +50,26 @@
 
         // define the customized icon
         var busIcon = L.icon({
-            iconUrl: 'bus-icon.png',
+            iconUrl: 'icons/bus-icon.png',
             iconSize: [18.56, 20],
             iconAnchor: [9.28, 20],
             popupAnchor: [0, -20]
         });
         var x = L.marker([40.7508,-111.8210], {icon: busIcon}).addTo(map).bindPopup("I am a bus.");
 
+        var chargingStationIcon = L.icon({
+            iconUrl: 'icons/charging-station.png',
+            iconSize: [26, 44],
+            iconAnchor: [13, 44],
+            popupAnchor: [0, -44]
+        });
+        var y = L.marker([40.7508,-111.8310], {icon: chargingStationIcon}).addTo(map).bindPopup("I am a bus.");
+
         // scale the marker size with the zoom
         map.on('zoomend', function() {
             var currentZoom = map.getZoom();
             busIcon = new L.Icon({
-                iconUrl: 'bus-icon.png',
+                iconUrl: 'icons/bus-icon.png',
                 iconSize: [18.56*(1 + (currentZoom-12)/5), 20*(1 + (currentZoom-12)/5)],
                 iconAnchor: [9.28*(1 + (currentZoom-12)/5), 20*(1 + (currentZoom-12)/5)],
                 popupAnchor: [0, -20*(1 + (currentZoom-12)/5)]
