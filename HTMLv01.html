@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://d3js.org/d3.v4.min.js"></script>
 
 <link rel="stylesheet" href=
 "https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
@@ -341,7 +341,7 @@ div.dropdown-menu {
 
 <div id="wrap2" style="width:100%; height:95% ;">
 
-	<div id='map' style="width:100%; height:500px ;position: fixed;"></div>
+	<div id='map' style="width:95%; height:95% ;position: fixed;"></div>
 	
 	<div class="box3">
 		<div class="boxRoute">
@@ -462,22 +462,110 @@ div.dropdown-menu {
 
 
 <script>
-    console.log("panic?")
-    d3.json("/routes/NewRoutes_def.json", function(data) {
-		console.log("panic 2?");
-        console.log(data);
-		// var map = L.map('map',{maxZoom:14,minZoom:10}).setView([40.7608,-111.8910], 12);
-		// L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-		// 	attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-		// 	maxZoom: 18,
-		// 	id: 'mapbox/streets-v11',
-		// 	tileSize: 512,
-		// 	zoomOffset: -1,
-		// 	accessToken: 'pk.eyJ1IjoibHVmZXJvZHJpZ3VleiIsImEiOiJja3RjZ3NhcDUwNXczMnhwaWNsYWoza2g1In0.fKg-OIe61K3QHUHyNmtKaA'
-		// }).addTo(map);
-    });
-</script>
+    console.log("hello")
+    const plan = 2;
+    var routes = [];
+    switch (plan){
+        case 0:
+            routes = [2];
+            break;
+        case 1:
+            routes = [33, 35, 39, 41, 45, 47, 240];
+            break;
+        case 2:
+            routes = [2, 6, 11, 33, 35, 39, 41, 45, 47, 200, 205, 209, 227, 232, 240, 248, 500, 509, 513, 516, 520];
+            break;
+        case 3:
+            routes = [2,6,9,11,17,21,33,35,39,41,45,47,62,72,200,201,205,209,213,217,218,220,227,232,240,248,307,313,320,354,461,470,471,500,509,513,516,519,520,526,606,608,612,616,625,626,627,640,650,664,665,807,830,838,850,862,920];
+            break;
+    }
+    var lineAbbrList = [];
+    var lineNameList = [];
+    var frequencyList = [];
+    var latAList = [];
+    var longAList = [];
+    var latBList = [];
+    var longBList = [];
 
+    var map = L.map('map',{maxZoom:30,minZoom:10}).setView([40.7608,-111.8910], 12);
+            L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+            maxZoom: 18,
+            id: 'mapbox/streets-v11',
+            tileSize: 512,
+            zoomOffset: -1,
+            accessToken: 'pk.eyJ1IjoibHVmZXJvZHJpZ3VleiIsImEiOiJja3RjZ3NhcDUwNXczMnhwaWNsYWoza2g1In0.fKg-OIe61K3QHUHyNmtKaA'
+            }).addTo(map);
+
+    d3.json("/routes/NewRoutes_def.json", function(data) {
+        console.log(data);
+
+        for (let i = 0 ; i < routes.length ; i++ ) {
+            var q = 0;
+            var posFinal = [0,0];
+            var lineName ;
+            for (let k = 0 ; k < data.length ; k++) {
+                if (data[k].LineAbbr == routes[i]) {
+                    eval( "var point_" + i + "_" + q + " = new L.LatLng(" + data[k].latA + "," + data[k].longA + ");" );
+                    posFinal = [data[k].latB,data[k].longB]
+                    lineName = data[k].LineName;
+                    q++;
+                }
+            }
+            eval( "var point_" + i + "_" + q + " = new L.LatLng(" + posFinal[0] + "," + posFinal[1] + ");" );
+            var auxString = "var pointList_" + i +" = [" ;
+
+            for (let p = 0 ; p < q ; p++){
+                auxString = auxString +  "point_" + i + "_" + p + ",";
+            }
+            auxString = auxString + "point_" + i + "_" + q + "]";
+
+            // add the charging station icon
+            var chargingStationIcon = L.icon({
+                iconUrl: 'icons/charging-station.png',
+                iconSize: [26, 44],
+                iconAnchor: [13, 44],
+                popupAnchor: [0, -44]
+            });
+
+            eval( "var stationA_" + i + " = L.marker([point_" + i + "_0.lat" + ",point_" + i + "_0.lng], {icon: chargingStationIcon}).addTo(map).bindPopup(\"I am a charging station.\"); ");
+            eval( "var stationB_" + i + " = L.marker([point_" + i + "_" + q + ".lat" + ",point_" + i + "_" + q + ".lng], {icon: chargingStationIcon}).addTo(map).bindPopup(\"I am a charging station.\"); ");
+
+            // add the bus icon
+            var busIcon = L.icon({
+                iconUrl: 'icons/bus-icon.png',
+                iconSize: [18.56, 20],
+                iconAnchor: [9.28, 20],
+                popupAnchor: [0, -20]
+            });
+
+            aux = Math.round( (0.1 + Math.random()*.8) * q)
+            eval( "var busLoc_" + i + " = L.marker([point_" + i + "_" + aux + ".lat" + ",point_" + i + "_" + aux + ".lng], {icon: busIcon}).addTo(map).bindPopup(\"" + lineName + "<br>SOC: \"); ");
+
+            eval( auxString );
+            eval( "var polyline_" + i + " = new L.Polyline(pointList_" + i +", {color: 'red',weight: 5,opacity: 0.3,smoothFactor: 1}); " ) ;
+            eval( "polyline_" + i + ".addTo(map);" );
+            eval( "polyline_" + i + ".bindPopup(\"" + lineName +"\");" );
+
+            eval( "polyline_" + i + ".on('mouseover', function(){ polyline_"+i+".setStyle({ color: \"red\", opacity: 0.8, weight: 10 }); });" );
+            eval( "polyline_" + i + ".on('mouseout', function(){ polyline_"+i+".setStyle({ color: \"red\", opacity: 0.3, weight: 5 }); });" );
+
+			eval( "polyline_" + i + ".on('popupopen', function(e){ popupIsVisible = true; e.target.setStyle( {color: \"red\", opacity: 1, weight: 10}); });" );
+			eval( "polyline_" + i + ".on('popupclose', function(e){ popupIsVisible = false; e.target.setStyle({color: \"red\", opacity: 0.3, weight: 5}); });" );
+        }
+        
+		
+
+polyline.on('popupclose', function (e) {
+    popupIsVisible = false;
+    e.target.setStyle({color: "#000"});
+});
+
+
+
+    });
+
+</script>
 </body>
 </html>
 	
