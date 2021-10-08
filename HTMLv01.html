@@ -459,27 +459,56 @@ div.dropdown-menu {
 
 </div>
 
-<script>
-	var slider = document.getElementById("myRange");
-	var output = document.getElementById("demo");
-	output.innerHTML = slider.value;
-	
-	slider.oninput = function() {
-	  output.innerHTML = this.value;
-	}
-	</script>
+
 
 <script>
-	var map = L.map('map',{maxZoom:14,minZoom:10}).setView([40.7608,-111.8910], 12);
-	L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-		attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-		maxZoom: 18,
-		id: 'mapbox/streets-v11',
-		tileSize: 512,
-		zoomOffset: -1,
-		accessToken: 'pk.eyJ1IjoibHVmZXJvZHJpZ3VleiIsImEiOiJja3RjZ3NhcDUwNXczMnhwaWNsYWoza2g1In0.fKg-OIe61K3QHUHyNmtKaA'
-		}).addTo(map);
+    console.log("hello")
+    d3.json("/routes/NewRoutes_def.json", function(data) {
+        console.log(data);
 		
+        var map = L.map("map",{maxZoom:14,minZoom:10}).setView([40.7608,-111.8910], 12);
+			L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+			attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+			maxZoom: 18,
+			id: 'mapbox/streets-v11',
+			tileSize: 512,
+			zoomOffset: -1,
+			accessToken: 'pk.eyJ1IjoibHVmZXJvZHJpZ3VleiIsImEiOiJja3RjZ3NhcDUwNXczMnhwaWNsYWoza2g1In0.fKg-OIe61K3QHUHyNmtKaA'
+			}).addTo(map);
+
+        // var routes = [2,6,9,11,17,21,33,35,39,41,45,47,62,72,200,201,205,209,213,217,218,220,227,232,240,248,307,313,320,354,461,470,471,500,509,513,516,519,520,526,606,608,612,616,625,626,627,640,650,664,665,807,830,838,850,862,920];
+            
+        // for (let i = 0 ; i < 1 ; i++ ) {
+        // 
+        //     var q = 0;
+        //     var posFinal = [0,0];
+        //     var lineName ;
+        //     for (let k = 0 ; k < data.length ; k++) {
+        //         if (data[k].LineAbbr == routes[i]) {
+        //             eval( "var point_" + i + "_" + q + " = new L.LatLng(" + data[k].latA + "," + data[k].longA + ");" );
+        //             posFinal = [data[k].latB,data[k].longB]
+        //             lineName = data[k].LineName;
+        //             q++;
+        //         }
+        //     }
+        //     eval( "var point_" + i + "_" + q + " = new L.LatLng(" + posFinal[0] + "," + posFinal[1] + ");" );
+        //     var auxString = "var pointList_" + i +" = [" ;
+
+        //     for (let p = 0 ; p < q ; p++){
+        //         auxString = auxString +  "point_" + i + "_" + p + ",";
+        //     }
+        //     auxString = auxString + "point_" + i + "_" + q + "]";
+        //     //alert(auxString)
+
+
+        //     eval( auxString );
+        //     eval( "var firstpolyline_" + i + " = new L.Polyline(pointList_" + i +", {color: 'red',weight: 5,opacity: 0.8,smoothFactor: 1}); " ) ;
+        //     eval( "firstpolyline_" + i + ".addTo(map);" );
+        //     eval( "firstpolyline_" + i + ".bindPopup(\"" + lineName +"\").openPopup();" );
+        // }
+    });
+
+    
 </script>
 
 </body>
