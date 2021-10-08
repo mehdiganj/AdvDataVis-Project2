@@ -450,13 +450,17 @@ div.dropdown-menu {
 					<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					BEB #
 					</button>
-					<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+					<div id="test2" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 						<a class="a1 dropdown-item" href="#">1011</a>
 						<a class="a1 dropdown-item" href="#">1012</a>
 						<a class="a1 dropdown-item" href="#">1013</a>
 					</div>
 				</div>
 			</div>
+            <div id="test1">
+
+
+            </div>
 		</div>
 	</div>
 
@@ -490,6 +494,10 @@ div.dropdown-menu {
 
 </div>
 
+
+
+
+
 <script>
 	var slider = document.getElementById("myRange");
 	var output = document.getElementById("demo");
@@ -500,12 +508,6 @@ div.dropdown-menu {
 	}
 	</script>
 
-<script>
-	console.log("hello")
-    d3.json("/test_json/NewRoutes_def.json", function(data1) {
-        console.log(data1);
-    });
-</script>
 
 <script>
 	var map = L.map('map',{maxZoom:14,minZoom:10}).setView([40.7608,-111.8910], 12);
@@ -521,10 +523,42 @@ div.dropdown-menu {
 		
 </script>
 
+<!--script>
+d3.json("/dataset/BEB_list_p20.json", function(BEB_list_p20) {
+    console.log(BEB_list_p20);
+});
+var BEB_list_p201 = [1, 2, 3]
+console.log(BEB_list_p201);
 
+d3.json("/dataset/BEB_list_p60.json", function(BEB_list_p60) {
+    console.log(BEB_list_p60);
+});
+var BEB_list_p60 = BEB_list_p60
+console.log(BEB_list_p60);
+
+
+d3.json("/dataset/BEB_list_p180.json", function(BEB_list_p180) {
+    console.log(BEB_list_p180);
+});
+
+</script-->
+<script>
+//d3.csv("/dataset/BEB_list_p20.csv", function(BEB_list_p20) {
+//    console.log(BEB_list_p20);
+//});
+
+var BEB_list_p20 = d3.csv("../dataset/BEB_list_p20.csv" , function(data) {
+            data.forEach(function(d){ d['BEB'] = +d['BEB']; });
+            d3.select("#test1")
+            .selectAll("p")
+            .data(data)
+            .enter()
+            .append('p')
+            .text(function(d) {return d.BEB; });   
+        });
+</script>
 
 <!--script src = "D3.js"></script-->
 
 </body>
 </html>
-	
