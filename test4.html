@@ -24,11 +24,22 @@
 
 <script>
     console.log("hello")
-    var datatable ;
-    d3.json("/routes/NewRoutes_def.json", function(data) {
-        console.log(data);
+    const plan = 0;
+    var routes = [];
+    switch (plan){
+        case 0:
+            routes = [2];
+            break;
+    }
+    var lineAbbrList = [];
+    var lineNameList = [];
+    var frequencyList = [];
+    var latAList = [];
+    var longAList = [];
+    var latBList = [];
+    var longBList = [];
 
-        var map = L.map('map',{maxZoom:14,minZoom:10}).setView([40.7608,-111.8910], 12);
+    var map = L.map('map',{maxZoom:30,minZoom:10}).setView([40.7608,-111.8910], 12);
             L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
             attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
             maxZoom: 18,
@@ -38,20 +49,9 @@
             accessToken: 'pk.eyJ1IjoibHVmZXJvZHJpZ3VleiIsImEiOiJja3RjZ3NhcDUwNXczMnhwaWNsYWoza2g1In0.fKg-OIe61K3QHUHyNmtKaA'
             }).addTo(map);
 
-        const plan = 1;
-        var routes = [];
-        switch (plan){
-            case 1:
-                routes = [33, 35, 39, 41, 45, 47, 240];
-                break;
-            case 2:
-                routes = [2, 6, 11, 33, 35, 39, 41, 45, 47, 200, 205, 209, 227, 232, 240, 248, 500, 509, 513, 516, 520];
-                break;
-            case 3:
-                routes = [2,6,9,11,17,21,33,35,39,41,45,47,62,72,200,201,205,209,213,217,218,220,227,232,240,248,307,313,320,354,461,470,471,500,509,513,516,519,520,526,606,608,612,616,625,626,627,640,650,664,665,807,830,838,850,862,920];
-                break;
-        }
-            
+    d3.json("/routes/test.json", function(data) {
+        console.log(data);
+
         for (let i = 0 ; i < routes.length ; i++ ) {
             var q = 0;
             var posFinal = [0,0];
@@ -95,23 +95,40 @@
             eval( "var busLoc_" + i + " = L.marker([point_" + i + "_" + aux + ".lat" + ",point_" + i + "_" + aux + ".lng], {icon: busIcon}).addTo(map).bindPopup(\"" + lineName + "<br>SOC: \"); ");
 
             eval( auxString );
-            eval( "var polyline_" + i + " = new L.Polyline(pointList_" + i +", {color: 'red',weight: 5,opacity: 0.8,smoothFactor: 1}); " ) ;
+            eval( "var polyline_" + i + " = new L.Polyline(pointList_" + i +", {color: 'red',weight: 5,opacity: 0.3,smoothFactor: 1}); " ) ;
             eval( "polyline_" + i + ".addTo(map);" );
             eval( "polyline_" + i + ".bindPopup(\"" + lineName +"\");" );
 
-            // eval( "polyline_" + i + ".on('mouseover', function (e) { if e.target.setStyle({color: \"#0000FF\"}); });");
-
-
-//             polyline.on('mouseover', function (e) {
-//     if e.target.setStyle({color: "#0000FF"});
-// });
-
-// polyline.on('mouseout', function (e) {
-//     if e.target.setStyle({color: "#000"});
-// });
-
+            eval( "polyline_" + i + ".on('mouseover', function(){ polyline_"+i+".setStyle({ color: \"red\", opacity: 0.8 }); });" );
+            eval( "polyline_" + i + ".on('mouseout', function(){ polyline_"+i+".setStyle({ color: \"red\", opacity: 0.3 }); });" );
         }
+        //polyline_0.on('mouseover', function(){ polyline_0.setStyle({ color: "red", opacity: 0.8 }); });
+        //polyline_0.on('mouseout', function(){ polyline_0.setStyle({ color: "red", opacity: 0.3 });  });
     });
+
+    // console.log(latAList)
+    // alert(latAList.length)
+    // alert(latAList[0])
+
+    // var start_index = [];
+    // var final_index = [];
+    // var auxStart = 0;
+    // var auxFinal = 0;
+    // for (let i = 0 ; i<routes.length ; i++){
+    //     var flag_start = false;
+    //     for (let j = 0 ; j<latAList.length ; j++){
+    //         if (lineAbbrList[j] == routes[i]){
+    //             if (!flag_start){
+    //                 auxStart = i;
+    //                 flag_start = true;
+    //             }
+    //             auxFinal = i;
+    //         }
+    //     }
+    //     start_index.push(auxStart);
+    //     final_index.push(auxFinal);
+    // }
+    // console.log(auxStart);
 
 </script>
 

@@ -1,0 +1,20 @@
+[
+ {
+   "LineAbbr": 2,
+   "LineName": "200 SOUTH ",
+   "Frequency": 15,
+   "latA": 40.7726035,
+   "longA": -111.8380696,
+   "latB": 40.77208562,
+   "longB": -111.8375101
+ },
+ {
+   "LineAbbr": 2,
+   "LineName": "200 SOUTH ",
+   "Frequency": 15,
+   "latA": 40.77208562,
+   "longA": -111.8375101,
+   "latB": 40.77219862,
+   "longB": -111.8373116
+ }
+]
