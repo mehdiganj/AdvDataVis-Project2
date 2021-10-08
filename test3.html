@@ -549,6 +549,8 @@ d3.json("/dataset/BEB_list_p180.json", function(BEB_list_p180) {
 
 var BEB_list_p20 = d3.csv("../dataset/BEB_list_p20.csv" , function(data) {
             data.forEach(function(d){ d['BEB'] = +d['BEB']; });
+			var BEB_p20 = {}
+            console.log(BEB_p20)
             d3.select("#test1")
             .selectAll("p")
             .data(data)
@@ -559,6 +561,9 @@ var BEB_list_p20 = d3.csv("../dataset/BEB_list_p20.csv" , function(data) {
 </script>
 
 <!--script src = "D3.js"></script-->
+
+
+
 
 </body>
 </html>
