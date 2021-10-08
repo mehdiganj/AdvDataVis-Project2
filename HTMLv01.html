@@ -542,18 +542,19 @@ div.dropdown-menu {
             eval( "var busLoc_" + i + " = L.marker([point_" + i + "_" + aux + ".lat" + ",point_" + i + "_" + aux + ".lng], {icon: busIcon}).addTo(map).bindPopup(\"" + lineName + "<br>SOC: \"); ");
 
             eval( auxString );
-            eval( "var polyline_" + i + " = new L.Polyline(pointList_" + i +", {color: 'red',weight: 5,opacity: 0.3,smoothFactor: 1}); " ) ;
+            eval( "var polyline_" + i + " = new L.Polyline(pointList_" + i +", {color: 'red',weight: 5,opacity: 0.6,smoothFactor: 1}); " ) ;
             eval( "polyline_" + i + ".addTo(map);" );
             eval( "polyline_" + i + ".bindPopup(\"" + lineName +"\");" );
 
-            eval( "polyline_" + i + ".on('mouseover', function(){ polyline_"+i+".setStyle({ color: \"red\", opacity: 0.8, weight: 5 }); });" );
-            eval( "polyline_" + i + ".on('mouseout', function(){ polyline_"+i+".setStyle({ color: \"red\", opacity: 0.3, weight: 5 }); });" );
+            //eval( "polyline_" + i + ".on('mouseover', function(){ polyline_"+i+".setStyle({ color: \"red\", opacity: 0.8, weight: 5 }); });" );
+            //eval( "polyline_" + i + ".on('mouseout', function(){ polyline_"+i+".setStyle({ color: \"red\", opacity: 0.3, weight: 5 }); });" );
 
 			//eval( "polyline_" + i + ".on('popupopen', function(e){ popupIsVisible = true; e.target.setStyle( {color: \"red\", opacity: 1, weight: 10}); });" );
 			//eval( "polyline_" + i + ".on('popupclose', function(e){ popupIsVisible = false; e.target.setStyle({color: \"red\", opacity: 0.3, weight: 5}); });" );
 
+			eval( "polyline_" + i + ".on('click', function(){ polyline_"+i+".setStyle({ color: \"red\", opacity: 1, weight: 10 }); });" );
+			eval( "polyline_" + i + ".on('popupclose', function(e){ e.target.setStyle({color: \"red\", opacity: 0.6, weight: 5}); });" );
         }
-        
 		
 
 
