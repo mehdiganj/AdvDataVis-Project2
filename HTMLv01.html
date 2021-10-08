@@ -463,7 +463,7 @@ div.dropdown-menu {
 
 <script>
     console.log("hello")
-    const plan = 2;
+    const plan = 1;
     var routes = [];
     switch (plan){
         case 0:
@@ -498,7 +498,6 @@ div.dropdown-menu {
             }).addTo(map);
 
     d3.json("/routes/NewRoutes_def.json", function(data) {
-        console.log(data);
 
         for (let i = 0 ; i < routes.length ; i++ ) {
             var q = 0;
@@ -547,19 +546,16 @@ div.dropdown-menu {
             eval( "polyline_" + i + ".addTo(map);" );
             eval( "polyline_" + i + ".bindPopup(\"" + lineName +"\");" );
 
-            eval( "polyline_" + i + ".on('mouseover', function(){ polyline_"+i+".setStyle({ color: \"red\", opacity: 0.8, weight: 10 }); });" );
+            eval( "polyline_" + i + ".on('mouseover', function(){ polyline_"+i+".setStyle({ color: \"red\", opacity: 0.8, weight: 5 }); });" );
             eval( "polyline_" + i + ".on('mouseout', function(){ polyline_"+i+".setStyle({ color: \"red\", opacity: 0.3, weight: 5 }); });" );
 
-			eval( "polyline_" + i + ".on('popupopen', function(e){ popupIsVisible = true; e.target.setStyle( {color: \"red\", opacity: 1, weight: 10}); });" );
-			eval( "polyline_" + i + ".on('popupclose', function(e){ popupIsVisible = false; e.target.setStyle({color: \"red\", opacity: 0.3, weight: 5}); });" );
+			//eval( "polyline_" + i + ".on('popupopen', function(e){ popupIsVisible = true; e.target.setStyle( {color: \"red\", opacity: 1, weight: 10}); });" );
+			//eval( "polyline_" + i + ".on('popupclose', function(e){ popupIsVisible = false; e.target.setStyle({color: \"red\", opacity: 0.3, weight: 5}); });" );
+
         }
         
 		
 
-polyline.on('popupclose', function (e) {
-    popupIsVisible = false;
-    e.target.setStyle({color: "#000"});
-});
 
 
 
