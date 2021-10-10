@@ -133,14 +133,14 @@ h3 input.search-input {
 
 .box3b {
 	width:332px;
-	height:362px;
+	height:342px;
 	margin:5px;
 	padding:5px;
 	background-color: rgba(138, 28, 28, 0);
 	position: absolute;
 	z-index: 9999999999;
 	left: 10px;
-	bottom: 50px;
+	bottom: 120px;
 }
 
 .boxRoute {
@@ -154,7 +154,7 @@ h3 input.search-input {
 }
 .boxBEB {
 	width:320px;
-	height:360px;
+	height:350px;
 	background: #c00;
 	padding:5px 10px 5px 10px;
 	border-radius: 0px 25px 25px 0px;
@@ -163,9 +163,9 @@ h3 input.search-input {
 }
 
 .boxCS {
-	width:210px;
+	width:320px;
 	float:right;
-	height:240px;
+	height:270px;
 	background: #c00;
 	padding:10px 5px 10px 5px;
 	border-radius: 25px 0px 0px 25px;
@@ -334,8 +334,29 @@ div.dropdown-menu {
 	z-index: 99999;
 }
 
+#battery-status {
+	background-color: yellow;
+	height: 30px;
+	width: 100%;
+	position: relative;
+}
+
 #chart1 {
 	background-color: blue;
+	height: 120px;
+	width: 100%;
+	position: relative;
+}
+
+#chart2 {
+	background-color: red;
+	height: 120px;
+	width: 100%;
+	position: relative;
+}
+
+#chart3 {
+	background-color: magenta;
 	height: 120px;
 	width: 100%;
 	position: relative;
@@ -438,6 +459,10 @@ div.dropdown-menu {
 					</div>
 				</div>
 			</div>
+			<div id="battery-status">
+				<div style="width: 150px; float:left; height:20px; background:gray; margin:0px">Battery status:</div>
+				<div style="width: 150px; float:left; height:20px; background:green; margin:0px">aqui va la figura</div>
+			</div>
 			<div id="chart1"></div>
 			<div id="chart2"></div>
 		</div>
@@ -467,6 +492,11 @@ div.dropdown-menu {
 						<span class="badge badge-success">Free</span>
 					</div>
 				</div>
+				<div id="battery-status">
+					<div style="width: 150px; float:left; height:20px; background:gray; margin:0px">Station status:</div>
+					<div style="width: 150px; float:left; height:20px; background:green; margin:0px">aqui va la figura</div>
+				</div>
+				<div id="chart3"></div>
 			</div>
 		</div>
 	</div>
@@ -576,7 +606,23 @@ div.dropdown-menu {
 		height = 110 - margin.top - margin.bottom;
 
 	// append the svg object to the body of the page
-	var svg = d3.select("#chart1")
+	var svg1 = d3.select("#chart1")
+	.append("svg")
+		.attr("width", width + margin.left + margin.right)
+		.attr("height", height + margin.top + margin.bottom)
+	.append("g")
+		.attr("transform",
+			"translate(" + margin.left + "," + margin.top + ")");
+
+	var svg2 = d3.select("#chart2")
+	.append("svg")
+		.attr("width", width + margin.left + margin.right)
+		.attr("height", height + margin.top + margin.bottom)
+	.append("g")
+		.attr("transform",
+			"translate(" + margin.left + "," + margin.top + ")");
+
+	var svg3 = d3.select("#chart3")
 	.append("svg")
 		.attr("width", width + margin.left + margin.right)
 		.attr("height", height + margin.top + margin.bottom)
@@ -600,38 +646,38 @@ div.dropdown-menu {
 			.domain(d3.extent(data, function(d) { return d.date; }))
 			.range([ 0, width ]);
 		let xaxis = d3.axisBottom(x);
-		svg.append("g")
+		svg1.append("g")
 			.attr("transform", "translate(0," + height + ")")
 			.call(xaxis);
 
 		// Add Y axis
-		var y = d3.scaleLinear()
+		var y1 = d3.scaleLinear()
 			.domain([0, 400])
 			.range([ height, 0 ]);
-		let yaxis = d3.axisLeft(y);
+		let yaxis = d3.axisLeft(y1);
 		yaxis.ticks(5);
-		svg.append("g")
+		svg1.append("g")
 			.call(yaxis);
 
 		// Add the line
-		svg.append("path")
+		svg1.append("path")
 			.datum(data)
 			.attr("fill", "none")
 			.attr("stroke", "steelblue")
 			.attr("stroke-width", 1.5)
 			.attr("d", d3.line()
 				.x(function(d) { return x(d.date) })
-				.y(function(d) { return y(d.value) })
+				.y(function(d) { return y1(d.value) })
 				)
 		
-		svg.append("text")
+		svg1.append("text")
 			.attr("class", "x label")
 			.attr("text-anchor", "end")
 			.attr("x", width/2)
 			.attr("y", height+30)
 			.text("Time");
 
-		svg.append("text")
+		svg1.append("text")
 			.attr("class", "y label")
 			.attr("text-anchor", "end")
 			.attr("x", -height/2+10)
@@ -639,11 +685,48 @@ div.dropdown-menu {
 			//.attr("dy", ".75em")
 			.attr("transform", "rotate(-90)")
 			.text("SOC");
+
+
+		//let xaxis = d3.axisBottom(x);
+		svg2.append("g")
+			.attr("transform", "translate(0," + height + ")")
+			.call(xaxis);
+		// Add Y axis
+		var y2 = d3.scaleLinear()
+			.domain([0, 400])
+			.range([ height, 0 ]);
+		let y2axis = d3.axisLeft(y2);
+		y2axis.ticks(5);
+		svg2.append("g")
+			.call(y2axis);
+
+		// Add the line
+		svg2.append("path")
+			.datum(data)
+			.attr("fill", "none")
+			.attr("stroke", "steelblue")
+			.attr("stroke-width", 1.5)
+			.attr("d", d3.line()
+				.x(function(d) { return x(d.date) })
+				.y(function(d) { return y2(d.value) })
+				)
+		
+		svg2.append("text")
+			.attr("class", "x label")
+			.attr("text-anchor", "end")
+			.attr("x", width/2)
+			.attr("y", height+30)
+			.text("Time");
+
+		svg2.append("text")
+			.attr("class", "y label")
+			.attr("text-anchor", "end")
+			.attr("x", -height/2+10)
+			.attr("y", -30)
+			.attr("transform", "rotate(-90)")
+			.text("SOC");
 	})
 </script>
-
-
-
 
 
 </body>
