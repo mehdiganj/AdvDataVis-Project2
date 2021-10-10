@@ -668,7 +668,7 @@ div.dropdown-menu {
 			.attr("d", d3.line()
 				.x(function(d) { return x(d.date) })
 				.y(function(d) { return y1(d.value) })
-				)
+				);
 		
 		svg1.append("text")
 			.attr("class", "x label")
@@ -693,7 +693,7 @@ div.dropdown-menu {
 			.call(xaxis);
 		// Add Y axis
 		var y2 = d3.scaleLinear()
-			.domain([0, 400])
+			.domain([0, 50])
 			.range([ height, 0 ]);
 		let y2axis = d3.axisLeft(y2);
 		y2axis.ticks(5);
@@ -708,8 +708,8 @@ div.dropdown-menu {
 			.attr("stroke-width", 1.5)
 			.attr("d", d3.line()
 				.x(function(d) { return x(d.date) })
-				.y(function(d) { return y2(d.value) })
-				)
+				.y(function(d) { return y2(d.value/100) })
+				);
 		
 		svg2.append("text")
 			.attr("class", "x label")
@@ -721,10 +721,49 @@ div.dropdown-menu {
 		svg2.append("text")
 			.attr("class", "y label")
 			.attr("text-anchor", "end")
-			.attr("x", -height/2+10)
+			.attr("x", -height/2+20)
 			.attr("y", -30)
 			.attr("transform", "rotate(-90)")
-			.text("SOC");
+			.text("Mileage");
+
+
+		svg3.append("g")
+			.attr("transform", "translate(0," + height + ")")
+			.call(xaxis);
+		// Add Y axis
+		var y3 = d3.scaleLinear()
+			.domain([0, 400])
+			.range([ height, 0 ]);
+		let y3axis = d3.axisLeft(y3);
+		y3axis.ticks(5);
+		svg3.append("g")
+			.call(y3axis);
+
+		// Add the line
+		svg3.append("path")
+			.datum(data)
+			.attr("fill", "none")
+			.attr("stroke", "steelblue")
+			.attr("stroke-width", 1.5)
+			.attr("d", d3.line()
+				.x(function(d) { return x(d.date) })
+				.y(function(d) { return y3(d.value) })
+				);
+		
+		svg3.append("text")
+			.attr("class", "x label")
+			.attr("text-anchor", "end")
+			.attr("x", width/2)
+			.attr("y", height+30)
+			.text("Time");
+
+		svg3.append("text")
+			.attr("class", "y label")
+			.attr("text-anchor", "end")
+			.attr("x", -height/2+40)
+			.attr("y", -30)
+			.attr("transform", "rotate(-90)")
+			.text("Energy cons.");
 	})
 </script>
 
