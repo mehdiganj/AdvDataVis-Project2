@@ -453,15 +453,15 @@ div.dropdown-menu {
 					BEB #
 					</button>
 					<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-						<a class="a1 dropdown-item" href="#">1011</a>
-						<a class="a1 dropdown-item" href="#">1012</a>
-						<a class="a1 dropdown-item" href="#">1013</a>
+						<a class="a1 dropdown-item" href="#" onclick="selectedBEB(this)" id="beb-item1">1011</a>
+						<a class="a1 dropdown-item" href="#" onclick="selectedBEB(this)" id="beb-item2">1012</a>
+						<a class="a1 dropdown-item" href="#" onclick="selectedBEB(this)" id="beb-item3">1013</a>
 					</div>
 				</div>
 			</div>
 			<div id="battery-status">
 				<div style="width: 150px; float:left; height:20px; background:gray; margin:0px">Battery status:</div>
-				<div style="width: 150px; float:left; height:20px; background:green; margin:0px">aqui va la figura</div>
+				<div style="width: 150px; float:left; height:20px; background:green; margin:0px; text-align:right"> <img src="icons/battery-full.png" id="battery-icon"> </div>
 			</div>
 			<div id="chart1"></div>
 			<div id="chart2"></div>
@@ -767,6 +767,22 @@ div.dropdown-menu {
 	})
 </script>
 
+<script type="text/javascript">
+	function selectedBEB(option)
+	{
+		if (option.id == "beb-item1"){
+			alert("holi")
+			document.getElementById("battery-icon").src = "icons/battery-green.png";
+		}
+		if (option.id == "beb-item2"){
+			document.getElementById("battery-icon").src = "icons/battery-yellow.png";
+		}
+		if (option.id == "beb-item3"){
+			document.getElementById("battery-icon").src = "icons/battery-red.png";
+		}
+	}
+	</script>
+	
 
 </body>
 </html>
