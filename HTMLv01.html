@@ -481,20 +481,16 @@ div.dropdown-menu {
 							CE #
 							</button>
 							<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-								<a class="a1 dropdown-item" href="#">x011</a>
-								<a class="a1 dropdown-item" href="#">x012</a>
-								<a class="a1 dropdown-item" href="#">x013</a>
+								<a class="a1 dropdown-item" href="#" onclick="selectedCE(this)" id="ce-item1">x011</a>
+								<a class="a1 dropdown-item" href="#" onclick="selectedCE(this)" id="ce-item2">x012</a>
+								<a class="a1 dropdown-item" href="#" onclick="selectedCE(this)" id="ce-item3">x013</a>
 							</div>
 						</div>
-					</div>
-
-					<div class="col-sm-6">
-						<span class="badge badge-success">Free</span>
 					</div>
 				</div>
 				<div id="battery-status">
 					<div style="width: 150px; float:left; height:20px; background:gray; margin:0px">Station status:</div>
-					<div style="width: 150px; float:left; height:20px; background:green; margin:0px">aqui va la figura</div>
+					<div style="width: 150px; float:left; height:20px; background:green; margin:0px; text-align: right;"><img src="icons/free.png" id="charging-icon"></div>
 				</div>
 				<div id="chart3"></div>
 			</div>
@@ -779,6 +775,19 @@ div.dropdown-menu {
 		}
 		if (option.id == "beb-item3"){
 			document.getElementById("battery-icon").src = "icons/battery-red.png";
+		}
+	}
+
+	function selectedCE(option)
+	{
+		if (option.id == "ce-item1"){
+			document.getElementById("charging-icon").src = "icons/free.png";
+		}
+		if (option.id == "ce-item2"){
+			document.getElementById("charging-icon").src = "icons/in-use.png";
+		}
+		if (option.id == "ce-item3"){
+			document.getElementById("charging-icon").src = "icons/in-use.png";
 		}
 	}
 	</script>
