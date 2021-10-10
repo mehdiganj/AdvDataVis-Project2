@@ -133,7 +133,7 @@ h3 input.search-input {
 
 .box3b {
 	width:332px;
-	height:181px;
+	height:362px;
 	margin:5px;
 	padding:5px;
 	background-color: rgba(138, 28, 28, 0);
@@ -154,7 +154,7 @@ h3 input.search-input {
 }
 .boxBEB {
 	width:320px;
-	height:180px;
+	height:360px;
 	background: #c00;
 	padding:5px 10px 5px 10px;
 	border-radius: 0px 25px 25px 0px;
@@ -334,6 +334,18 @@ div.dropdown-menu {
 	z-index: 99999;
 }
 
+#chart1 {
+	background-color: blue;
+	height: 120px;
+	width: 100%;
+	position: relative;
+}
+
+.label {
+	font-family: 'Courier New', Courier, monospace;
+	font-size: 8pt;
+}
+
 </style>
 <title>Rounded Corner Boxes</title>
 </head>
@@ -426,6 +438,8 @@ div.dropdown-menu {
 					</div>
 				</div>
 			</div>
+			<div id="chart1"></div>
+			<div id="chart2"></div>
 		</div>
 	</div>
 
@@ -463,6 +477,8 @@ div.dropdown-menu {
 
 <script>
     console.log("hello")
+    //document.getElementById('div_register').style.width= '500px';
+
     const plan = 1;
     var routes = [];
     switch (plan){
@@ -479,13 +495,6 @@ div.dropdown-menu {
             routes = [2,6,9,11,17,21,33,35,39,41,45,47,62,72,200,201,205,209,213,217,218,220,227,232,240,248,307,313,320,354,461,470,471,500,509,513,516,519,520,526,606,608,612,616,625,626,627,640,650,664,665,807,830,838,850,862,920];
             break;
     }
-    var lineAbbrList = [];
-    var lineNameList = [];
-    var frequencyList = [];
-    var latAList = [];
-    var longAList = [];
-    var latBList = [];
-    var longBList = [];
 
     var map = L.map('map',{maxZoom:30,minZoom:10}).setView([40.7608,-111.8910], 12);
             L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
@@ -555,14 +564,88 @@ div.dropdown-menu {
 			eval( "polyline_" + i + ".on('click', function(){ polyline_"+i+".setStyle({ color: \"red\", opacity: 1, weight: 10 }); });" );
 			eval( "polyline_" + i + ".on('popupclose', function(e){ e.target.setStyle({color: \"red\", opacity: 0.6, weight: 5}); });" );
         }
-		
-
-
-
 
     });
-
 </script>
+
+<script>
+	var divWidth = document.getElementById("chart1").clientWidth;
+	// set the dimensions and margins of the graph
+	var margin = {top: 10, right: 10, bottom: 30, left: 40},
+		width = divWidth - margin.left - margin.right,
+		height = 110 - margin.top - margin.bottom;
+
+	// append the svg object to the body of the page
+	var svg = d3.select("#chart1")
+	.append("svg")
+		.attr("width", width + margin.left + margin.right)
+		.attr("height", height + margin.top + margin.bottom)
+	.append("g")
+		.attr("transform",
+			"translate(" + margin.left + "," + margin.top + ")");
+
+	//Read the data
+	d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/3_TwoNumOrdered_comma.csv",
+
+	// When reading the csv, I must format variables:
+	function(d){
+		return { date : d3.timeParse("%Y-%m-%d")(d.date), value : d.value }
+	},
+
+	// Now I can use this dataset:
+	function(data) {
+
+		// Add X axis --> it is a date format
+		var x = d3.scaleTime()
+			.domain(d3.extent(data, function(d) { return d.date; }))
+			.range([ 0, width ]);
+		let xaxis = d3.axisBottom(x);
+		svg.append("g")
+			.attr("transform", "translate(0," + height + ")")
+			.call(xaxis);
+
+		// Add Y axis
+		var y = d3.scaleLinear()
+			.domain([0, 400])
+			.range([ height, 0 ]);
+		let yaxis = d3.axisLeft(y);
+		yaxis.ticks(5);
+		svg.append("g")
+			.call(yaxis);
+
+		// Add the line
+		svg.append("path")
+			.datum(data)
+			.attr("fill", "none")
+			.attr("stroke", "steelblue")
+			.attr("stroke-width", 1.5)
+			.attr("d", d3.line()
+				.x(function(d) { return x(d.date) })
+				.y(function(d) { return y(d.value) })
+				)
+		
+		svg.append("text")
+			.attr("class", "x label")
+			.attr("text-anchor", "end")
+			.attr("x", width/2)
+			.attr("y", height+30)
+			.text("Time");
+
+		svg.append("text")
+			.attr("class", "y label")
+			.attr("text-anchor", "end")
+			.attr("x", -height/2+10)
+			.attr("y", -30)
+			//.attr("dy", ".75em")
+			.attr("transform", "rotate(-90)")
+			.text("SOC");
+	})
+</script>
+
+
+
+
+
 </body>
 </html>
 	
