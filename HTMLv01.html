@@ -31,7 +31,9 @@
 		crossorigin="anonymous">
 	</script>
 
-<script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
+
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
@@ -327,11 +329,11 @@ p.round {
 }
 
 div.dropdown-menu {
-    background-color: #3b3b3b98;
+    background-color: #00000098;
 	color: rgb(255, 248, 248) ;
 	min-width: 5rem;
 	position: relative;
-	z-index: 99999;
+	z-index: 999999999999;
 }
 
 #battery-status {
@@ -376,10 +378,42 @@ div.dropdown-menu {
 <title>Rounded Corner Boxes</title>
 </head>
 <body>
+	<div>
+		<ul class="nav nav-pills">
+			<li class="nav-item dropdown">
+				<a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Plans</a>
+				<div class="dropdown-menu">
+					<a href="#" class="a1 dropdown-item">Plan A</a>
+					<div class="dropdown-divider"></div>
+					<a href="#" class="a1 dropdown-item">Plan B</a>
+					<div class="dropdown-divider"></div>
+					<a href="#" class="a1 dropdown-item">Plan C</a>
+				</div>
+			</li>
+			<div>
+				<select id="plansbutton" class="custom-select" style="width:80px;"></select>
+			</div>
+
+			<div class=" round col-6 slidecontainer" style="height:32px">
+				<input type="range" min="0" max="24" value="0" step="0.5" class="slider" id="myRange">
+			</div>
+			<div>
+				<p class="round col-sm-12" style= padding:4px>Time: <span id="demo"></span></p>
+			</div>
+
+			<li class="nav-item ms-auto">
+				<a href="#" class="nav-link">Static Data</a>
+			</li>
+			<li class="nav-item ms-auto">
+				<a href="#" class="nav-link">About</a>
+			</li>
+		</ul>
+	</div>
+
 
 <div id="wrap2" style="width:100%; height:95% ;">
 
-	<div id='map' style="width:95%; height:95% ;position: fixed;"></div>
+	<div id='map' style="width:100%; height:95% ;position: fixed;"></div>
 	
 	<div class="box3">
 		<div class="boxRoute">
@@ -389,17 +423,17 @@ div.dropdown-menu {
 			</div>
 			
 			<div class="tableFixHead">
-				<table style = font-size:80% class = "sortable table-striped customers-list"> 
-					<thead> 
+				<table id="beb_table" style = font-size:80% class = "sortable table-striped customers-list"> 
+					<!-- <thead> 
 					<tr> 
 						<th>BEB #</th> 
 						<th>SOC %</th> 
 						<th>Mileage</th> 
 						<th>Route</th> 
-						<th>xxx</th> 
+						<th>Location</th> 
 					</tr> 
-					</thead> 
-					<tbody> 
+					</thead>  -->
+					<!--tbody> 
 					<tr> 
 						<td>1001</td> 
 						<td>50</td> 
@@ -442,7 +476,7 @@ div.dropdown-menu {
 						<td>45</td> 
 						<td>xx</td> 
 					</tr>
-					</tbody> 
+					</tbody--> 
 					</table> 
 			</div>
 		</div>
@@ -453,41 +487,36 @@ div.dropdown-menu {
 		<div class="boxBEB">
 			<div class="row">
 				<div class="col-sm-8"><p class="ex1"><b>BEB Info</b></p></div>
-				<div class="dropdown">
+				<div class="col-sm-6">
+					<select id="bebbutton" class="custom-select" style="width:100px;"></select>
+				</div>
+				<!-- <div class="dropdown">
 					<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					BEB #
 					</button>
 					<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-						<a class="a1 dropdown-item" href="#" onclick="selectedBEB(this)" id="beb-item1">1011</a>
-						<a class="a1 dropdown-item" href="#" onclick="selectedBEB(this)" id="beb-item2">1012</a>
-						<a class="a1 dropdown-item" href="#" onclick="selectedBEB(this)" id="beb-item3">1013</a>
+						<a class="a1 dropdown-item" href="#">1011</a>
+						<a class="a1 dropdown-item" href="#">1012</a>
+						<a class="a1 dropdown-item" href="#">1013</a>
 					</div>
-				</div>
+				</div> -->
 			</div>
-			<div id="battery-status">
-				<div style="width: 150px; float:left; height:20px; background:none; margin:0px">Battery status:</div>
-				<div style="width: 150px; float:left; height:20px; background:none; margin:0px; text-align:right"> <img src="icons/battery-full.png" id="battery-icon" class="battery-icon"> </div>
-			</div>
-			<div id="chart1"></div>
-			<div id="chart2"></div>
 		</div>
 	</div>
 
 	<div class="box1">
-		<div class="boxCS">
-			<div class="row">
-				<div class="col-sm-8"><p class="ex1"><b>Charging Station</b></p></div>
+		<div class="box3">
+			<div class="boxCS">
+				<div class="row">
+					<div class="col-sm-12"><p class="ex1"><b>Charging Station</b></p></div>
+				</div>
+				<div class="row">
+					<div class="col-sm-6">
+						<select id="cebutton" class="custom-select" style="width:200px;"></select>
+					</div>
 
-				<div class="col-sm-4">
-					<div class="dropdown">
-						<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						CE #
-						</button>
-						<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-							<a class="a1 dropdown-item" href="#" onclick="selectedCE(this)" id="ce-item1">x011</a>
-							<a class="a1 dropdown-item" href="#" onclick="selectedCE(this)" id="ce-item2">x012</a>
-							<a class="a1 dropdown-item" href="#" onclick="selectedCE(this)" id="ce-item3">x013</a>
-						</div>
+					<div class="col-sm-6">
+						<span class="badge badge-success">Free</span>
 					</div>
 				</div>
 			</div>
@@ -763,6 +792,176 @@ div.dropdown-menu {
 			.attr("transform", "rotate(-90)")
 			.text("Energy cons.");
 	})
+	console.log("hello")
+    d3.json("/test_json/NewRoutes_def.json", function(data1) {
+        console.log(data1);
+    });
+</script>
+
+
+
+
+	<script>
+		d3.queue()
+		    .defer(d3.json, "../dataset/BEB_list.json")
+			.defer(d3.csv, "../dataset/BEB_table_p20.csv")
+			.defer(d3.csv, "../dataset/BEB_table_p60.csv")
+			.defer(d3.csv, "../dataset/BEB_table_p180.csv")
+			.defer(d3.json, "../dataset/CE_list.json")
+			.await(function(error, data, data1, data2, data3, ce_data) {
+			if (error) throw error;
+
+			const plans = d3.keys(data)
+
+			// add the plan options to the button
+			d3.select("#plansbutton")
+			.selectAll('myOptions')
+			   .data(plans)
+			.enter()
+			  .append('option')
+			.text(function (d) { return d; }) // text showed in the menu
+			.attr("value", function (d) { return d; }) // corresponding value returned by the button
+
+			// Initialize the BEB list
+			var BEB_list = d3.select("#bebbutton")
+			.selectAll('myOptions')
+			   .data(data.Plan1)
+			.enter()
+			  .append('option')
+			.text(function (d) { return d; }) // text showed in the menu
+			.attr("value", function (d) { return d; }); // corresponding value returned by the button
+
+			// Initialize the CE list
+			var CE_list = d3.select("#cebutton")
+			.selectAll('myOptions')
+			   .data(ce_data.Plan1)
+			.enter()
+			  .append('option')
+			.text(function (d) { return d; }) // text showed in the menu
+			.attr("value", function (d) { return d; }); // corresponding value returned by the button
+
+					
+			// A function that update the list of the beb
+			function updatelists(plan) {
+			var bobs = d3.select("#bebbutton")
+			.selectAll('myOptions')
+			   .data(data[plan])
+			   .enter()
+			  .append('option')
+			.text(function (d) { return d; }) // text showed in the menu
+			.attr("value", function (d) { return d; }) // corresponding value returned by the button
+	  		};
+
+			  // A function that update the list of the beb
+			function updatece(plan) {
+			var bobs = d3.select("#cebutton")
+			.selectAll('myOptions')
+			   .data(ce_data[plan])
+			   .enter()
+			  .append('option')
+			.text(function (d) { return d; }) // text showed in the menu
+			.attr("value", function (d) { return d; }) // corresponding value returned by the button
+	  		};
+
+	function tabulate(data, columns) {
+		var table = d3.select('#beb_table')
+		var thead = table.append('thead')
+		var	tbody = table.append('tbody');
+		const m_column = ['BEB #', 'SoC %', 'Mileage', 'Route', 'Status']
+
+		// append the header row
+		thead.append('tr')
+		.selectAll('th')
+		.data(columns).enter()
+		.append('th')
+			.text(function (column) { return column; });
+
+		// create a row for each object in the data
+		var rows = tbody.selectAll('tr')
+		.data(data)
+		.enter()
+		.append('tr');
+
+		// create a cell in each row for each column
+		var cells = rows.selectAll('td')
+		.data(function (row) {
+			return columns.map(function (column) {
+			return {column: column, value: row[column]};
+			});
+		})
+		.enter()
+		.append('td')
+			.text(function (d) { return d.value; });
+
+	return table;
+	}
+
+	// Initialize the table
+	tabulate(data1, ['BEB', 'SoC', 'Mileage', 'Route', 'Location']); // 2 column table
+
+
+	function updatetable(plan) {
+		if (plan == "Plan1"){
+			tabulate(data1, ['BEB', 'SoC', 'Mileage', 'Route', 'Location']);
+		}
+		if (plan == "Plan2"){
+			tabulate(data2, ['BEB', 'SoC', 'Mileage', 'Route', 'Location']);
+		}
+		if (plan == "Plan3"){
+			tabulate(data3, ['BEB', 'SoC', 'Mileage', 'Route', 'Location']);
+		}
+	}
+
+
+		function delete_table() {
+			//clears all the guardians with the specified id
+			document.getElementById("beb_table").innerHTML =
+				null;
+		}
+
+		function delete_beb() {
+                //clears all the guardians with the specified id
+                document.getElementById("bebbutton").innerHTML =
+                    null;
+            }
+
+		function delete_ce() {
+                //clears all the guardians with the specified id
+                document.getElementById("cebutton").innerHTML =
+                    null;
+            }
+  
+	  d3.select("#plansbutton").on("change", function(d){
+	  selectedGroup = this.value
+	  delete_beb()
+	  delete_ce()
+	  delete_table()
+	   updatelists(selectedGroup)
+	   updatece(selectedGroup)
+	   updatetable(selectedGroup)
+	})    
+		  
+	});
+
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
+
+<script>
+	var map = L.map('map',{maxZoom:14,minZoom:10}).setView([40.7608,-111.8910], 12);
+	L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+		attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+		maxZoom: 18,
+		id: 'mapbox/streets-v11',
+		tileSize: 512,
+		zoomOffset: -1,
+		accessToken: 'pk.eyJ1IjoibHVmZXJvZHJpZ3VleiIsImEiOiJja3RjZ3NhcDUwNXczMnhwaWNsYWoza2g1In0.fKg-OIe61K3QHUHyNmtKaA'
+		}).addTo(map);
+
+		
 </script>
 
 <script type="text/javascript">

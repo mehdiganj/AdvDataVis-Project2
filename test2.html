@@ -7,6 +7,8 @@
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
 	integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
 	crossorigin=""></script>
+
+<script src="https://d3js.org/d3.v4.min.js"></script>
 </head>
 
 <style>
@@ -43,6 +45,28 @@
             accessToken: 'pk.eyJ1IjoibHVmZXJvZHJpZ3VleiIsImEiOiJja3RjZ3NhcDUwNXczMnhwaWNsYWoza2g1In0.fKg-OIe61K3QHUHyNmtKaA'
             }).addTo(map);
     </script>
+    <div id="test1">
+
+    </div>
+
+    <script>
+        //d3.csv("/dataset/BEB_list_p20.csv", function(BEB_list_p20) {
+        //    console.log(BEB_list_p20);
+        //});
+        
+        var BEB_list_p20 = d3.csv("../dataset/BEB_list_p20.csv" , function(data) {
+            data.forEach(function(d){ d['BEB'] = +d['BEB']; });
+            d3.select("#test1")
+            .selectAll("p")
+            .data(data)
+            .enter()
+            .append('p')
+            .text(function(d) {return d.BEB; });   
+        });
+        
+
+        </script>
+
 </body>
 
 
