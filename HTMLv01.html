@@ -115,8 +115,8 @@ h3 input.search-input {
 	padding:5px;
 	background-color: rgba(191, 191, 191, 0);
 	position: absolute;
-	right: 150px;
-	top: -10px;
+	right: 0px;
+	top: 100px;
 }
 
 .box3 {
@@ -335,28 +335,28 @@ div.dropdown-menu {
 }
 
 #battery-status {
-	background-color: yellow;
+	background-color: none;
 	height: 30px;
 	width: 100%;
 	position: relative;
 }
 
 #chart1 {
-	background-color: blue;
+	background-color: none;
 	height: 120px;
 	width: 100%;
 	position: relative;
 }
 
 #chart2 {
-	background-color: red;
+	background-color: none;
 	height: 120px;
 	width: 100%;
 	position: relative;
 }
 
 #chart3 {
-	background-color: magenta;
+	background-color: none;
 	height: 120px;
 	width: 100%;
 	position: relative;
@@ -460,8 +460,8 @@ div.dropdown-menu {
 				</div>
 			</div>
 			<div id="battery-status">
-				<div style="width: 150px; float:left; height:20px; background:gray; margin:0px">Battery status:</div>
-				<div style="width: 150px; float:left; height:20px; background:green; margin:0px; text-align:right"> <img src="icons/battery-full.png" id="battery-icon"> </div>
+				<div style="width: 150px; float:left; height:20px; background:none; margin:0px">Battery status:</div>
+				<div style="width: 150px; float:left; height:20px; background:none; margin:0px; text-align:right"> <img src="icons/battery-full.png" id="battery-icon"> </div>
 			</div>
 			<div id="chart1"></div>
 			<div id="chart2"></div>
@@ -469,30 +469,28 @@ div.dropdown-menu {
 	</div>
 
 	<div class="box1">
-		<div class="box3">
-			<div class="boxCS">
-				<div class="row">
-					<div class="col-sm-6"><p class="ex1"><b>Charging Station</b></p></div>
+		<div class="boxCS">
+			<div class="row">
+				<div class="col-sm-6"><p class="ex1"><b>Charging Station</b></p></div>
 
-					<div class="col-sm-6">
-						<div class="dropdown">
-							<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							CE #
-							</button>
-							<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-								<a class="a1 dropdown-item" href="#" onclick="selectedCE(this)" id="ce-item1">x011</a>
-								<a class="a1 dropdown-item" href="#" onclick="selectedCE(this)" id="ce-item2">x012</a>
-								<a class="a1 dropdown-item" href="#" onclick="selectedCE(this)" id="ce-item3">x013</a>
-							</div>
+				<div class="col-sm-6">
+					<div class="dropdown">
+						<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						CE #
+						</button>
+						<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+							<a class="a1 dropdown-item" href="#" onclick="selectedCE(this)" id="ce-item1">x011</a>
+							<a class="a1 dropdown-item" href="#" onclick="selectedCE(this)" id="ce-item2">x012</a>
+							<a class="a1 dropdown-item" href="#" onclick="selectedCE(this)" id="ce-item3">x013</a>
 						</div>
 					</div>
 				</div>
-				<div id="battery-status">
-					<div style="width: 150px; float:left; height:20px; background:gray; margin:0px">Station status:</div>
-					<div style="width: 150px; float:left; height:20px; background:green; margin:0px; text-align: right;"><img src="icons/free.png" id="charging-icon"></div>
-				</div>
-				<div id="chart3"></div>
 			</div>
+			<div id="battery-status">
+				<div style="width: 150px; float:left; height:20px; background:none; margin:0px">Station status:</div>
+				<div style="width: 150px; float:left; height:20px; background:none; margin:0px; text-align: right;"><img src="icons/free.png" id="charging-icon"></div>
+			</div>
+			<div id="chart3"></div>
 		</div>
 	</div>
 
