@@ -486,8 +486,8 @@ div.dropdown-menu {
 	<div class="box3b">
 		<div class="boxBEB">
 			<div class="row">
-				<div class="col-sm-8"><p class="ex1"><b>BEB Info</b></p></div>
-				<div class="col-sm-6">
+				<div class="col-sm-6"><p class="ex1"><b>BEB Info</b></p></div>
+				<div class="col-sm-6" style="left: 30px;">
 					<select id="bebbutton" class="custom-select" style="width:100px;"></select>
 				</div>
 				<!-- <div class="dropdown">
@@ -501,30 +501,28 @@ div.dropdown-menu {
 					</div>
 				</div> -->
 			</div>
+			<div id="battery-status">
+				<div style="width: 150px; float:left; height:20px; background:none; margin:0px">Battery status:</div>
+				<div style="width: 150px; float:left; height:20px; background:none; margin:0px; text-align:right"> <img src="icons/battery-full.png" id="battery-icon" class="battery-icon"> </div>
+			</div>
+			<div id="chart1"></div>
+			<div id="chart2"></div>
 		</div>
 	</div>
 
 	<div class="box1">
-		<div class="box3">
-			<div class="boxCS">
-				<div class="row">
-					<div class="col-sm-12"><p class="ex1"><b>Charging Station</b></p></div>
-				</div>
-				<div class="row">
-					<div class="col-sm-6">
-						<select id="cebutton" class="custom-select" style="width:200px;"></select>
-					</div>
-
-					<div class="col-sm-6">
-						<span class="badge badge-success">Free</span>
-					</div>
+		<div class="boxCS">
+			<div class="row">
+				<div class="col-sm-4"><p class="ex1"><b>Charging Station</b></p></div>
+				<div class="col-sm-6" style="top: 13px;">
+					<select id="cebutton" class="custom-select" style="width:200px;"></select>
 				</div>
 			</div>
 			<div id="battery-status">
-				<div style="width: 150px; float:left; height:20px; background:none; margin:0px">Station status:</div>
-				<div style="width: 150px; float:left; height:20px; background:none; margin:0px; text-align: right;"><img src="icons/free.png" id="charging-icon"></div>
-			</div>
-			<div id="chart3"></div>
+			<div style="width: 150px; float:left; height:20px; background:none; margin:0px">Station status:</div>
+			<div style="width: 150px; float:left; height:20px; background:none; margin:0px; text-align: right;"><img src="icons/free.png" id="charging-icon"></div>
+		</div>
+		<div id="chart3"></div>
 		</div>
 	</div>
 
@@ -949,20 +947,6 @@ div.dropdown-menu {
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
-
-<script>
-	var map = L.map('map',{maxZoom:14,minZoom:10}).setView([40.7608,-111.8910], 12);
-	L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-		attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-		maxZoom: 18,
-		id: 'mapbox/streets-v11',
-		tileSize: 512,
-		zoomOffset: -1,
-		accessToken: 'pk.eyJ1IjoibHVmZXJvZHJpZ3VleiIsImEiOiJja3RjZ3NhcDUwNXczMnhwaWNsYWoza2g1In0.fKg-OIe61K3QHUHyNmtKaA'
-		}).addTo(map);
-
-		
-</script>
 
 <script type="text/javascript">
 	function selectedBEB(option)
