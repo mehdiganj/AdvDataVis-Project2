@@ -528,12 +528,7 @@ div.dropdown-menu {
 
 </div>
 
-
-
 <script>
-    console.log("hello")
-    //document.getElementById('div_register').style.width= '500px';
-
     const plan = 1;
     var routes = [];
     switch (plan){
@@ -610,18 +605,12 @@ div.dropdown-menu {
             eval( "polyline_" + i + ".addTo(map);" );
             eval( "polyline_" + i + ".bindPopup(\"" + lineName +"\");" );
 
-            //eval( "polyline_" + i + ".on('mouseover', function(){ polyline_"+i+".setStyle({ color: \"red\", opacity: 0.8, weight: 5 }); });" );
-            //eval( "polyline_" + i + ".on('mouseout', function(){ polyline_"+i+".setStyle({ color: \"red\", opacity: 0.3, weight: 5 }); });" );
-
-			//eval( "polyline_" + i + ".on('popupopen', function(e){ popupIsVisible = true; e.target.setStyle( {color: \"red\", opacity: 1, weight: 10}); });" );
-			//eval( "polyline_" + i + ".on('popupclose', function(e){ popupIsVisible = false; e.target.setStyle({color: \"red\", opacity: 0.3, weight: 5}); });" );
-
 			eval( "polyline_" + i + ".on('click', function(){ polyline_"+i+".setStyle({ color: \"red\", opacity: 1, weight: 10 }); });" );
 			eval( "polyline_" + i + ".on('popupclose', function(e){ e.target.setStyle({color: \"red\", opacity: 0.6, weight: 5}); });" );
         }
-
     });
 </script>
+
 
 <script>
 	var divWidth = document.getElementById("chart1").clientWidth;
@@ -790,10 +779,33 @@ div.dropdown-menu {
 			.attr("transform", "rotate(-90)")
 			.text("Energy cons.");
 	})
-	console.log("hello")
-    d3.json("/test_json/NewRoutes_def.json", function(data1) {
-        console.log(data1);
-    });
+
+	d3.select("#bebbutton").on("change", function(d){
+		selectedBEB = this.value
+		var x = Math.random();
+		if (x<0.33){
+			document.getElementById("battery-icon").src = "icons/battery-red.png";
+		}
+		else{
+			if (x>=0.33 && x<0.67){
+				document.getElementById("battery-icon").src = "icons/battery-yellow.png";
+			}
+			else{
+				document.getElementById("battery-icon").src = "icons/battery-green.png";
+			}
+		}
+	}) 
+	
+	d3.select("#cebutton").on("change", function(d){
+		selectedCE = this.value
+		var x = Math.random();
+		if (x<0.2){
+			document.getElementById("charging-icon").src = "icons/in-use.png";
+		}
+		else{
+			document.getElementById("charging-icon").src = "icons/free.png";	
+		}
+	}) 
 </script>
 
 
@@ -911,32 +923,124 @@ div.dropdown-menu {
 	}
 
 
-		function delete_table() {
+	function delete_table() {
+		//clears all the guardians with the specified id
+		document.getElementById("beb_table").innerHTML =
+			null;
+	}
+
+	function delete_beb() {
 			//clears all the guardians with the specified id
-			document.getElementById("beb_table").innerHTML =
+			document.getElementById("bebbutton").innerHTML =
 				null;
 		}
 
-		function delete_beb() {
-                //clears all the guardians with the specified id
-                document.getElementById("bebbutton").innerHTML =
-                    null;
-            }
+	function delete_ce() {
+			//clears all the guardians with the specified id
+			document.getElementById("cebutton").innerHTML =
+				null;
+		}
 
-		function delete_ce() {
-                //clears all the guardians with the specified id
-                document.getElementById("cebutton").innerHTML =
-                    null;
-            }
-  
-	  d3.select("#plansbutton").on("change", function(d){
-	  selectedGroup = this.value
-	  delete_beb()
-	  delete_ce()
-	  delete_table()
-	   updatelists(selectedGroup)
-	   updatece(selectedGroup)
-	   updatetable(selectedGroup)
+	function delete_map() {
+		if (map != undefined) {
+			map.remove(); 
+		}
+	}
+
+	function updatemap(plan){
+		// insert the map
+		var routes = [];
+		switch (plan){
+			case 'Plan1':
+				routes = [33, 35, 39, 41, 45, 47, 240];
+				break;
+			case 'Plan2':
+				routes = [2, 6, 11, 33, 35, 39, 41, 45, 47, 200, 205, 209, 227, 232, 240, 248, 500, 509, 513, 516, 520];
+				break;
+			case 'Plan3':
+				routes = [2,6,9,11,17,21,33,35,39,41,45,47,62,72,200,201,205,209,213,217,218,220,227,232,240,248,307,313,320,354,461,470,471,500,509,513,516,519,520,526,606,608,612,616,625,626,627,640,650,664,665,807,830,838,850,862,920];
+				break;
+			default:
+				routes = [2];
+				break;
+		}
+
+		map = L.map('map',{maxZoom:30,minZoom:10}).setView([40.7608,-111.8910], 12);
+		L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+			attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+			maxZoom: 18,
+			id: 'mapbox/streets-v11',
+			tileSize: 512,
+			zoomOffset: -1,
+			accessToken: 'pk.eyJ1IjoibHVmZXJvZHJpZ3VleiIsImEiOiJja3RjZ3NhcDUwNXczMnhwaWNsYWoza2g1In0.fKg-OIe61K3QHUHyNmtKaA'
+			}).addTo(map);
+		
+
+		d3.json("/routes/NewRoutes_def.json", function(data) {
+
+			for (let i = 0 ; i < routes.length ; i++ ) {
+				var q = 0;
+				var posFinal = [0,0];
+				var lineName ;
+				for (let k = 0 ; k < data.length ; k++) {
+					if (data[k].LineAbbr == routes[i]) {
+						eval( "var point_" + i + "_" + q + " = new L.LatLng(" + data[k].latA + "," + data[k].longA + ");" );
+						posFinal = [data[k].latB,data[k].longB]
+						lineName = data[k].LineName;
+						q++;
+					}
+				}
+				eval( "var point_" + i + "_" + q + " = new L.LatLng(" + posFinal[0] + "," + posFinal[1] + ");" );
+				var auxString = "var pointList_" + i +" = [" ;
+
+				for (let p = 0 ; p < q ; p++){
+					auxString = auxString +  "point_" + i + "_" + p + ",";
+				}
+				auxString = auxString + "point_" + i + "_" + q + "]";
+
+				// add the charging station icon
+				var chargingStationIcon = L.icon({
+					iconUrl: 'icons/charging-station.png',
+					iconSize: [26, 44],
+					iconAnchor: [13, 44],
+					popupAnchor: [0, -44]
+				});
+
+				eval( "var stationA_" + i + " = L.marker([point_" + i + "_0.lat" + ",point_" + i + "_0.lng], {icon: chargingStationIcon}).addTo(map).bindPopup(\"I am a charging station.\"); ");
+				eval( "var stationB_" + i + " = L.marker([point_" + i + "_" + q + ".lat" + ",point_" + i + "_" + q + ".lng], {icon: chargingStationIcon}).addTo(map).bindPopup(\"I am a charging station.\"); ");
+
+				// add the bus icon
+				var busIcon = L.icon({
+					iconUrl: 'icons/bus-icon.png',
+					iconSize: [18.56, 20],
+					iconAnchor: [9.28, 20],
+					popupAnchor: [0, -20]
+				});
+
+				aux = Math.round( (0.1 + Math.random()*.8) * q)
+				eval( "var busLoc_" + i + " = L.marker([point_" + i + "_" + aux + ".lat" + ",point_" + i + "_" + aux + ".lng], {icon: busIcon}).addTo(map).bindPopup(\"" + lineName + "<br>SOC: \"); ");
+
+				eval( auxString );
+				eval( "var polyline_" + i + " = new L.Polyline(pointList_" + i +", {color: 'red',weight: 5,opacity: 0.6,smoothFactor: 1}); " ) ;
+				eval( "polyline_" + i + ".addTo(map);" );
+				eval( "polyline_" + i + ".bindPopup(\"" + lineName +"\");" );
+
+				eval( "polyline_" + i + ".on('click', function(){ polyline_"+i+".setStyle({ color: \"red\", opacity: 1, weight: 10 }); });" );
+				eval( "polyline_" + i + ".on('popupclose', function(e){ e.target.setStyle({color: \"red\", opacity: 0.6, weight: 5}); });" );
+			}
+		});
+	}
+
+	d3.select("#plansbutton").on("change", function(d){
+		selectedGroup = this.value
+		delete_beb()
+		delete_ce()
+		delete_table()
+		delete_map()
+		updatelists(selectedGroup)
+		updatece(selectedGroup)
+		updatetable(selectedGroup)
+		updatemap(selectedGroup)
 	})    
 		  
 	});
@@ -948,33 +1052,6 @@ div.dropdown-menu {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
 
-<script type="text/javascript">
-	function selectedBEB(option)
-	{
-		if (option.id == "beb-item1"){
-			document.getElementById("battery-icon").src = "icons/battery-green.png";
-		}
-		if (option.id == "beb-item2"){
-			document.getElementById("battery-icon").src = "icons/battery-yellow.png";
-		}
-		if (option.id == "beb-item3"){
-			document.getElementById("battery-icon").src = "icons/battery-red.png";
-		}
-	}
-
-	function selectedCE(option)
-	{
-		if (option.id == "ce-item1"){
-			document.getElementById("charging-icon").src = "icons/free.png";
-		}
-		if (option.id == "ce-item2"){
-			document.getElementById("charging-icon").src = "icons/in-use.png";
-		}
-		if (option.id == "ce-item3"){
-			document.getElementById("charging-icon").src = "icons/in-use.png";
-		}
-	}
-	</script>
 	
 
 </body>
