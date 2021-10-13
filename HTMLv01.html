@@ -529,7 +529,7 @@ div.dropdown-menu {
 </div>
 
 <script>
-    const plan = 1;
+    const plan = 3;
     var routes = [];
     switch (plan){
         case 0:
@@ -547,7 +547,7 @@ div.dropdown-menu {
     }
 
     var map = L.map('map',{maxZoom:30,minZoom:10}).setView([40.7608,-111.8910], 12);
-            L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
             attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
             maxZoom: 18,
             id: 'mapbox/streets-v11',
@@ -556,7 +556,30 @@ div.dropdown-menu {
             accessToken: 'pk.eyJ1IjoibHVmZXJvZHJpZ3VleiIsImEiOiJja3RjZ3NhcDUwNXczMnhwaWNsYWoza2g1In0.fKg-OIe61K3QHUHyNmtKaA'
             }).addTo(map);
 
-    d3.json("/routes/NewRoutes_def.json", function(data) {
+
+
+
+	d3.queue()
+		.defer(d3.json, "/routes/NewRoutes_def.json")
+		.defer(d3.json, "/dataset/charging_stations.json")
+		.await(function(error, data, ce_data) {
+		if (error) throw error;
+
+		// add the charging station icon
+		var chargingStationIcon = L.icon({
+			iconUrl: 'icons/charging-station.png',
+			iconSize: [26, 44],
+			iconAnchor: [13, 44],
+			popupAnchor: [0, -44]
+		});
+
+		// add the bus icon
+		var busIcon = L.icon({
+			iconUrl: 'icons/bus-icon.png',
+			iconSize: [18.56, 20],
+			iconAnchor: [9.28, 20],
+			popupAnchor: [0, -20]
+		});
 
         for (let i = 0 ; i < routes.length ; i++ ) {
             var q = 0;
@@ -578,25 +601,6 @@ div.dropdown-menu {
             }
             auxString = auxString + "point_" + i + "_" + q + "]";
 
-            // add the charging station icon
-            var chargingStationIcon = L.icon({
-                iconUrl: 'icons/charging-station.png',
-                iconSize: [26, 44],
-                iconAnchor: [13, 44],
-                popupAnchor: [0, -44]
-            });
-
-            eval( "var stationA_" + i + " = L.marker([point_" + i + "_0.lat" + ",point_" + i + "_0.lng], {icon: chargingStationIcon}).addTo(map).bindPopup(\"I am a charging station.\"); ");
-            eval( "var stationB_" + i + " = L.marker([point_" + i + "_" + q + ".lat" + ",point_" + i + "_" + q + ".lng], {icon: chargingStationIcon}).addTo(map).bindPopup(\"I am a charging station.\"); ");
-
-            // add the bus icon
-            var busIcon = L.icon({
-                iconUrl: 'icons/bus-icon.png',
-                iconSize: [18.56, 20],
-                iconAnchor: [9.28, 20],
-                popupAnchor: [0, -20]
-            });
-
             aux = Math.round( (0.1 + Math.random()*.8) * q)
             eval( "var busLoc_" + i + " = L.marker([point_" + i + "_" + aux + ".lat" + ",point_" + i + "_" + aux + ".lng], {icon: busIcon}).addTo(map).bindPopup(\"" + lineName + "<br>SOC: \"); ");
 
@@ -608,6 +612,12 @@ div.dropdown-menu {
 			eval( "polyline_" + i + ".on('click', function(){ polyline_"+i+".setStyle({ color: \"red\", opacity: 1, weight: 10 }); });" );
 			eval( "polyline_" + i + ".on('popupclose', function(e){ e.target.setStyle({color: \"red\", opacity: 0.6, weight: 5}); });" );
         }
+		// locate the charging stations
+		for (let k = 0; k < eval("ce_data.Plan" + plan + ".Name.length") ; k++){
+			alert("var station_" + k + " = L.marker([ce_data.Plan"+ plan +".Latitude["+ k + "], ce_data.Plan" + plan +".Longitude[" + k + "]], {icon: chargingStationIcon}).addTo(map).bindPopup(ce_data.Plan" + plan + ".Name[" + k + "]); ")
+			eval( "var station_" + k + " = L.marker([ce_data.Plan"+ plan +".Latitude["+ k + "], ce_data.Plan" + plan +".Longitude[" + k + "]], {icon: chargingStationIcon}).addTo(map).bindPopup(ce_data.Plan" + plan + ".Name[" + k + "]); ");
+		}
+		
     });
 </script>
 
@@ -873,162 +883,170 @@ div.dropdown-menu {
 			.attr("value", function (d) { return d; }) // corresponding value returned by the button
 	  		};
 
-	function tabulate(data, columns) {
-		var table = d3.select('#beb_table')
-		var thead = table.append('thead')
-		var	tbody = table.append('tbody');
-		const m_column = ['BEB #', 'SoC %', 'Mileage', 'Route', 'Status']
+		function tabulate(data, columns) {
+			var table = d3.select('#beb_table')
+			var thead = table.append('thead')
+			var	tbody = table.append('tbody');
+			const m_column = ['BEB #', 'SoC %', 'Mileage', 'Route', 'Status']
 
-		// append the header row
-		thead.append('tr')
-		.selectAll('th')
-		.data(columns).enter()
-		.append('th')
-			.text(function (column) { return column; });
+			// append the header row
+			thead.append('tr')
+			.selectAll('th')
+			.data(columns).enter()
+			.append('th')
+				.text(function (column) { return column; });
 
-		// create a row for each object in the data
-		var rows = tbody.selectAll('tr')
-		.data(data)
-		.enter()
-		.append('tr');
+			// create a row for each object in the data
+			var rows = tbody.selectAll('tr')
+			.data(data)
+			.enter()
+			.append('tr');
 
-		// create a cell in each row for each column
-		var cells = rows.selectAll('td')
-		.data(function (row) {
-			return columns.map(function (column) {
-			return {column: column, value: row[column]};
-			});
-		})
-		.enter()
-		.append('td')
-			.text(function (d) { return d.value; });
-
-	return table;
-	}
-
-	// Initialize the table
-	tabulate(data1, ['BEB', 'SoC', 'Mileage', 'Route', 'Location']); // 2 column table
-
-
-	function updatetable(plan) {
-		if (plan == "Plan1"){
-			tabulate(data1, ['BEB', 'SoC', 'Mileage', 'Route', 'Location']);
-		}
-		if (plan == "Plan2"){
-			tabulate(data2, ['BEB', 'SoC', 'Mileage', 'Route', 'Location']);
-		}
-		if (plan == "Plan3"){
-			tabulate(data3, ['BEB', 'SoC', 'Mileage', 'Route', 'Location']);
-		}
-	}
-
-
-	function delete_table() {
-		//clears all the guardians with the specified id
-		document.getElementById("beb_table").innerHTML =
-			null;
-	}
-
-	function delete_beb() {
-			//clears all the guardians with the specified id
-			document.getElementById("bebbutton").innerHTML =
-				null;
-		}
-
-	function delete_ce() {
-			//clears all the guardians with the specified id
-			document.getElementById("cebutton").innerHTML =
-				null;
-		}
-
-	function delete_map() {
-		if (map != undefined) {
-			map.remove(); 
-		}
-	}
-
-	function updatemap(plan){
-		// insert the map
-		var routes = [];
-		switch (plan){
-			case 'Plan1':
-				routes = [33, 35, 39, 41, 45, 47, 240];
-				break;
-			case 'Plan2':
-				routes = [2, 6, 11, 33, 35, 39, 41, 45, 47, 200, 205, 209, 227, 232, 240, 248, 500, 509, 513, 516, 520];
-				break;
-			case 'Plan3':
-				routes = [2,6,9,11,17,21,33,35,39,41,45,47,62,72,200,201,205,209,213,217,218,220,227,232,240,248,307,313,320,354,461,470,471,500,509,513,516,519,520,526,606,608,612,616,625,626,627,640,650,664,665,807,830,838,850,862,920];
-				break;
-			default:
-				routes = [2];
-				break;
-		}
-
-		map = L.map('map',{maxZoom:30,minZoom:10}).setView([40.7608,-111.8910], 12);
-		L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-			attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-			maxZoom: 18,
-			id: 'mapbox/streets-v11',
-			tileSize: 512,
-			zoomOffset: -1,
-			accessToken: 'pk.eyJ1IjoibHVmZXJvZHJpZ3VleiIsImEiOiJja3RjZ3NhcDUwNXczMnhwaWNsYWoza2g1In0.fKg-OIe61K3QHUHyNmtKaA'
-			}).addTo(map);
-		
-
-		d3.json("/routes/NewRoutes_def.json", function(data) {
-
-			for (let i = 0 ; i < routes.length ; i++ ) {
-				var q = 0;
-				var posFinal = [0,0];
-				var lineName ;
-				for (let k = 0 ; k < data.length ; k++) {
-					if (data[k].LineAbbr == routes[i]) {
-						eval( "var point_" + i + "_" + q + " = new L.LatLng(" + data[k].latA + "," + data[k].longA + ");" );
-						posFinal = [data[k].latB,data[k].longB]
-						lineName = data[k].LineName;
-						q++;
-					}
-				}
-				eval( "var point_" + i + "_" + q + " = new L.LatLng(" + posFinal[0] + "," + posFinal[1] + ");" );
-				var auxString = "var pointList_" + i +" = [" ;
-
-				for (let p = 0 ; p < q ; p++){
-					auxString = auxString +  "point_" + i + "_" + p + ",";
-				}
-				auxString = auxString + "point_" + i + "_" + q + "]";
-
-				// add the charging station icon
-				var chargingStationIcon = L.icon({
-					iconUrl: 'icons/charging-station.png',
-					iconSize: [26, 44],
-					iconAnchor: [13, 44],
-					popupAnchor: [0, -44]
+			// create a cell in each row for each column
+			var cells = rows.selectAll('td')
+			.data(function (row) {
+				return columns.map(function (column) {
+				return {column: column, value: row[column]};
 				});
+			})
+			.enter()
+			.append('td')
+				.text(function (d) { return d.value; });
 
-				eval( "var stationA_" + i + " = L.marker([point_" + i + "_0.lat" + ",point_" + i + "_0.lng], {icon: chargingStationIcon}).addTo(map).bindPopup(\"I am a charging station.\"); ");
-				eval( "var stationB_" + i + " = L.marker([point_" + i + "_" + q + ".lat" + ",point_" + i + "_" + q + ".lng], {icon: chargingStationIcon}).addTo(map).bindPopup(\"I am a charging station.\"); ");
+		return table;
+		}
 
-				// add the bus icon
-				var busIcon = L.icon({
-					iconUrl: 'icons/bus-icon.png',
-					iconSize: [18.56, 20],
-					iconAnchor: [9.28, 20],
-					popupAnchor: [0, -20]
-				});
+		// Initialize the table
+		tabulate(data1, ['BEB', 'SoC', 'Mileage', 'Route', 'Location']); // 2 column table
 
-				aux = Math.round( (0.1 + Math.random()*.8) * q)
-				eval( "var busLoc_" + i + " = L.marker([point_" + i + "_" + aux + ".lat" + ",point_" + i + "_" + aux + ".lng], {icon: busIcon}).addTo(map).bindPopup(\"" + lineName + "<br>SOC: \"); ");
 
-				eval( auxString );
-				eval( "var polyline_" + i + " = new L.Polyline(pointList_" + i +", {color: 'red',weight: 5,opacity: 0.6,smoothFactor: 1}); " ) ;
-				eval( "polyline_" + i + ".addTo(map);" );
-				eval( "polyline_" + i + ".bindPopup(\"" + lineName +"\");" );
-
-				eval( "polyline_" + i + ".on('click', function(){ polyline_"+i+".setStyle({ color: \"red\", opacity: 1, weight: 10 }); });" );
-				eval( "polyline_" + i + ".on('popupclose', function(e){ e.target.setStyle({color: \"red\", opacity: 0.6, weight: 5}); });" );
+		function updatetable(plan) {
+			if (plan == "Plan1"){
+				tabulate(data1, ['BEB', 'SoC', 'Mileage', 'Route', 'Location']);
 			}
-		});
+			if (plan == "Plan2"){
+				tabulate(data2, ['BEB', 'SoC', 'Mileage', 'Route', 'Location']);
+			}
+			if (plan == "Plan3"){
+				tabulate(data3, ['BEB', 'SoC', 'Mileage', 'Route', 'Location']);
+			}
+		}
+
+
+		function delete_table() {
+			//clears all the guardians with the specified id
+			document.getElementById("beb_table").innerHTML =
+				null;
+		}
+
+		function delete_beb() {
+				//clears all the guardians with the specified id
+				document.getElementById("bebbutton").innerHTML =
+					null;
+			}
+
+		function delete_ce() {
+				//clears all the guardians with the specified id
+				document.getElementById("cebutton").innerHTML =
+					null;
+			}
+
+		function delete_map() {
+			if (map != undefined) {
+				map.remove(); 
+			}
+		}
+
+		function updatemap(plan){
+			// insert the map
+			var routes = [];
+			switch (plan){
+				case 'Plan1':
+					routes = [33, 35, 39, 41, 45, 47, 240];
+					break;
+				case 'Plan2':
+					routes = [2, 6, 11, 33, 35, 39, 41, 45, 47, 200, 205, 209, 227, 232, 240, 248, 500, 509, 513, 516, 520];
+					break;
+				case 'Plan3':
+					routes = [2,6,9,11,17,21,33,35,39,41,45,47,62,72,200,201,205,209,213,217,218,220,227,232,240,248,307,313,320,354,461,470,471,500,509,513,516,519,520,526,606,608,612,616,625,626,627,640,650,664,665,807,830,838,850,862,920];
+					break;
+				default:
+					routes = [2];
+					break;
+			}
+
+			map = L.map('map',{maxZoom:30,minZoom:10}).setView([40.7608,-111.8910], 12);
+			L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+				attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+				maxZoom: 18,
+				id: 'mapbox/streets-v11',
+				tileSize: 512,
+				zoomOffset: -1,
+				accessToken: 'pk.eyJ1IjoibHVmZXJvZHJpZ3VleiIsImEiOiJja3RjZ3NhcDUwNXczMnhwaWNsYWoza2g1In0.fKg-OIe61K3QHUHyNmtKaA'
+				}).addTo(map);
+			
+
+				d3.queue()
+					.defer(d3.json, "/routes/NewRoutes_def.json")
+					.defer(d3.json, "/dataset/charging_stations.json")
+					.await(function(error, data, ce_data) {
+					if (error) throw error;
+
+					// add the charging station icon
+					var chargingStationIcon = L.icon({
+						iconUrl: 'icons/charging-station.png',
+						iconSize: [26, 44],
+						iconAnchor: [13, 44],
+						popupAnchor: [0, -44]
+					});
+
+					// add the bus icon
+					var busIcon = L.icon({
+						iconUrl: 'icons/bus-icon.png',
+						iconSize: [18.56, 20],
+						iconAnchor: [9.28, 20],
+						popupAnchor: [0, -20]
+					});
+
+					for (let i = 0 ; i < routes.length ; i++ ) {
+						var q = 0;
+						var posFinal = [0,0];
+						var lineName ;
+						for (let k = 0 ; k < data.length ; k++) {
+							if (data[k].LineAbbr == routes[i]) {
+								eval( "var point_" + i + "_" + q + " = new L.LatLng(" + data[k].latA + "," + data[k].longA + ");" );
+								posFinal = [data[k].latB,data[k].longB]
+								lineName = data[k].LineName;
+								q++;
+							}
+						}
+						eval( "var point_" + i + "_" + q + " = new L.LatLng(" + posFinal[0] + "," + posFinal[1] + ");" );
+						var auxString = "var pointList_" + i +" = [" ;
+
+						for (let p = 0 ; p < q ; p++){
+							auxString = auxString +  "point_" + i + "_" + p + ",";
+						}
+						auxString = auxString + "point_" + i + "_" + q + "]";
+
+						aux = Math.round( (0.1 + Math.random()*.8) * q)
+						eval( "var busLoc_" + i + " = L.marker([point_" + i + "_" + aux + ".lat" + ",point_" + i + "_" + aux + ".lng], {icon: busIcon}).addTo(map).bindPopup(\"" + lineName + "<br>SOC: \"); ");
+
+						eval( auxString );
+						eval( "var polyline_" + i + " = new L.Polyline(pointList_" + i +", {color: 'red',weight: 5,opacity: 0.6,smoothFactor: 1}); " ) ;
+						eval( "polyline_" + i + ".addTo(map);" );
+						eval( "polyline_" + i + ".bindPopup(\"" + lineName +"\");" );
+
+						eval( "polyline_" + i + ".on('click', function(){ polyline_"+i+".setStyle({ color: \"red\", opacity: 1, weight: 10 }); });" );
+						eval( "polyline_" + i + ".on('popupclose', function(e){ e.target.setStyle({color: \"red\", opacity: 0.6, weight: 5}); });" );
+					}
+					// locate the charging stations
+					alert(eval("ce_data.Plan" + plan + ".Name.length"))
+					for (let k = 0; k < eval("ce_data.Plan" + plan + ".Name.length") ; k++){
+						alert("var station_" + k + " = L.marker([ce_data.Plan"+ plan +".Latitude["+ k + "], ce_data.Plan" + plan +".Longitude[" + k + "]], {icon: chargingStationIcon}).addTo(map).bindPopup(ce_data.Plan" + plan + ".Name[" + k + "]); ")
+						eval( "var station_" + k + " = L.marker([ce_data.Plan"+ plan +".Latitude["+ k + "], ce_data.Plan" + plan +".Longitude[" + k + "]], {icon: chargingStationIcon}).addTo(map).bindPopup(ce_data.Plan" + plan + ".Name[" + k + "]); ");
+					}
+				
+				});
 	}
 
 	d3.select("#plansbutton").on("change", function(d){
