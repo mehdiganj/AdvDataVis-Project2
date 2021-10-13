@@ -822,6 +822,28 @@ div.dropdown-menu {
 				eval( "var station_" + k + " = L.marker([ce_data2.Plan"+ plan +".Latitude["+ k + "], ce_data2.Plan" + plan +".Longitude[" + k + "]], {icon: chargingStationIcon}).addTo(map).bindPopup(ce_data2.Plan" + plan + ".Name[" + k + "]); ");
 			}
 
+			map.on('zoomend', function() {
+				var currentZoom = map.getZoom();
+				var zoomedBusIcon = new L.Icon({
+					iconUrl: 'icons/bus-icon.png',
+					iconSize: [18.56*(1 + (currentZoom-12)/5), 20*(1 + (currentZoom-12)/5)],
+					iconAnchor: [9.28*(1 + (currentZoom-12)/5), 20*(1 + (currentZoom-12)/5)],
+					popupAnchor: [0, -20*(1 + (currentZoom-12)/5)]
+				});
+				var zoomedCharging = new L.Icon({
+					iconUrl: 'icons/charging-station.png',
+					iconSize: [26*(1 + (currentZoom-12)/5), 44*(1 + (currentZoom-12)/5)],
+					iconAnchor: [13*(1 + (currentZoom-12)/5), 44*(1 + (currentZoom-12)/5)],
+					popupAnchor: [0, -44*(1 + (currentZoom-12)/5)]
+				});
+				for( let r = 0 ; r < routes.length ; r++ ){
+					eval( "busLoc_" + r + ".setIcon(zoomedBusIcon);" );
+				}
+				for( let t = 0 ; t < eval("ce_data2.Plan" + plan + ".Name.length") ; t++ ){
+					eval( "station_" + t + ".setIcon(zoomedCharging);" );
+				}
+			});
+
 			// add the plan options to the button
 			d3.select("#plansbutton")
 				.selectAll('myOptions')
@@ -1022,11 +1044,31 @@ div.dropdown-menu {
 				eval( "polyline_" + i + ".on('popupclose', function(e){ e.target.setStyle({color: \"red\", opacity: 0.6, weight: 5}); });" );
 			}
 			// locate the charging stations
-			alert( "ce_data2." + plan + ".Name.length" )
 			for (let k = 0; k < eval("ce_data2." + plan + ".Name.length") ; k++){
 				alert("var station_" + k + " = L.marker([ce_data2."+ plan +".Latitude["+ k + "], ce_data2." + plan +".Longitude[" + k + "]], {icon: chargingStationIcon}).addTo(map).bindPopup(ce_data2." + plan + ".Name[" + k + "]); ")
 				eval( "var station_" + k + " = L.marker([ce_data2."+ plan +".Latitude["+ k + "], ce_data2." + plan +".Longitude[" + k + "]], {icon: chargingStationIcon}).addTo(map).bindPopup(ce_data2." + plan + ".Name[" + k + "]); ");
 			}
+			map.on('zoomend', function() {
+				var currentZoom = map.getZoom();
+				var zoomedBusIcon = new L.Icon({
+					iconUrl: 'icons/bus-icon.png',
+					iconSize: [18.56*(1 + (currentZoom-12)/5), 20*(1 + (currentZoom-12)/5)],
+					iconAnchor: [9.28*(1 + (currentZoom-12)/5), 20*(1 + (currentZoom-12)/5)],
+					popupAnchor: [0, -20*(1 + (currentZoom-12)/5)]
+				});
+				var zoomedCharging = new L.Icon({
+					iconUrl: 'icons/charging-station.png',
+					iconSize: [26*(1 + (currentZoom-12)/5), 44*(1 + (currentZoom-12)/5)],
+					iconAnchor: [13*(1 + (currentZoom-12)/5), 44*(1 + (currentZoom-12)/5)],
+					popupAnchor: [0, -44*(1 + (currentZoom-12)/5)]
+				});
+				for( let r = 0 ; r < routes.length ; r++ ){
+					eval( "busLoc_" + r + ".setIcon(zoomedBusIcon);" );
+				}
+				for( let t = 0 ; t < eval("ce_data2." + plan + ".Name.length") ; t++ ){
+					eval( "station_" + t + ".setIcon(zoomedCharging);" );
+				}
+			});
 				
 	}
 
