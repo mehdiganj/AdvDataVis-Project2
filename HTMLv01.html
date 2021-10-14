@@ -994,6 +994,7 @@ div.dropdown-menu {
 			for (let k = 0; k < eval("ce_data2." + plan + ".Name.length") ; k++){
 				eval( "var station_" + k + " = L.marker([ce_data2."+ plan +".Latitude["+ k + "], ce_data2." + plan +".Longitude[" + k + "]], {icon: chargingStationIcon}).addTo(map).bindPopup(ce_data2." + plan + ".Name[" + k + "]); ");
 			}
+
 			map.on('zoomend', function() {
 				var currentZoom = map.getZoom();
 				var zoomedBusIcon = new L.Icon({
@@ -1141,6 +1142,33 @@ div.dropdown-menu {
 		updatemap(selectedGroup)
 		updateChartsByPlan(selectedGroup)
 	})    
+
+	d3.select("#bebbutton").on("change", function(d){
+		selectedBEB = this.value
+		var x = Math.random();
+		if (x<0.33){
+			document.getElementById("battery-icon").src = "icons/battery-red.png";
+		}
+		else{
+			if (x>=0.33 && x<0.67){
+				document.getElementById("battery-icon").src = "icons/battery-yellow.png";
+			}
+			else{
+				document.getElementById("battery-icon").src = "icons/battery-green.png";
+			}
+		}
+	}) 
+	
+	d3.select("#cebutton").on("change", function(d){
+		selectedCE = this.value
+		var x = Math.random();
+		if (x<0.2){
+			document.getElementById("charging-icon").src = "icons/in-use.png";
+		}
+		else{
+			document.getElementById("charging-icon").src = "icons/free.png";	
+		}
+	}) 
 		  
 	});
 
