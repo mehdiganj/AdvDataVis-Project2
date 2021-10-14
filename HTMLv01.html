@@ -728,6 +728,45 @@ div.dropdown-menu {
 				.attr("transform", "rotate(-90)")
 				.text("SOC");
 
+			//let xaxis = d3.axisBottom(x);
+			svg2.append("g")
+				.attr("transform", "translate(0," + height + ")")
+				.call(xaxis);
+			// Add Y axis
+			var y2 = d3.scaleLinear()
+				.domain([0, 50])
+				.range([ height, 0 ]);
+			let y2axis = d3.axisLeft(y2);
+			y2axis.ticks(5);
+			svg2.append("g")
+				.call(y2axis);
+
+			// Add the line
+			svg2.append("path")
+				.datum(dataMileage)
+				.attr("fill", "none")
+				.attr("stroke", "steelblue")
+				.attr("stroke-width", 1.5)
+				.attr("d", d3.line()
+					.x(d => x(d.x) )
+					.y(d => y2(d.y) )
+					);
+			
+			svg2.append("text")
+				.attr("class", "x label")
+				.attr("text-anchor", "end")
+				.attr("x", width/2)
+				.attr("y", height+30)
+				.text("Time");
+
+			svg2.append("text")
+				.attr("class", "y label")
+				.attr("text-anchor", "end")
+				.attr("x", -height/2+20)
+				.attr("y", -30)
+				.attr("transform", "rotate(-90)")
+				.text("Mileage");
+
 			
 
 			map.on('zoomend', function() {
@@ -953,7 +992,6 @@ div.dropdown-menu {
 			}
 			// locate the charging stations
 			for (let k = 0; k < eval("ce_data2." + plan + ".Name.length") ; k++){
-				alert("var station_" + k + " = L.marker([ce_data2."+ plan +".Latitude["+ k + "], ce_data2." + plan +".Longitude[" + k + "]], {icon: chargingStationIcon}).addTo(map).bindPopup(ce_data2." + plan + ".Name[" + k + "]); ")
 				eval( "var station_" + k + " = L.marker([ce_data2."+ plan +".Latitude["+ k + "], ce_data2." + plan +".Longitude[" + k + "]], {icon: chargingStationIcon}).addTo(map).bindPopup(ce_data2." + plan + ".Name[" + k + "]); ");
 			}
 			map.on('zoomend', function() {
@@ -978,7 +1016,117 @@ div.dropdown-menu {
 				}
 			});
 				
-	}
+		}
+
+		function updateChartsByPlan(plan){
+			busNumbers = Object.keys( finalBEBdata[plan] );
+			times = Object.keys(finalBEBdata[plan][busNumbers[0]]);
+			SoC = [];
+			mileage = [];
+
+			auxData1 = "dataSoC = [";
+			auxData2 = "dataMileage = [";
+			for (let i=0 ; i<times.length ; i++){
+				SoC.push( finalBEBdata[plan][busNumbers[0]][times[i]]["SoC"] );
+				mileage.push( finalBEBdata[plan][busNumbers[0]][times[i]]["Mileage"] );
+
+				auxData1 = auxData1 + "{ x: " + times[i] + ",   y: " + SoC[i] + " },\n";
+				auxData2 = auxData2 + "{ x: " + times[i] + ",   y: " + mileage[i] + " },\n";
+			}
+			auxData1 = auxData1 + "];";
+			auxData2 = auxData2 + "];";
+			eval(auxData1);
+			eval(auxData2);
+
+			// Add X axis --> it is a date format
+			var x = d3.scaleLinear()
+				.domain([0,24])
+				.range([ 0, width ]);
+			let xaxis = d3.axisBottom(x);
+			svg1.append("g")
+				.attr("transform", "translate(0," + height + ")")
+				.call(xaxis);
+
+			// Add Y axis
+			var y1 = d3.scaleLinear()
+				.domain([0, 100])
+				.range([ height, 0 ]);
+			let yaxis = d3.axisLeft(y1);
+			yaxis.ticks(5);
+			svg1.append("g")
+				.call(yaxis);
+
+			// Add the line
+			svg1.append("path")
+				.datum(dataSoC)
+				.attr("fill", "none")
+				.attr("stroke", "steelblue")
+				.attr("stroke-width", 1.5)
+				.attr("d", d3.line()
+					.x(d => x(d.x) )
+					.y(d => y1(d.y) )
+					);
+
+			svg1.append("text")
+				.attr("class", "x label")
+				.attr("text-anchor", "end")
+				.attr("x", width/2)
+				.attr("y", height+30)
+				.text("Time");
+
+			svg1.append("text")
+				.attr("class", "y label")
+				.attr("text-anchor", "end")
+				.attr("x", -height/2+10)
+				.attr("y", -30)
+				//.attr("dy", ".75em")
+				.attr("transform", "rotate(-90)")
+				.text("SOC");
+
+			//let xaxis = d3.axisBottom(x);
+			svg2.append("g")
+				.attr("transform", "translate(0," + height + ")")
+				.call(xaxis);
+			// Add Y axis
+			var y2 = d3.scaleLinear()
+				.domain([0, 50])
+				.range([ height, 0 ]);
+			let y2axis = d3.axisLeft(y2);
+			y2axis.ticks(5);
+			svg2.append("g")
+				.call(y2axis);
+
+			// Add the line
+			svg2.append("path")
+				.datum(dataMileage)
+				.attr("fill", "none")
+				.attr("stroke", "steelblue")
+				.attr("stroke-width", 1.5)
+				.attr("d", d3.line()
+					.x(d => x(d.x) )
+					.y(d => y2(d.y) )
+					);
+			
+			svg2.append("text")
+				.attr("class", "x label")
+				.attr("text-anchor", "end")
+				.attr("x", width/2)
+				.attr("y", height+30)
+				.text("Time");
+
+			svg2.append("text")
+				.attr("class", "y label")
+				.attr("text-anchor", "end")
+				.attr("x", -height/2+20)
+				.attr("y", -30)
+				.attr("transform", "rotate(-90)")
+				.text("Mileage");
+		}
+
+		function delete_charts(){
+			svg1.selectAll("*").remove();
+			svg2.selectAll("*").remove();
+		}
 
 	d3.select("#plansbutton").on("change", function(d){
 		selectedGroup = this.value
@@ -986,10 +1134,12 @@ div.dropdown-menu {
 		delete_ce()
 		delete_table()
 		delete_map()
+		delete_charts()
 		updatelists(selectedGroup)
 		updatece(selectedGroup)
 		updatetable(selectedGroup)
 		updatemap(selectedGroup)
+		updateChartsByPlan(selectedGroup)
 	})    
 		  
 	});
