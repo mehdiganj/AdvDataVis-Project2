@@ -1050,7 +1050,8 @@ div.dropdown-menu {
 
 			auxData1 = "dataSoC = [";
 			auxData2 = "dataMileage = [";
-			for (let i=0 ; i<times.length ; i++){
+			auxTimeMax = times.findIndex((element) => element == currentTime);
+			for (let i=0 ; i<auxTimeMax ; i++){
 				SoC.push( finalBEBdata[currentPlan][currentBus][times[i]]["SoC"] );
 				mileage.push( finalBEBdata[currentPlan][currentBus][times[i]]["Mileage"] );
 
@@ -1429,6 +1430,8 @@ div.dropdown-menu {
 		
 		delete_table();
 		updatetable2();
+		delete_charts()
+		updateCharts2()
 		updateBatteryIcon()
 	})
 		  
