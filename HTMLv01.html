@@ -734,7 +734,7 @@ div.dropdown-menu {
 				.call(xaxis);
 			// Add Y axis
 			var y2 = d3.scaleLinear()
-				.domain([0, 50])
+				.domain([0, 65])
 				.range([ height, 0 ]);
 			let y2axis = d3.axisLeft(y2);
 			y2axis.ticks(5);
@@ -766,6 +766,15 @@ div.dropdown-menu {
 				.attr("y", -30)
 				.attr("transform", "rotate(-90)")
 				.text("Mileage");
+
+			auxDataTable = "dataTable = [";
+			for (let j = 0 ; j < busNumbers.length ; j++){
+				auxDataTable = auxDataTable + "{ BEB: " + busNumbers[j] + ",   SoC: " + finalBEBdata[planList[0]][busNumbers[j]][times[0]]["SoC"] + ",   Mileage: " + finalBEBdata[planList[0]][busNumbers[j]][times[0]]["Mileage"] + ",   Route: " + finalBEBdata[planList[0]][busNumbers[j]][times[0]]["Route_number"] + ",   Location: \"" + finalBEBdata[planList[0]][busNumbers[j]][times[0]]["Location"] + "\"},\n";
+			}
+			auxDataTable = auxDataTable + "];";
+			alert(auxDataTable)
+			eval(auxDataTable);
+			
 
 			
 
@@ -803,7 +812,7 @@ div.dropdown-menu {
 			// Initialize the BEB list
 			var BEB_list = d3.select("#bebbutton")
 				.selectAll('myOptions')
-				.data(data.Plan1)
+				.data(Object.keys( finalBEBdata["Plan1"] ))
 				.enter()
 				.append('option')
 				.text(function (d) { return d; }) // text showed in the menu
@@ -823,7 +832,7 @@ div.dropdown-menu {
 			function updatelists(plan) {
 				var bobs = d3.select("#bebbutton")
 				.selectAll('myOptions')
-				.data(data[plan])
+				.data(Object.keys( finalBEBdata[plan] ))
 				.enter()
 				.append('option')
 				.text(function (d) { return d; }) // text showed in the menu
@@ -875,7 +884,7 @@ div.dropdown-menu {
 			}
 
 			// Initialize the table
-			tabulate(data1, ['BEB', 'SoC', 'Mileage', 'Route', 'Location']); // 2 column table
+			tabulate(dataTable, ['BEB', 'SoC', 'Mileage', 'Route', 'Location']); // 2 column table
 
 
 			function updatetable(plan) {
@@ -888,6 +897,10 @@ div.dropdown-menu {
 				if (plan == "Plan3"){
 					tabulate(data3, ['BEB', 'SoC', 'Mileage', 'Route', 'Location']);
 				}
+			}
+
+			function updatetable2(datatable) {
+				tabulate(datatable, ['BEB', 'SoC', 'Mileage', 'Route', 'Location']);
 			}
 
 
@@ -1090,7 +1103,7 @@ div.dropdown-menu {
 				.call(xaxis);
 			// Add Y axis
 			var y2 = d3.scaleLinear()
-				.domain([0, 50])
+				.domain([0, 65])
 				.range([ height, 0 ]);
 			let y2axis = d3.axisLeft(y2);
 			y2axis.ticks(5);
@@ -1125,7 +1138,6 @@ div.dropdown-menu {
 		}
 
 		function updateChartsByBEB(beb,currentPlan){
-			alert(currentPlan)
 			busNumbers = Object.keys( finalBEBdata[currentPlan] );
 			times = Object.keys(finalBEBdata[currentPlan][beb]);
 			SoC = [];
@@ -1196,7 +1208,7 @@ div.dropdown-menu {
 				.call(xaxis);
 			// Add Y axis
 			var y2 = d3.scaleLinear()
-				.domain([0, 50])
+				.domain([0, 65])
 				.range([ height, 0 ]);
 			let y2axis = d3.axisLeft(y2);
 			y2axis.ticks(5);
@@ -1278,6 +1290,23 @@ div.dropdown-menu {
 			document.getElementById("charging-icon").src = "icons/free.png";	
 		}
 	}) 
+
+	d3.select("#myRange").on("change", function(d){
+		selectedValueRange = this.value;
+		if (!selectedValueRange.includes(".")){
+			selectedValueRange = selectedValueRange + ".0";
+		}
+		alert(selectedValueRange)
+		var currentPlan = document.getElementById("plansbutton").value;
+		auxDataTable = "dataTable = [";
+		for (let j = 0 ; j < busNumbers.length ; j++){
+			auxDataTable = auxDataTable + "{ BEB: " + busNumbers[j] + ",   SoC: " + finalBEBdata[currentPlan][busNumbers[j]][selectedValueRange]["SoC"] + ",   Mileage: " + finalBEBdata[currentPlan][busNumbers[j]][selectedValueRange]["Mileage"] + ",   Route: " + finalBEBdata[currentPlan][busNumbers[j]][selectedValueRange]["Route_number"] + ",   Location: \"" + finalBEBdata[currentPlan][busNumbers[j]][selectedValueRange]["Location"] + "\"},\n";
+		}
+		auxDataTable = auxDataTable + "];";
+		eval(auxDataTable);
+		delete_table()
+		updatetable2(dataTable);
+	})
 		  
 	});
 
