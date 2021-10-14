@@ -530,205 +530,6 @@ div.dropdown-menu {
 
 
 
-<script>
-	var divWidth = document.getElementById("chart1").clientWidth;
-	// set the dimensions and margins of the graph
-	var margin = {top: 10, right: 10, bottom: 30, left: 40},
-		width = divWidth - margin.left - margin.right,
-		height = 110 - margin.top - margin.bottom;
-
-	// append the svg object to the body of the page
-	var svg1 = d3.select("#chart1")
-	.append("svg")
-		.attr("width", width + margin.left + margin.right)
-		.attr("height", height + margin.top + margin.bottom)
-	.append("g")
-		.attr("transform",
-			"translate(" + margin.left + "," + margin.top + ")");
-
-	var svg2 = d3.select("#chart2")
-	.append("svg")
-		.attr("width", width + margin.left + margin.right)
-		.attr("height", height + margin.top + margin.bottom)
-	.append("g")
-		.attr("transform",
-			"translate(" + margin.left + "," + margin.top + ")");
-
-	var svg3 = d3.select("#chart3")
-	.append("svg")
-		.attr("width", width + margin.left + margin.right)
-		.attr("height", height + margin.top + margin.bottom)
-	.append("g")
-		.attr("transform",
-			"translate(" + margin.left + "," + margin.top + ")");
-
-	//Read the data
-	d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/3_TwoNumOrdered_comma.csv",
-
-	// When reading the csv, I must format variables:
-	function(d){
-		return { date : d3.timeParse("%Y-%m-%d")(d.date), value : d.value }
-	},
-
-	// Now I can use this dataset:
-	function(data) {
-
-		// Add X axis --> it is a date format
-		var x = d3.scaleTime()
-			.domain(d3.extent(data, function(d) { return d.date; }))
-			.range([ 0, width ]);
-		let xaxis = d3.axisBottom(x);
-		svg1.append("g")
-			.attr("transform", "translate(0," + height + ")")
-			.call(xaxis);
-
-		// Add Y axis
-		var y1 = d3.scaleLinear()
-			.domain([0, 400])
-			.range([ height, 0 ]);
-		let yaxis = d3.axisLeft(y1);
-		yaxis.ticks(5);
-		svg1.append("g")
-			.call(yaxis);
-
-		// Add the line
-		svg1.append("path")
-			.datum(data)
-			.attr("fill", "none")
-			.attr("stroke", "steelblue")
-			.attr("stroke-width", 1.5)
-			.attr("d", d3.line()
-				.x(function(d) { return x(d.date) })
-				.y(function(d) { return y1(d.value) })
-				);
-		
-		svg1.append("text")
-			.attr("class", "x label")
-			.attr("text-anchor", "end")
-			.attr("x", width/2)
-			.attr("y", height+30)
-			.text("Time");
-
-		svg1.append("text")
-			.attr("class", "y label")
-			.attr("text-anchor", "end")
-			.attr("x", -height/2+10)
-			.attr("y", -30)
-			//.attr("dy", ".75em")
-			.attr("transform", "rotate(-90)")
-			.text("SOC");
-
-
-		//let xaxis = d3.axisBottom(x);
-		svg2.append("g")
-			.attr("transform", "translate(0," + height + ")")
-			.call(xaxis);
-		// Add Y axis
-		var y2 = d3.scaleLinear()
-			.domain([0, 50])
-			.range([ height, 0 ]);
-		let y2axis = d3.axisLeft(y2);
-		y2axis.ticks(5);
-		svg2.append("g")
-			.call(y2axis);
-
-		// Add the line
-		svg2.append("path")
-			.datum(data)
-			.attr("fill", "none")
-			.attr("stroke", "steelblue")
-			.attr("stroke-width", 1.5)
-			.attr("d", d3.line()
-				.x(function(d) { return x(d.date) })
-				.y(function(d) { return y2(d.value/100) })
-				);
-		
-		svg2.append("text")
-			.attr("class", "x label")
-			.attr("text-anchor", "end")
-			.attr("x", width/2)
-			.attr("y", height+30)
-			.text("Time");
-
-		svg2.append("text")
-			.attr("class", "y label")
-			.attr("text-anchor", "end")
-			.attr("x", -height/2+20)
-			.attr("y", -30)
-			.attr("transform", "rotate(-90)")
-			.text("Mileage");
-
-
-		svg3.append("g")
-			.attr("transform", "translate(0," + height + ")")
-			.call(xaxis);
-		// Add Y axis
-		var y3 = d3.scaleLinear()
-			.domain([0, 400])
-			.range([ height, 0 ]);
-		let y3axis = d3.axisLeft(y3);
-		y3axis.ticks(5);
-		svg3.append("g")
-			.call(y3axis);
-
-		// Add the line
-		svg3.append("path")
-			.datum(data)
-			.attr("fill", "none")
-			.attr("stroke", "steelblue")
-			.attr("stroke-width", 1.5)
-			.attr("d", d3.line()
-				.x(function(d) { return x(d.date) })
-				.y(function(d) { return y3(d.value) })
-				);
-		
-		svg3.append("text")
-			.attr("class", "x label")
-			.attr("text-anchor", "end")
-			.attr("x", width/2)
-			.attr("y", height+30)
-			.text("Time");
-
-		svg3.append("text")
-			.attr("class", "y label")
-			.attr("text-anchor", "end")
-			.attr("x", -height/2+40)
-			.attr("y", -30)
-			.attr("transform", "rotate(-90)")
-			.text("Energy cons.");
-	})
-
-	d3.select("#bebbutton").on("change", function(d){
-		selectedBEB = this.value
-		var x = Math.random();
-		if (x<0.33){
-			document.getElementById("battery-icon").src = "icons/battery-red.png";
-		}
-		else{
-			if (x>=0.33 && x<0.67){
-				document.getElementById("battery-icon").src = "icons/battery-yellow.png";
-			}
-			else{
-				document.getElementById("battery-icon").src = "icons/battery-green.png";
-			}
-		}
-	}) 
-	
-	d3.select("#cebutton").on("change", function(d){
-		selectedCE = this.value
-		var x = Math.random();
-		if (x<0.2){
-			document.getElementById("charging-icon").src = "icons/in-use.png";
-		}
-		else{
-			document.getElementById("charging-icon").src = "icons/free.png";	
-		}
-	}) 
-</script>
-
-
-
-
 	<script>
 		d3.queue()
 		    .defer(d3.json, "../dataset/BEB_list.json")
@@ -738,12 +539,13 @@ div.dropdown-menu {
 			.defer(d3.json, "../dataset/CE_list.json")
 			.defer(d3.json, "/routes/NewRoutes_def.json")
 			.defer(d3.json, "/dataset/charging_stations.json")
-			.await(function(error, data, data1, data2, data3, ce_data, busRoutes, ce_data2) {
+			.defer(d3.json, "/dataset/final_data.json")
+			.await(function(error, data, data1, data2, data3, ce_data, busRoutes, ce_data2, finalBEBdata) {
 			if (error) throw error;
 
 			const plans = d3.keys(data)
 
-			const plan = 3;
+			const plan = 1;
 			var routes = [];
 			switch (plan){
 				case 0:
@@ -825,9 +627,43 @@ div.dropdown-menu {
 			console.log(routesMileage)
 			// locate the charging stations
 			for (let k = 0; k < eval("ce_data2.Plan" + plan + ".Name.length") ; k++){
-				alert("var station_" + k + " = L.marker([ce_data2.Plan"+ plan +".Latitude["+ k + "], ce_data2.Plan" + plan +".Longitude[" + k + "]], {icon: chargingStationIcon}).addTo(map).bindPopup(ce_data2.Plan" + plan + ".Name[" + k + "]); ")
 				eval( "var station_" + k + " = L.marker([ce_data2.Plan"+ plan +".Latitude["+ k + "], ce_data2.Plan" + plan +".Longitude[" + k + "]], {icon: chargingStationIcon}).addTo(map).bindPopup(ce_data2.Plan" + plan + ".Name[" + k + "]); ");
 			}
+
+			// initial charts
+			var divWidth = document.getElementById("chart1").clientWidth;
+			// set the dimensions and margins of the graph
+			var margin = {top: 10, right: 10, bottom: 30, left: 40},
+				width = divWidth - margin.left - margin.right,
+				height = 110 - margin.top - margin.bottom;
+
+			// append the svg object to the body of the page
+			var svg1 = d3.select("#chart1")
+			.append("svg")
+				.attr("width", width + margin.left + margin.right)
+				.attr("height", height + margin.top + margin.bottom)
+			.append("g")
+				.attr("transform",
+					"translate(" + margin.left + "," + margin.top + ")");
+
+			var svg2 = d3.select("#chart2")
+			.append("svg")
+				.attr("width", width + margin.left + margin.right)
+				.attr("height", height + margin.top + margin.bottom)
+			.append("g")
+				.attr("transform",
+					"translate(" + margin.left + "," + margin.top + ")");
+
+			var svg3 = d3.select("#chart3")
+			.append("svg")
+				.attr("width", width + margin.left + margin.right)
+				.attr("height", height + margin.top + margin.bottom)
+			.append("g")
+				.attr("transform",
+					"translate(" + margin.left + "," + margin.top + ")");
+
+			
+			
 
 			map.on('zoomend', function() {
 				var currentZoom = map.getZoom();
