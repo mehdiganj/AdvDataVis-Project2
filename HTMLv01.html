@@ -743,7 +743,7 @@ div.dropdown-menu {
 
 			const plans = d3.keys(data)
 
-			const plan = 1;
+			const plan = 3;
 			var routes = [];
 			switch (plan){
 				case 0:
@@ -785,18 +785,24 @@ div.dropdown-menu {
 				popupAnchor: [0, -20]
 			});
 
+			routesMileage = [];
+
 			for (let i = 0 ; i < routes.length ; i++ ) {
 				var q = 0;
 				var posFinal = [0,0];
 				var lineName ;
+				var auxDistance = 0;
 				for (let k = 0 ; k < busRoutes.length ; k++) {
 					if (busRoutes[k].LineAbbr == routes[i]) {
 						eval( "var point_" + i + "_" + q + " = new L.LatLng(" + busRoutes[k].latA + "," + busRoutes[k].longA + ");" );
 						posFinal = [busRoutes[k].latB,busRoutes[k].longB]
 						lineName = busRoutes[k].LineName;
+						eval( "var auxPoint = new L.LatLng(" + busRoutes[k].latB + "," + busRoutes[k].longB + ");" );
+						eval( "auxDistance = auxDistance + point_" + i + "_" + q + ".distanceTo(auxPoint);" );
 						q++;
 					}
 				}
+				routesMileage.push(auxDistance*0.000621371);
 				eval( "var point_" + i + "_" + q + " = new L.LatLng(" + posFinal[0] + "," + posFinal[1] + ");" );
 				var auxString = "var pointList_" + i +" = [" ;
 
@@ -816,6 +822,7 @@ div.dropdown-menu {
 				eval( "polyline_" + i + ".on('click', function(){ polyline_"+i+".setStyle({ color: \"red\", opacity: 1, weight: 10 }); });" );
 				eval( "polyline_" + i + ".on('popupclose', function(e){ e.target.setStyle({color: \"red\", opacity: 0.6, weight: 5}); });" );
 			}
+			console.log(routesMileage)
 			// locate the charging stations
 			for (let k = 0; k < eval("ce_data2.Plan" + plan + ".Name.length") ; k++){
 				alert("var station_" + k + " = L.marker([ce_data2.Plan"+ plan +".Latitude["+ k + "], ce_data2.Plan" + plan +".Longitude[" + k + "]], {icon: chargingStationIcon}).addTo(map).bindPopup(ce_data2.Plan" + plan + ".Name[" + k + "]); ")
