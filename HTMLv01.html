@@ -365,7 +365,6 @@ div.dropdown-menu {
 }
 
 .label {
-	font-family: 'Courier New', Courier, monospace;
 	font-size: 8pt;
 }
 
@@ -398,7 +397,7 @@ div.dropdown-menu {
 				<input type="range" min="0" max="24" value="0" step="0.5" class="slider" id="myRange">
 			</div>
 			<div>
-				<p class="round col-sm-12" style= padding:4px>Time: <span id="demo"></span></p>
+				<p class="round col-sm-12" style= padding:4px id="timeBox">Time: </p>
 			</div>
 
 			<li class="nav-item ms-auto">
@@ -674,8 +673,8 @@ div.dropdown-menu {
 				SoC.push( finalBEBdata[planList[0]][busNumbers[0]][times[i]]["SoC"] );
 				mileage.push( finalBEBdata[planList[0]][busNumbers[0]][times[i]]["Mileage"] );
 
-				auxData1 = auxData1 + "{ x: " + times[i] + ",   y: " + SoC[i] + " },\n";
-				auxData2 = auxData2 + "{ x: " + times[i] + ",   y: " + mileage[i] + " },\n";
+				auxData1 = auxData1 + "{ x: " + times[i] + ",   y: " + SoC[i].toFixed(2) + " },\n";
+				auxData2 = auxData2 + "{ x: " + times[i] + ",   y: " + mileage[i].toFixed(2) + " },\n";
 			}
 			auxData1 = auxData1 + "];";
 			auxData2 = auxData2 + "];";
@@ -767,13 +766,8 @@ div.dropdown-menu {
 				.attr("transform", "rotate(-90)")
 				.text("Mileage");
 
-			auxDataTable = "dataTable = [";
-			for (let j = 0 ; j < busNumbers.length ; j++){
-				auxDataTable = auxDataTable + "{ BEB: " + busNumbers[j] + ",   SoC: " + finalBEBdata[planList[0]][busNumbers[j]][times[0]]["SoC"] + ",   Mileage: " + finalBEBdata[planList[0]][busNumbers[j]][times[0]]["Mileage"] + ",   Route: " + finalBEBdata[planList[0]][busNumbers[j]][times[0]]["Route_number"] + ",   Location: \"" + finalBEBdata[planList[0]][busNumbers[j]][times[0]]["Location"] + "\"},\n";
-			}
-			auxDataTable = auxDataTable + "];";
-			alert(auxDataTable)
-			eval(auxDataTable);
+			delete_table();
+			updatetable2();
 			
 
 			
@@ -884,7 +878,7 @@ div.dropdown-menu {
 			}
 
 			// Initialize the table
-			tabulate(dataTable, ['BEB', 'SoC', 'Mileage', 'Route', 'Location']); // 2 column table
+			//tabulate(dataTable, ['BEB', 'SoC', 'Mileage', 'Route', 'Location']); // 2 column table
 
 
 			function updatetable(plan) {
@@ -899,8 +893,19 @@ div.dropdown-menu {
 				}
 			}
 
-			function updatetable2(datatable) {
-				tabulate(datatable, ['BEB', 'SoC', 'Mileage', 'Route', 'Location']);
+			function updatetable2() {
+				var currentPlan = "Plan1";
+				var currentTime = document.getElementById("myRange").value;
+				if (!currentTime.includes(".")){
+					currentTime = currentTime + ".0";
+				}
+				auxDataTable = "dataTable = [";
+				for (let j = 0 ; j < busNumbers.length ; j++){
+					auxDataTable = auxDataTable + "{ BEB: " + busNumbers[j] + ",   SoC: " + finalBEBdata[currentPlan][busNumbers[j]][currentTime]["SoC"].toFixed(2) + ",   Mileage: " + finalBEBdata[currentPlan][busNumbers[j]][currentTime]["Mileage"].toFixed(2) + ",   Route: " + finalBEBdata[currentPlan][busNumbers[j]][currentTime]["Route_number"] + ",   Location: \"" + finalBEBdata[currentPlan][busNumbers[j]][currentTime]["Location"] + "\"},\n";
+				}
+				auxDataTable = auxDataTable + "];";
+				eval(auxDataTable);
+				tabulate(dataTable, ['BEB', 'SoC', 'Mileage', 'Route', 'Location']);
 			}
 
 
@@ -1030,6 +1035,116 @@ div.dropdown-menu {
 				}
 			});
 				
+		}
+
+		function updateCharts2(){
+			var currentBus = document.getElementById("bebbutton").value;
+			var currentTime = document.getElementById("myRange").value;
+			var currentPlan = document.getElementById("plansbutton").value;
+			if (!currentTime.includes(".")){
+				currentTime = currentTime + ".0";
+			}
+			times = Object.keys(finalBEBdata[currentPlan][currentBus]);
+			SoC = [];
+			mileage = [];
+
+			auxData1 = "dataSoC = [";
+			auxData2 = "dataMileage = [";
+			for (let i=0 ; i<times.length ; i++){
+				SoC.push( finalBEBdata[currentPlan][currentBus][times[i]]["SoC"] );
+				mileage.push( finalBEBdata[currentPlan][currentBus][times[i]]["Mileage"] );
+
+				auxData1 = auxData1 + "{ x: " + times[i] + ",   y: " + SoC[i] + " },\n";
+				auxData2 = auxData2 + "{ x: " + times[i] + ",   y: " + mileage[i] + " },\n";
+			}
+			auxData1 = auxData1 + "];";
+			auxData2 = auxData2 + "];";
+			eval(auxData1);
+			eval(auxData2);
+
+			// Add X axis --> it is a date format
+			var x = d3.scaleLinear()
+				.domain([0,24])
+				.range([ 0, width ]);
+			let xaxis = d3.axisBottom(x);
+			svg1.append("g")
+				.attr("transform", "translate(0," + height + ")")
+				.call(xaxis);
+
+			// Add Y axis
+			var y1 = d3.scaleLinear()
+				.domain([0, 100])
+				.range([ height, 0 ]);
+			let yaxis = d3.axisLeft(y1);
+			yaxis.ticks(5);
+			svg1.append("g")
+				.call(yaxis);
+
+			// Add the line
+			svg1.append("path")
+				.datum(dataSoC)
+				.attr("fill", "none")
+				.attr("stroke", "steelblue")
+				.attr("stroke-width", 1.5)
+				.attr("d", d3.line()
+					.x(d => x(d.x) )
+					.y(d => y1(d.y) )
+					);
+
+			svg1.append("text")
+				.attr("class", "x label")
+				.attr("text-anchor", "end")
+				.attr("x", width/2)
+				.attr("y", height+30)
+				.text("Time");
+
+			svg1.append("text")
+				.attr("class", "y label")
+				.attr("text-anchor", "end")
+				.attr("x", -height/2+10)
+				.attr("y", -30)
+				//.attr("dy", ".75em")
+				.attr("transform", "rotate(-90)")
+				.text("SOC");
+
+			//let xaxis = d3.axisBottom(x);
+			svg2.append("g")
+				.attr("transform", "translate(0," + height + ")")
+				.call(xaxis);
+			// Add Y axis
+			var y2 = d3.scaleLinear()
+				.domain([0, 65])
+				.range([ height, 0 ]);
+			let y2axis = d3.axisLeft(y2);
+			y2axis.ticks(5);
+			svg2.append("g")
+				.call(y2axis);
+
+			// Add the line
+			svg2.append("path")
+				.datum(dataMileage)
+				.attr("fill", "none")
+				.attr("stroke", "steelblue")
+				.attr("stroke-width", 1.5)
+				.attr("d", d3.line()
+					.x(d => x(d.x) )
+					.y(d => y2(d.y) )
+					);
+			
+			svg2.append("text")
+				.attr("class", "x label")
+				.attr("text-anchor", "end")
+				.attr("x", width/2)
+				.attr("y", height+30)
+				.text("Time");
+
+			svg2.append("text")
+				.attr("class", "y label")
+				.attr("text-anchor", "end")
+				.attr("x", -height/2+20)
+				.attr("y", -30)
+				.attr("transform", "rotate(-90)")
+				.text("Mileage");
 		}
 
 		function updateChartsByPlan(plan){
@@ -1258,26 +1373,16 @@ div.dropdown-menu {
 		updatece(selectedGroup)
 		updatetable(selectedGroup)
 		updatemap(selectedGroup)
-		updateChartsByPlan(selectedGroup)
+		updateCharts2()
+		updateBatteryIcon()
 	})  
 
 	d3.select("#bebbutton").on("change", function(d){
 		selectedBEB = this.value;
 		var currentPlan = document.getElementById("plansbutton").value;
 		delete_charts()
-		updateChartsByBEB(selectedBEB,currentPlan)
-		var x = Math.random();
-		if (x<0.33){
-			document.getElementById("battery-icon").src = "icons/battery-red.png";
-		}
-		else{
-			if (x>=0.33 && x<0.67){
-				document.getElementById("battery-icon").src = "icons/battery-yellow.png";
-			}
-			else{
-				document.getElementById("battery-icon").src = "icons/battery-green.png";
-			}
-		}
+		updateCharts2()
+		updateBatteryIcon()
 	}) 
 	
 	d3.select("#cebutton").on("change", function(d){
@@ -1291,21 +1396,40 @@ div.dropdown-menu {
 		}
 	}) 
 
+	function updateBatteryIcon(){
+		var currentPlan = document.getElementById("plansbutton").value;
+		var currentBus = document.getElementById("bebbutton").value;
+		var currentTime = document.getElementById("myRange").value;
+		if (!currentTime.includes(".")){
+			currentTime = currentTime + ".0";
+		}
+		var aux1 = finalBEBdata[currentPlan][currentBus][currentTime]["SoC"];
+		if (aux1 >= 80){
+			document.getElementById("battery-icon").src = "icons/battery-green.png";
+		}
+		else{
+			if (aux1 < 80 && aux1 >= 40){
+				document.getElementById("battery-icon").src = "icons/battery-yellow.png";
+			}
+			else{
+				document.getElementById("battery-icon").src = "icons/battery-red.png";
+			}
+		}
+	}
+
 	d3.select("#myRange").on("change", function(d){
 		selectedValueRange = this.value;
+		document.getElementById("timeBox").innerHTML = "Time: " + selectedValueRange;
 		if (!selectedValueRange.includes(".")){
 			selectedValueRange = selectedValueRange + ".0";
 		}
-		alert(selectedValueRange)
+		//alert(selectedValueRange)
 		var currentPlan = document.getElementById("plansbutton").value;
-		auxDataTable = "dataTable = [";
-		for (let j = 0 ; j < busNumbers.length ; j++){
-			auxDataTable = auxDataTable + "{ BEB: " + busNumbers[j] + ",   SoC: " + finalBEBdata[currentPlan][busNumbers[j]][selectedValueRange]["SoC"] + ",   Mileage: " + finalBEBdata[currentPlan][busNumbers[j]][selectedValueRange]["Mileage"] + ",   Route: " + finalBEBdata[currentPlan][busNumbers[j]][selectedValueRange]["Route_number"] + ",   Location: \"" + finalBEBdata[currentPlan][busNumbers[j]][selectedValueRange]["Location"] + "\"},\n";
-		}
-		auxDataTable = auxDataTable + "];";
-		eval(auxDataTable);
-		delete_table()
-		updatetable2(dataTable);
+		
+		
+		delete_table();
+		updatetable2();
+		updateBatteryIcon()
 	})
 		  
 	});
