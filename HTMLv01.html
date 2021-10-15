@@ -909,459 +909,489 @@ div.dropdown-menu {
 			}
 
 
-		function delete_table() {
-			//clears all the guardians with the specified id
-			document.getElementById("beb_table").innerHTML =
-				null;
-		}
-
-		function delete_beb() {
+			function delete_table() {
 				//clears all the guardians with the specified id
-				document.getElementById("bebbutton").innerHTML =
+				document.getElementById("beb_table").innerHTML =
 					null;
 			}
 
-		function delete_ce() {
-				//clears all the guardians with the specified id
-				document.getElementById("cebutton").innerHTML =
-					null;
-			}
-
-		function delete_map() {
-			if (map != undefined) {
-				map.remove(); 
-			}
-		}
-
-		function updatemap(plan){
-			// insert the map
-			var routes = [];
-			switch (plan){
-				case 'Plan1':
-					routes = [33, 35, 39, 41, 45, 47, 240];
-					break;
-				case 'Plan2':
-					routes = [2, 6, 11, 33, 35, 39, 41, 45, 47, 200, 205, 209, 227, 232, 240, 248, 500, 509, 513, 516, 520];
-					break;
-				case 'Plan3':
-					routes = [2,6,9,11,17,21,33,35,39,41,45,47,62,72,200,201,205,209,213,217,218,220,227,232,240,248,307,313,320,354,461,470,471,500,509,513,516,519,520,526,606,608,612,616,625,626,627,640,650,664,665,807,830,838,850,862,920];
-					break;
-				default:
-					routes = [2];
-					break;
-			}
-
-			map = L.map('map',{maxZoom:30,minZoom:10}).setView([40.7608,-111.8910], 12);
-			L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-				attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-				maxZoom: 18,
-				id: 'mapbox/streets-v11',
-				tileSize: 512,
-				zoomOffset: -1,
-				accessToken: 'pk.eyJ1IjoibHVmZXJvZHJpZ3VleiIsImEiOiJja3RjZ3NhcDUwNXczMnhwaWNsYWoza2g1In0.fKg-OIe61K3QHUHyNmtKaA'
-				}).addTo(map);
-
-			// add the charging station icon
-			var chargingStationIcon = L.icon({
-				iconUrl: 'icons/charging-station.png',
-				iconSize: [26, 44],
-				iconAnchor: [13, 44],
-				popupAnchor: [0, -44]
-			});
-
-			// add the bus icon
-			var busIcon = L.icon({
-				iconUrl: 'icons/bus-icon.png',
-				iconSize: [18.56, 20],
-				iconAnchor: [9.28, 20],
-				popupAnchor: [0, -20]
-			});
-
-			for (let i = 0 ; i < routes.length ; i++ ) {
-				var q = 0;
-				var posFinal = [0,0];
-				var lineName ;
-				for (let k = 0 ; k < busRoutes.length ; k++) {
-					if (busRoutes[k].LineAbbr == routes[i]) {
-						eval( "var point_" + i + "_" + q + " = new L.LatLng(" + busRoutes[k].latA + "," + busRoutes[k].longA + ");" );
-						posFinal = [busRoutes[k].latB,busRoutes[k].longB]
-						lineName = busRoutes[k].LineName;
-						q++;
-					}
+			function delete_beb() {
+					//clears all the guardians with the specified id
+					document.getElementById("bebbutton").innerHTML =
+						null;
 				}
-				eval( "var point_" + i + "_" + q + " = new L.LatLng(" + posFinal[0] + "," + posFinal[1] + ");" );
-				var auxString = "var pointList_" + i +" = [" ;
 
-				for (let p = 0 ; p < q ; p++){
-					auxString = auxString +  "point_" + i + "_" + p + ",";
+			function delete_ce() {
+					//clears all the guardians with the specified id
+					document.getElementById("cebutton").innerHTML =
+						null;
 				}
-				auxString = auxString + "point_" + i + "_" + q + "]";
 
-				aux = Math.round( (0.1 + Math.random()*.8) * q)
-				eval( "var busLoc_" + i + " = L.marker([point_" + i + "_" + aux + ".lat" + ",point_" + i + "_" + aux + ".lng], {icon: busIcon}).addTo(map).bindPopup(\"" + lineName + "<br>SOC: \"); ");
-
-				eval( auxString );
-				eval( "var polyline_" + i + " = new L.Polyline(pointList_" + i +", {color: 'red',weight: 5,opacity: 0.6,smoothFactor: 1}); " ) ;
-				eval( "polyline_" + i + ".addTo(map);" );
-				eval( "polyline_" + i + ".bindPopup(\"" + lineName +"\");" );
-
-				eval( "polyline_" + i + ".on('click', function(){ polyline_"+i+".setStyle({ color: \"red\", opacity: 1, weight: 10 }); });" );
-				eval( "polyline_" + i + ".on('popupclose', function(e){ e.target.setStyle({color: \"red\", opacity: 0.6, weight: 5}); });" );
-			}
-			// locate the charging stations
-			for (let k = 0; k < eval("ce_data2." + plan + ".Name.length") ; k++){
-				eval( "var station_" + k + " = L.marker([ce_data2."+ plan +".Latitude["+ k + "], ce_data2." + plan +".Longitude[" + k + "]], {icon: chargingStationIcon}).addTo(map).bindPopup(ce_data2." + plan + ".Name[" + k + "]); ");
+			function delete_map() {
+				if (map != undefined) {
+					map.remove(); 
+				}
 			}
 
-			map.on('zoomend', function() {
-				var currentZoom = map.getZoom();
-				var zoomedBusIcon = new L.Icon({
-					iconUrl: 'icons/bus-icon.png',
-					iconSize: [18.56*(1 + (currentZoom-12)/5), 20*(1 + (currentZoom-12)/5)],
-					iconAnchor: [9.28*(1 + (currentZoom-12)/5), 20*(1 + (currentZoom-12)/5)],
-					popupAnchor: [0, -20*(1 + (currentZoom-12)/5)]
-				});
-				var zoomedCharging = new L.Icon({
+			function updatemap(plan){
+				// insert the map
+				var routes = [];
+				switch (plan){
+					case 'Plan1':
+						routes = [33, 35, 39, 41, 45, 47, 240];
+						break;
+					case 'Plan2':
+						routes = [2, 6, 11, 33, 35, 39, 41, 45, 47, 200, 205, 209, 227, 232, 240, 248, 500, 509, 513, 516, 520];
+						break;
+					case 'Plan3':
+						routes = [2,6,9,11,17,21,33,35,39,41,45,47,62,72,200,201,205,209,213,217,218,220,227,232,240,248,307,313,320,354,461,470,471,500,509,513,516,519,520,526,606,608,612,616,625,626,627,640,650,664,665,807,830,838,850,862,920];
+						break;
+					default:
+						routes = [2];
+						break;
+				}
+
+				map = L.map('map',{maxZoom:30,minZoom:10}).setView([40.7608,-111.8910], 12);
+				L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+					attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+					maxZoom: 18,
+					id: 'mapbox/streets-v11',
+					tileSize: 512,
+					zoomOffset: -1,
+					accessToken: 'pk.eyJ1IjoibHVmZXJvZHJpZ3VleiIsImEiOiJja3RjZ3NhcDUwNXczMnhwaWNsYWoza2g1In0.fKg-OIe61K3QHUHyNmtKaA'
+					}).addTo(map);
+
+				// add the charging station icon
+				var chargingStationIcon = L.icon({
 					iconUrl: 'icons/charging-station.png',
-					iconSize: [26*(1 + (currentZoom-12)/5), 44*(1 + (currentZoom-12)/5)],
-					iconAnchor: [13*(1 + (currentZoom-12)/5), 44*(1 + (currentZoom-12)/5)],
-					popupAnchor: [0, -44*(1 + (currentZoom-12)/5)]
+					iconSize: [26, 44],
+					iconAnchor: [13, 44],
+					popupAnchor: [0, -44]
 				});
-				for( let r = 0 ; r < routes.length ; r++ ){
-					eval( "busLoc_" + r + ".setIcon(zoomedBusIcon);" );
-				}
-				for( let t = 0 ; t < eval("ce_data2." + plan + ".Name.length") ; t++ ){
-					eval( "station_" + t + ".setIcon(zoomedCharging);" );
-				}
-			});
-				
-		}
 
-		function updateCharts2(){
+				// add the bus icon
+				var busIcon = L.icon({
+					iconUrl: 'icons/bus-icon.png',
+					iconSize: [18.56, 20],
+					iconAnchor: [9.28, 20],
+					popupAnchor: [0, -20]
+				});
+
+				for (let i = 0 ; i < routes.length ; i++ ) {
+					var q = 0;
+					var posFinal = [0,0];
+					var lineName ;
+					for (let k = 0 ; k < busRoutes.length ; k++) {
+						if (busRoutes[k].LineAbbr == routes[i]) {
+							eval( "var point_" + i + "_" + q + " = new L.LatLng(" + busRoutes[k].latA + "," + busRoutes[k].longA + ");" );
+							posFinal = [busRoutes[k].latB,busRoutes[k].longB]
+							lineName = busRoutes[k].LineName;
+							q++;
+						}
+					}
+					eval( "var point_" + i + "_" + q + " = new L.LatLng(" + posFinal[0] + "," + posFinal[1] + ");" );
+					var auxString = "var pointList_" + i +" = [" ;
+
+					for (let p = 0 ; p < q ; p++){
+						auxString = auxString +  "point_" + i + "_" + p + ",";
+					}
+					auxString = auxString + "point_" + i + "_" + q + "]";
+
+					aux = Math.round( (0.1 + Math.random()*.8) * q)
+					eval( "var busLoc_" + i + " = L.marker([point_" + i + "_" + aux + ".lat" + ",point_" + i + "_" + aux + ".lng], {icon: busIcon}).addTo(map).bindPopup(\"" + lineName + "<br>SOC: \"); ");
+
+					eval( auxString );
+					eval( "var polyline_" + i + " = new L.Polyline(pointList_" + i +", {color: 'red',weight: 5,opacity: 0.6,smoothFactor: 1}); " ) ;
+					eval( "polyline_" + i + ".addTo(map);" );
+					eval( "polyline_" + i + ".bindPopup(\"" + lineName +"\");" );
+
+					eval( "polyline_" + i + ".on('click', function(){ polyline_"+i+".setStyle({ color: \"red\", opacity: 1, weight: 10 }); });" );
+					eval( "polyline_" + i + ".on('popupclose', function(e){ e.target.setStyle({color: \"red\", opacity: 0.6, weight: 5}); });" );
+				}
+				// locate the charging stations
+				for (let k = 0; k < eval("ce_data2." + plan + ".Name.length") ; k++){
+					eval( "var station_" + k + " = L.marker([ce_data2."+ plan +".Latitude["+ k + "], ce_data2." + plan +".Longitude[" + k + "]], {icon: chargingStationIcon}).addTo(map).bindPopup(ce_data2." + plan + ".Name[" + k + "]); ");
+				}
+
+				map.on('zoomend', function() {
+					var currentZoom = map.getZoom();
+					var zoomedBusIcon = new L.Icon({
+						iconUrl: 'icons/bus-icon.png',
+						iconSize: [18.56*(1 + (currentZoom-12)/5), 20*(1 + (currentZoom-12)/5)],
+						iconAnchor: [9.28*(1 + (currentZoom-12)/5), 20*(1 + (currentZoom-12)/5)],
+						popupAnchor: [0, -20*(1 + (currentZoom-12)/5)]
+					});
+					var zoomedCharging = new L.Icon({
+						iconUrl: 'icons/charging-station.png',
+						iconSize: [26*(1 + (currentZoom-12)/5), 44*(1 + (currentZoom-12)/5)],
+						iconAnchor: [13*(1 + (currentZoom-12)/5), 44*(1 + (currentZoom-12)/5)],
+						popupAnchor: [0, -44*(1 + (currentZoom-12)/5)]
+					});
+					for( let r = 0 ; r < routes.length ; r++ ){
+						eval( "busLoc_" + r + ".setIcon(zoomedBusIcon);" );
+					}
+					for( let t = 0 ; t < eval("ce_data2." + plan + ".Name.length") ; t++ ){
+						eval( "station_" + t + ".setIcon(zoomedCharging);" );
+					}
+				});
+					
+			}
+
+			function updateCharts2(){
+				var currentBus = document.getElementById("bebbutton").value;
+				var currentTime = document.getElementById("myRange").value;
+				var currentPlan = document.getElementById("plansbutton").value;
+				if (!currentTime.includes(".")){
+					currentTime = currentTime + ".0";
+				}
+				times = Object.keys(finalBEBdata[currentPlan][currentBus]);
+				SoC = [];
+				mileage = [];
+
+				auxData1 = "dataSoC = [";
+				auxData2 = "dataMileage = [";
+				auxTimeMax = times.findIndex((element) => element == currentTime);
+				for (let i=0 ; i<=auxTimeMax ; i++){
+					SoC.push( finalBEBdata[currentPlan][currentBus][times[i]]["SoC"] );
+					mileage.push( finalBEBdata[currentPlan][currentBus][times[i]]["Mileage"] );
+
+					auxData1 = auxData1 + "{ x: " + times[i] + ",   y: " + SoC[i] + " },\n";
+					auxData2 = auxData2 + "{ x: " + times[i] + ",   y: " + mileage[i] + " },\n";
+				}
+				auxData1 = auxData1 + "];";
+				auxData2 = auxData2 + "];";
+				eval(auxData1);
+				eval(auxData2);
+
+				// Add X axis --> it is a date format
+				var x = d3.scaleLinear()
+					.domain([0,24])
+					.range([ 0, width ]);
+				let xaxis = d3.axisBottom(x);
+				svg1.append("g")
+					.attr("transform", "translate(0," + height + ")")
+					.call(xaxis);
+
+				// Add Y axis
+				var y1 = d3.scaleLinear()
+					.domain([0, 100])
+					.range([ height, 0 ]);
+				let yaxis = d3.axisLeft(y1);
+				yaxis.ticks(5);
+				svg1.append("g")
+					.call(yaxis);
+
+				// Add the line
+				svg1.append("path")
+					.datum(dataSoC)
+					.attr("fill", "none")
+					.attr("stroke", "steelblue")
+					.attr("stroke-width", 1.5)
+					.attr("d", d3.line()
+						.x(d => x(d.x) )
+						.y(d => y1(d.y) )
+						);
+
+				svg1.append("text")
+					.attr("class", "x label")
+					.attr("text-anchor", "end")
+					.attr("x", width/2)
+					.attr("y", height+30)
+					.text("Time");
+
+				svg1.append("text")
+					.attr("class", "y label")
+					.attr("text-anchor", "end")
+					.attr("x", -height/2+10)
+					.attr("y", -30)
+					//.attr("dy", ".75em")
+					.attr("transform", "rotate(-90)")
+					.text("SOC");
+
+				//let xaxis = d3.axisBottom(x);
+				svg2.append("g")
+					.attr("transform", "translate(0," + height + ")")
+					.call(xaxis);
+				// Add Y axis
+				var y2 = d3.scaleLinear()
+					.domain([0, 65])
+					.range([ height, 0 ]);
+				let y2axis = d3.axisLeft(y2);
+				y2axis.ticks(5);
+				svg2.append("g")
+					.call(y2axis);
+
+				// Add the line
+				svg2.append("path")
+					.datum(dataMileage)
+					.attr("fill", "none")
+					.attr("stroke", "steelblue")
+					.attr("stroke-width", 1.5)
+					.attr("d", d3.line()
+						.x(d => x(d.x) )
+						.y(d => y2(d.y) )
+						);
+				
+				svg2.append("text")
+					.attr("class", "x label")
+					.attr("text-anchor", "end")
+					.attr("x", width/2)
+					.attr("y", height+30)
+					.text("Time");
+
+				svg2.append("text")
+					.attr("class", "y label")
+					.attr("text-anchor", "end")
+					.attr("x", -height/2+20)
+					.attr("y", -30)
+					.attr("transform", "rotate(-90)")
+					.text("Mileage");
+			}
+
+			function updateChartsByPlan(plan){
+				busNumbers = Object.keys( finalBEBdata[plan] );
+				times = Object.keys(finalBEBdata[plan][busNumbers[0]]);
+				SoC = [];
+				mileage = [];
+
+				auxData1 = "dataSoC = [";
+				auxData2 = "dataMileage = [";
+				for (let i=0 ; i<times.length ; i++){
+					SoC.push( finalBEBdata[plan][busNumbers[0]][times[i]]["SoC"] );
+					mileage.push( finalBEBdata[plan][busNumbers[0]][times[i]]["Mileage"] );
+
+					auxData1 = auxData1 + "{ x: " + times[i] + ",   y: " + SoC[i] + " },\n";
+					auxData2 = auxData2 + "{ x: " + times[i] + ",   y: " + mileage[i] + " },\n";
+				}
+				auxData1 = auxData1 + "];";
+				auxData2 = auxData2 + "];";
+				eval(auxData1);
+				eval(auxData2);
+
+				// Add X axis --> it is a date format
+				var x = d3.scaleLinear()
+					.domain([0,24])
+					.range([ 0, width ]);
+				let xaxis = d3.axisBottom(x);
+				svg1.append("g")
+					.attr("transform", "translate(0," + height + ")")
+					.call(xaxis);
+
+				// Add Y axis
+				var y1 = d3.scaleLinear()
+					.domain([0, 100])
+					.range([ height, 0 ]);
+				let yaxis = d3.axisLeft(y1);
+				yaxis.ticks(5);
+				svg1.append("g")
+					.call(yaxis);
+
+				// Add the line
+				svg1.append("path")
+					.datum(dataSoC)
+					.attr("fill", "none")
+					.attr("stroke", "steelblue")
+					.attr("stroke-width", 1.5)
+					.attr("d", d3.line()
+						.x(d => x(d.x) )
+						.y(d => y1(d.y) )
+						);
+
+				svg1.append("text")
+					.attr("class", "x label")
+					.attr("text-anchor", "end")
+					.attr("x", width/2)
+					.attr("y", height+30)
+					.text("Time");
+
+				svg1.append("text")
+					.attr("class", "y label")
+					.attr("text-anchor", "end")
+					.attr("x", -height/2+10)
+					.attr("y", -30)
+					//.attr("dy", ".75em")
+					.attr("transform", "rotate(-90)")
+					.text("SOC");
+
+				//let xaxis = d3.axisBottom(x);
+				svg2.append("g")
+					.attr("transform", "translate(0," + height + ")")
+					.call(xaxis);
+				// Add Y axis
+				var y2 = d3.scaleLinear()
+					.domain([0, 65])
+					.range([ height, 0 ]);
+				let y2axis = d3.axisLeft(y2);
+				y2axis.ticks(5);
+				svg2.append("g")
+					.call(y2axis);
+
+				// Add the line
+				svg2.append("path")
+					.datum(dataMileage)
+					.attr("fill", "none")
+					.attr("stroke", "steelblue")
+					.attr("stroke-width", 1.5)
+					.attr("d", d3.line()
+						.x(d => x(d.x) )
+						.y(d => y2(d.y) )
+						);
+				
+				svg2.append("text")
+					.attr("class", "x label")
+					.attr("text-anchor", "end")
+					.attr("x", width/2)
+					.attr("y", height+30)
+					.text("Time");
+
+				svg2.append("text")
+					.attr("class", "y label")
+					.attr("text-anchor", "end")
+					.attr("x", -height/2+20)
+					.attr("y", -30)
+					.attr("transform", "rotate(-90)")
+					.text("Mileage");
+			}
+
+			function updateChartsByBEB(beb,currentPlan){
+				busNumbers = Object.keys( finalBEBdata[currentPlan] );
+				times = Object.keys(finalBEBdata[currentPlan][beb]);
+				SoC = [];
+				mileage = [];
+
+				auxData1 = "dataSoC = [";
+				auxData2 = "dataMileage = [";
+				for (let i=0 ; i<times.length ; i++){
+					SoC.push( finalBEBdata[currentPlan][beb][times[i]]["SoC"] );
+					mileage.push( finalBEBdata[currentPlan][beb][times[i]]["Mileage"] );
+
+					auxData1 = auxData1 + "{ x: " + times[i] + ",   y: " + SoC[i] + " },\n";
+					auxData2 = auxData2 + "{ x: " + times[i] + ",   y: " + mileage[i] + " },\n";
+				}
+				auxData1 = auxData1 + "];";
+				auxData2 = auxData2 + "];";
+				eval(auxData1);
+				eval(auxData2);
+
+				// Add X axis --> it is a date format
+				var x = d3.scaleLinear()
+					.domain([0,24])
+					.range([ 0, width ]);
+				let xaxis = d3.axisBottom(x);
+				svg1.append("g")
+					.attr("transform", "translate(0," + height + ")")
+					.call(xaxis);
+
+				// Add Y axis
+				var y1 = d3.scaleLinear()
+					.domain([0, 100])
+					.range([ height, 0 ]);
+				let yaxis = d3.axisLeft(y1);
+				yaxis.ticks(5);
+				svg1.append("g")
+					.call(yaxis);
+
+				// Add the line
+				svg1.append("path")
+					.datum(dataSoC)
+					.attr("fill", "none")
+					.attr("stroke", "steelblue")
+					.attr("stroke-width", 1.5)
+					.attr("d", d3.line()
+						.x(d => x(d.x) )
+						.y(d => y1(d.y) )
+						);
+
+				svg1.append("text")
+					.attr("class", "x label")
+					.attr("text-anchor", "end")
+					.attr("x", width/2)
+					.attr("y", height+30)
+					.text("Time");
+
+				svg1.append("text")
+					.attr("class", "y label")
+					.attr("text-anchor", "end")
+					.attr("x", -height/2+10)
+					.attr("y", -30)
+					//.attr("dy", ".75em")
+					.attr("transform", "rotate(-90)")
+					.text("SOC");
+
+				//let xaxis = d3.axisBottom(x);
+				svg2.append("g")
+					.attr("transform", "translate(0," + height + ")")
+					.call(xaxis);
+				// Add Y axis
+				var y2 = d3.scaleLinear()
+					.domain([0, 65])
+					.range([ height, 0 ]);
+				let y2axis = d3.axisLeft(y2);
+				y2axis.ticks(5);
+				svg2.append("g")
+					.call(y2axis);
+
+				// Add the line
+				svg2.append("path")
+					.datum(dataMileage)
+					.attr("fill", "none")
+					.attr("stroke", "steelblue")
+					.attr("stroke-width", 1.5)
+					.attr("d", d3.line()
+						.x(d => x(d.x) )
+						.y(d => y2(d.y) )
+						);
+				
+				svg2.append("text")
+					.attr("class", "x label")
+					.attr("text-anchor", "end")
+					.attr("x", width/2)
+					.attr("y", height+30)
+					.text("Time");
+
+				svg2.append("text")
+					.attr("class", "y label")
+					.attr("text-anchor", "end")
+					.attr("x", -height/2+20)
+					.attr("y", -30)
+					.attr("transform", "rotate(-90)")
+					.text("Mileage");
+			}
+
+			function delete_charts(){
+				svg1.selectAll("*").remove();
+				svg2.selectAll("*").remove();
+			}
+
+			function highlightLine(){
+			var currentPlan = document.getElementById("plansbutton").value;
 			var currentBus = document.getElementById("bebbutton").value;
 			var currentTime = document.getElementById("myRange").value;
-			var currentPlan = document.getElementById("plansbutton").value;
 			if (!currentTime.includes(".")){
 				currentTime = currentTime + ".0";
 			}
-			times = Object.keys(finalBEBdata[currentPlan][currentBus]);
-			SoC = [];
-			mileage = [];
-
-			auxData1 = "dataSoC = [";
-			auxData2 = "dataMileage = [";
-			auxTimeMax = times.findIndex((element) => element == currentTime);
-			for (let i=0 ; i<auxTimeMax ; i++){
-				SoC.push( finalBEBdata[currentPlan][currentBus][times[i]]["SoC"] );
-				mileage.push( finalBEBdata[currentPlan][currentBus][times[i]]["Mileage"] );
-
-				auxData1 = auxData1 + "{ x: " + times[i] + ",   y: " + SoC[i] + " },\n";
-				auxData2 = auxData2 + "{ x: " + times[i] + ",   y: " + mileage[i] + " },\n";
+			switch (currentPlan){
+				case "Plan0":
+					routes = [2];
+					break;
+				case "Plan1":
+					routes = [33, 35, 39, 41, 45, 47, 240];
+					break;
+				case "Plan2":
+					routes = [2, 6, 11, 33, 35, 39, 41, 45, 47, 200, 205, 209, 227, 232, 240, 248, 500, 509, 513, 516, 520];
+					break;
+				case "Plan3":
+					routes = [2,6,9,11,17,21,33,35,39,41,45,47,62,72,200,201,205,209,213,217,218,220,227,232,240,248,307,313,320,354,461,470,471,500,509,513,516,519,520,526,606,608,612,616,625,626,627,640,650,664,665,807,830,838,850,862,920];
+					break;
 			}
-			auxData1 = auxData1 + "];";
-			auxData2 = auxData2 + "];";
-			eval(auxData1);
-			eval(auxData2);
+			var currentRoute = finalBEBdata[currentPlan][currentBus][currentTime]["Route_number"];
+			var auxRouteIndex = routes.findIndex((element) => element == currentRoute);
 
-			// Add X axis --> it is a date format
-			var x = d3.scaleLinear()
-				.domain([0,24])
-				.range([ 0, width ]);
-			let xaxis = d3.axisBottom(x);
-			svg1.append("g")
-				.attr("transform", "translate(0," + height + ")")
-				.call(xaxis);
-
-			// Add Y axis
-			var y1 = d3.scaleLinear()
-				.domain([0, 100])
-				.range([ height, 0 ]);
-			let yaxis = d3.axisLeft(y1);
-			yaxis.ticks(5);
-			svg1.append("g")
-				.call(yaxis);
-
-			// Add the line
-			svg1.append("path")
-				.datum(dataSoC)
-				.attr("fill", "none")
-				.attr("stroke", "steelblue")
-				.attr("stroke-width", 1.5)
-				.attr("d", d3.line()
-					.x(d => x(d.x) )
-					.y(d => y1(d.y) )
-					);
-
-			svg1.append("text")
-				.attr("class", "x label")
-				.attr("text-anchor", "end")
-				.attr("x", width/2)
-				.attr("y", height+30)
-				.text("Time");
-
-			svg1.append("text")
-				.attr("class", "y label")
-				.attr("text-anchor", "end")
-				.attr("x", -height/2+10)
-				.attr("y", -30)
-				//.attr("dy", ".75em")
-				.attr("transform", "rotate(-90)")
-				.text("SOC");
-
-			//let xaxis = d3.axisBottom(x);
-			svg2.append("g")
-				.attr("transform", "translate(0," + height + ")")
-				.call(xaxis);
-			// Add Y axis
-			var y2 = d3.scaleLinear()
-				.domain([0, 65])
-				.range([ height, 0 ]);
-			let y2axis = d3.axisLeft(y2);
-			y2axis.ticks(5);
-			svg2.append("g")
-				.call(y2axis);
-
-			// Add the line
-			svg2.append("path")
-				.datum(dataMileage)
-				.attr("fill", "none")
-				.attr("stroke", "steelblue")
-				.attr("stroke-width", 1.5)
-				.attr("d", d3.line()
-					.x(d => x(d.x) )
-					.y(d => y2(d.y) )
-					);
-			
-			svg2.append("text")
-				.attr("class", "x label")
-				.attr("text-anchor", "end")
-				.attr("x", width/2)
-				.attr("y", height+30)
-				.text("Time");
-
-			svg2.append("text")
-				.attr("class", "y label")
-				.attr("text-anchor", "end")
-				.attr("x", -height/2+20)
-				.attr("y", -30)
-				.attr("transform", "rotate(-90)")
-				.text("Mileage");
-		}
-
-		function updateChartsByPlan(plan){
-			busNumbers = Object.keys( finalBEBdata[plan] );
-			times = Object.keys(finalBEBdata[plan][busNumbers[0]]);
-			SoC = [];
-			mileage = [];
-
-			auxData1 = "dataSoC = [";
-			auxData2 = "dataMileage = [";
-			for (let i=0 ; i<times.length ; i++){
-				SoC.push( finalBEBdata[plan][busNumbers[0]][times[i]]["SoC"] );
-				mileage.push( finalBEBdata[plan][busNumbers[0]][times[i]]["Mileage"] );
-
-				auxData1 = auxData1 + "{ x: " + times[i] + ",   y: " + SoC[i] + " },\n";
-				auxData2 = auxData2 + "{ x: " + times[i] + ",   y: " + mileage[i] + " },\n";
+			for (let k = 0 ; k<routes.length ; k++){
+				eval( "polyline_" + k + ".setStyle({ color: \"red\", opacity: 0.6, weight: 5 });" );
 			}
-			auxData1 = auxData1 + "];";
-			auxData2 = auxData2 + "];";
-			eval(auxData1);
-			eval(auxData2);
-
-			// Add X axis --> it is a date format
-			var x = d3.scaleLinear()
-				.domain([0,24])
-				.range([ 0, width ]);
-			let xaxis = d3.axisBottom(x);
-			svg1.append("g")
-				.attr("transform", "translate(0," + height + ")")
-				.call(xaxis);
-
-			// Add Y axis
-			var y1 = d3.scaleLinear()
-				.domain([0, 100])
-				.range([ height, 0 ]);
-			let yaxis = d3.axisLeft(y1);
-			yaxis.ticks(5);
-			svg1.append("g")
-				.call(yaxis);
-
-			// Add the line
-			svg1.append("path")
-				.datum(dataSoC)
-				.attr("fill", "none")
-				.attr("stroke", "steelblue")
-				.attr("stroke-width", 1.5)
-				.attr("d", d3.line()
-					.x(d => x(d.x) )
-					.y(d => y1(d.y) )
-					);
-
-			svg1.append("text")
-				.attr("class", "x label")
-				.attr("text-anchor", "end")
-				.attr("x", width/2)
-				.attr("y", height+30)
-				.text("Time");
-
-			svg1.append("text")
-				.attr("class", "y label")
-				.attr("text-anchor", "end")
-				.attr("x", -height/2+10)
-				.attr("y", -30)
-				//.attr("dy", ".75em")
-				.attr("transform", "rotate(-90)")
-				.text("SOC");
-
-			//let xaxis = d3.axisBottom(x);
-			svg2.append("g")
-				.attr("transform", "translate(0," + height + ")")
-				.call(xaxis);
-			// Add Y axis
-			var y2 = d3.scaleLinear()
-				.domain([0, 65])
-				.range([ height, 0 ]);
-			let y2axis = d3.axisLeft(y2);
-			y2axis.ticks(5);
-			svg2.append("g")
-				.call(y2axis);
-
-			// Add the line
-			svg2.append("path")
-				.datum(dataMileage)
-				.attr("fill", "none")
-				.attr("stroke", "steelblue")
-				.attr("stroke-width", 1.5)
-				.attr("d", d3.line()
-					.x(d => x(d.x) )
-					.y(d => y2(d.y) )
-					);
-			
-			svg2.append("text")
-				.attr("class", "x label")
-				.attr("text-anchor", "end")
-				.attr("x", width/2)
-				.attr("y", height+30)
-				.text("Time");
-
-			svg2.append("text")
-				.attr("class", "y label")
-				.attr("text-anchor", "end")
-				.attr("x", -height/2+20)
-				.attr("y", -30)
-				.attr("transform", "rotate(-90)")
-				.text("Mileage");
-		}
-
-		function updateChartsByBEB(beb,currentPlan){
-			busNumbers = Object.keys( finalBEBdata[currentPlan] );
-			times = Object.keys(finalBEBdata[currentPlan][beb]);
-			SoC = [];
-			mileage = [];
-
-			auxData1 = "dataSoC = [";
-			auxData2 = "dataMileage = [";
-			for (let i=0 ; i<times.length ; i++){
-				SoC.push( finalBEBdata[currentPlan][beb][times[i]]["SoC"] );
-				mileage.push( finalBEBdata[currentPlan][beb][times[i]]["Mileage"] );
-
-				auxData1 = auxData1 + "{ x: " + times[i] + ",   y: " + SoC[i] + " },\n";
-				auxData2 = auxData2 + "{ x: " + times[i] + ",   y: " + mileage[i] + " },\n";
-			}
-			auxData1 = auxData1 + "];";
-			auxData2 = auxData2 + "];";
-			eval(auxData1);
-			eval(auxData2);
-
-			// Add X axis --> it is a date format
-			var x = d3.scaleLinear()
-				.domain([0,24])
-				.range([ 0, width ]);
-			let xaxis = d3.axisBottom(x);
-			svg1.append("g")
-				.attr("transform", "translate(0," + height + ")")
-				.call(xaxis);
-
-			// Add Y axis
-			var y1 = d3.scaleLinear()
-				.domain([0, 100])
-				.range([ height, 0 ]);
-			let yaxis = d3.axisLeft(y1);
-			yaxis.ticks(5);
-			svg1.append("g")
-				.call(yaxis);
-
-			// Add the line
-			svg1.append("path")
-				.datum(dataSoC)
-				.attr("fill", "none")
-				.attr("stroke", "steelblue")
-				.attr("stroke-width", 1.5)
-				.attr("d", d3.line()
-					.x(d => x(d.x) )
-					.y(d => y1(d.y) )
-					);
-
-			svg1.append("text")
-				.attr("class", "x label")
-				.attr("text-anchor", "end")
-				.attr("x", width/2)
-				.attr("y", height+30)
-				.text("Time");
-
-			svg1.append("text")
-				.attr("class", "y label")
-				.attr("text-anchor", "end")
-				.attr("x", -height/2+10)
-				.attr("y", -30)
-				//.attr("dy", ".75em")
-				.attr("transform", "rotate(-90)")
-				.text("SOC");
-
-			//let xaxis = d3.axisBottom(x);
-			svg2.append("g")
-				.attr("transform", "translate(0," + height + ")")
-				.call(xaxis);
-			// Add Y axis
-			var y2 = d3.scaleLinear()
-				.domain([0, 65])
-				.range([ height, 0 ]);
-			let y2axis = d3.axisLeft(y2);
-			y2axis.ticks(5);
-			svg2.append("g")
-				.call(y2axis);
-
-			// Add the line
-			svg2.append("path")
-				.datum(dataMileage)
-				.attr("fill", "none")
-				.attr("stroke", "steelblue")
-				.attr("stroke-width", 1.5)
-				.attr("d", d3.line()
-					.x(d => x(d.x) )
-					.y(d => y2(d.y) )
-					);
-			
-			svg2.append("text")
-				.attr("class", "x label")
-				.attr("text-anchor", "end")
-				.attr("x", width/2)
-				.attr("y", height+30)
-				.text("Time");
-
-			svg2.append("text")
-				.attr("class", "y label")
-				.attr("text-anchor", "end")
-				.attr("x", -height/2+20)
-				.attr("y", -30)
-				.attr("transform", "rotate(-90)")
-				.text("Mileage");
-		}
-
-		function delete_charts(){
-			svg1.selectAll("*").remove();
-			svg2.selectAll("*").remove();
-		}
+			eval( "polyline_" + auxRouteIndex + ".setStyle({ color: \"blue\", opacity: 1, weight: 15 });" );
+	}
 
 	d3.select("#plansbutton").on("change", function(d){
 		selectedGroup = this.value
@@ -1384,6 +1414,8 @@ div.dropdown-menu {
 		delete_charts()
 		updateCharts2()
 		updateBatteryIcon()
+		highlightLine()
+		// a function is needed to reset highlighted lines
 	}) 
 	
 	d3.select("#cebutton").on("change", function(d){
