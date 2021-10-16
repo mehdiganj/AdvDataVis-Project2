@@ -829,14 +829,12 @@ div.dropdown-menu {
 						routeSections = Object.keys(busRoutes[auxRouteNumber]);
 						for (let p = 0 ; p < routeSections.length ; p++){
 							if (busRoutes[auxRouteNumber][p]["cummulativeDistance"] >= busDistanceFrom){
-								alert("i'm good")
 								eval( "busLoc_" + k + " = L.marker(["+ busRoutes[auxRouteNumber][p]["latA"] +","+ busRoutes[auxRouteNumber][p]["longA"] +"], {icon: busIcon}).addTo(map).bindPopup(\"" + lineName + "<br>SOC: \"); ");
 								break;
 							}
 						}
 					}
 					else{
-						alert("i'm far")
 						eval( "busLoc_" + k + " = L.marker(["+ 0 +","+ 0 +"], {icon: busIcon}).addTo(map).bindPopup(\"" + lineName + "<br>SOC: \"); ");
 					}
 				}
@@ -930,12 +928,14 @@ div.dropdown-menu {
 				}
 			}
 
-			function updatetable2() {
-				var currentPlan = "Plan1";
+			function updatetable2(currentPlan) {
+				//var currentPlan = document.getElementById("plansbutton").value;
+				alert(currentPlan)
 				var currentTime = document.getElementById("myRange").value;
 				if (!currentTime.includes(".")){
 					currentTime = currentTime + ".0";
 				}
+				var busNumbers = Object.keys( finalBEBdata[currentPlan] );
 				auxDataTable = "dataTable = [";
 				for (let j = 0 ; j < busNumbers.length ; j++){
 					auxDataTable = auxDataTable + "{ BEB: " + busNumbers[j] + ",   SoC: " + finalBEBdata[currentPlan][busNumbers[j]][currentTime]["SoC"].toFixed(2) + ",   Mileage: " + finalBEBdata[currentPlan][busNumbers[j]][currentTime]["Mileage"].toFixed(2) + ",   Route: " + finalBEBdata[currentPlan][busNumbers[j]][currentTime]["Route_number"] + ",   Location: \"" + finalBEBdata[currentPlan][busNumbers[j]][currentTime]["Location"] + "\"},\n";
@@ -971,7 +971,7 @@ div.dropdown-menu {
 			}
 
 			delete_table();
-			updatetable2();
+			updatetable2(plans[0]);
 			locateBuses()
 
 			function updatemap(plan){
@@ -1503,7 +1503,7 @@ div.dropdown-menu {
 			
 			
 			delete_table();
-			updatetable2();
+			updatetable2(currentPlan);
 			delete_charts()
 			updateCharts2()
 			updateBatteryIcon()
