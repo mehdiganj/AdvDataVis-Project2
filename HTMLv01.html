@@ -625,7 +625,7 @@ div.dropdown-menu {
 			for (let k = 0; k < eval("ce_data2.Plan" + plan + ".Name.length") ; k++){
 				eval( "var station_" + k + " = L.marker([ce_data2.Plan"+ plan +".Latitude["+ k + "], ce_data2.Plan" + plan +".Longitude[" + k + "]], {icon: chargingStationIcon}).addTo(map).bindPopup(ce_data2.Plan" + plan + ".Name[" + k + "]); ");
 			}
-
+			
 			// initial charts
 			var divWidth = document.getElementById("chart1").clientWidth;
 			// set the dimensions and margins of the graph
@@ -763,9 +763,6 @@ div.dropdown-menu {
 				.attr("transform", "rotate(-90)")
 				.text("Mileage");
 
-			delete_table();
-			updatetable2();
-
 			map.on('zoomend', function() {
 				var currentZoom = map.getZoom();
 				var zoomedBusIcon = new L.Icon({
@@ -816,12 +813,12 @@ div.dropdown-menu {
 				.attr("value", function (d) { return d; }); // corresponding value returned by the button
 
 			function locateBuses(){
-				var busNumbers = Object.keys( finalBEBdata[plan] );
 				var currentPlan = document.getElementById("plansbutton").value;
 				var currentTime = document.getElementById("myRange").value;
 				if (!currentTime.includes(".")){
 					currentTime = currentTime + ".0";
 				}
+				var busNumbers = Object.keys( finalBEBdata[currentPlan] );
 				var auxLocation, auxRouteNumber;
 				for (let k = 0 ; k < busNumbers.length ; k++){
 					auxLocation = finalBEBdata[currentPlan][busNumbers[k]][currentTime]["Location"];
@@ -829,14 +826,35 @@ div.dropdown-menu {
 					if (auxLocation == "On Route"){
 						// identify the route
 						busDistanceFrom = finalBEBdata[currentPlan][busNumbers[k]][currentTime]["Distance_from_last_station"];
-						var auxAcum = 0
-						for (let j = 0 ; j<busRoutes.length ; j++){
-							if (busRoutes.LineName[j] == auxRouteNumber){
-								auxAcum = auxAcum ;
-
-
+						routeSections = Object.keys(busRoutes[auxRouteNumber]);
+						for (let p = 0 ; p < routeSections.length ; p++){
+							if (busRoutes[auxRouteNumber][p]["cummulativeDistance"] >= busDistanceFrom){
+								alert("i'm good")
+								eval( "busLoc_" + k + " = L.marker(["+ busRoutes[auxRouteNumber][p]["latA"] +","+ busRoutes[auxRouteNumber][p]["longA"] +"], {icon: busIcon}).addTo(map).bindPopup(\"" + lineName + "<br>SOC: \"); ");
+								break;
 							}
 						}
+					}
+					else{
+						alert("i'm far")
+						eval( "busLoc_" + k + " = L.marker(["+ 0 +","+ 0 +"], {icon: busIcon}).addTo(map).bindPopup(\"" + lineName + "<br>SOC: \"); ");
+					}
+				}
+			}
+
+			function clearBuses(){
+				var currentPlan = document.getElementById("plansbutton").value;
+				var currentTime = document.getElementById("myRange").value;
+				if (!currentTime.includes(".")){
+					currentTime = currentTime + ".0";
+				}
+				var busNumbers = Object.keys( finalBEBdata[currentPlan] );
+				var auxLocation, auxRouteNumber;
+				for (let k = 0 ; k < busNumbers.length ; k++){
+					try {
+						eval( "map.removeLayer(busLoc_" + k + ");");
+						} catch (error) {
+						console.error(error);
 					}
 				}
 			}
@@ -951,6 +969,10 @@ div.dropdown-menu {
 					map.remove(); 
 				}
 			}
+
+			delete_table();
+			updatetable2();
+			locateBuses()
 
 			function updatemap(plan){
 				// insert the map
@@ -1485,6 +1507,8 @@ div.dropdown-menu {
 			delete_charts()
 			updateCharts2()
 			updateBatteryIcon()
+			clearBuses()
+			locateBuses()
 		})
 		  
 	});
