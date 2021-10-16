@@ -536,7 +536,7 @@ div.dropdown-menu {
 			.defer(d3.csv, "../dataset/BEB_table_p60.csv")
 			.defer(d3.csv, "../dataset/BEB_table_p180.csv")
 			.defer(d3.json, "../dataset/CE_list.json")
-			.defer(d3.json, "/routes/NewRoutes_def.json")
+			.defer(d3.json, "/routes/coordinatesFinal.json")
 			.defer(d3.json, "/dataset/charging_stations.json")
 			.defer(d3.json, "/dataset/final_data.json")
 			.await(function(error, data, data1, data2, data3, ce_data, busRoutes, ce_data2, finalBEBdata) {
@@ -591,29 +591,26 @@ div.dropdown-menu {
 			for (let i = 0 ; i < routes.length ; i++ ) {
 				var q = 0;
 				var posFinal = [0,0];
-				var lineName ;
+				
 				var auxDistance = 0;
-				for (let k = 0 ; k < busRoutes.length ; k++) {
-					if (busRoutes[k].LineAbbr == routes[i]) {
-						eval( "var point_" + i + "_" + q + " = new L.LatLng(" + busRoutes[k].latA + "," + busRoutes[k].longA + ");" );
-						posFinal = [busRoutes[k].latB,busRoutes[k].longB]
-						lineName = busRoutes[k].LineName;
-						eval( "var auxPoint = new L.LatLng(" + busRoutes[k].latB + "," + busRoutes[k].longB + ");" );
-						eval( "auxDistance = auxDistance + point_" + i + "_" + q + ".distanceTo(auxPoint);" );
-						q++;
-					}
+				var routesFromData = Object.keys( busRoutes );
+				var routeSections = Object.keys(busRoutes[routes[i]]);
+
+				for (let k = 0 ; k < routeSections.length ; k++) {
+					eval( "var point_" + i + "_" + k + " = new L.LatLng(" + busRoutes[routes[i]][k]["latA"] + "," + busRoutes[routes[i]][k]["longA"] + ");" );
+					posFinal = [busRoutes[routes[i]][k]["latB"],busRoutes[routes[i]][k]["longB"]];
+					lineName = "Route " + routes[i];
+					eval( "var auxPoint = new L.LatLng(" + busRoutes[routes[i]][k]["latB"] + "," + busRoutes[routes[i]][k]["longB"] + ");" );
+					eval( "auxDistance = auxDistance + point_" + i + "_" + k + ".distanceTo(auxPoint);" );
 				}
 				routesMileage.push(auxDistance*0.000621371);
-				eval( "var point_" + i + "_" + q + " = new L.LatLng(" + posFinal[0] + "," + posFinal[1] + ");" );
+				eval( "var point_" + i + "_" + routeSections.length + " = new L.LatLng(" + posFinal[0] + "," + posFinal[1] + ");" );
 				var auxString = "var pointList_" + i +" = [" ;
 
-				for (let p = 0 ; p < q ; p++){
+				for (let p = 0 ; p < routeSections.length ; p++){
 					auxString = auxString +  "point_" + i + "_" + p + ",";
 				}
-				auxString = auxString + "point_" + i + "_" + q + "]";
-
-				aux = Math.round( (0.1 + Math.random()*.8) * q)
-				eval( "var busLoc_" + i + " = L.marker([point_" + i + "_" + aux + ".lat" + ",point_" + i + "_" + aux + ".lng], {icon: busIcon}).addTo(map).bindPopup(\"" + lineName + "<br>SOC: \"); ");
+				auxString = auxString + "point_" + i + "_" + routeSections.length + "]";
 
 				eval( auxString );
 				eval( "var polyline_" + i + " = new L.Polyline(pointList_" + i +", {color: 'red',weight: 5,opacity: 0.6,smoothFactor: 1}); " ) ;
@@ -768,9 +765,6 @@ div.dropdown-menu {
 
 			delete_table();
 			updatetable2();
-			
-
-			
 
 			map.on('zoomend', function() {
 				var currentZoom = map.getZoom();
@@ -821,6 +815,31 @@ div.dropdown-menu {
 				.text(function (d) { return d; }) // text showed in the menu
 				.attr("value", function (d) { return d; }); // corresponding value returned by the button
 
+			function locateBuses(){
+				var busNumbers = Object.keys( finalBEBdata[plan] );
+				var currentPlan = document.getElementById("plansbutton").value;
+				var currentTime = document.getElementById("myRange").value;
+				if (!currentTime.includes(".")){
+					currentTime = currentTime + ".0";
+				}
+				var auxLocation, auxRouteNumber;
+				for (let k = 0 ; k < busNumbers.length ; k++){
+					auxLocation = finalBEBdata[currentPlan][busNumbers[k]][currentTime]["Location"];
+					auxRouteNumber = finalBEBdata[currentPlan][busNumbers[k]][currentTime]["Route_number"];
+					if (auxLocation == "On Route"){
+						// identify the route
+						busDistanceFrom = finalBEBdata[currentPlan][busNumbers[k]][currentTime]["Distance_from_last_station"];
+						var auxAcum = 0
+						for (let j = 0 ; j<busRoutes.length ; j++){
+							if (busRoutes.LineName[j] == auxRouteNumber){
+								auxAcum = auxAcum ;
+
+
+							}
+						}
+					}
+				}
+			}
 					
 			// A function that update the list of the beb
 			function updatelists(plan) {
@@ -978,36 +997,37 @@ div.dropdown-menu {
 				});
 
 				for (let i = 0 ; i < routes.length ; i++ ) {
-					var q = 0;
-					var posFinal = [0,0];
-					var lineName ;
-					for (let k = 0 ; k < busRoutes.length ; k++) {
-						if (busRoutes[k].LineAbbr == routes[i]) {
-							eval( "var point_" + i + "_" + q + " = new L.LatLng(" + busRoutes[k].latA + "," + busRoutes[k].longA + ");" );
-							posFinal = [busRoutes[k].latB,busRoutes[k].longB]
-							lineName = busRoutes[k].LineName;
-							q++;
-						}
-					}
-					eval( "var point_" + i + "_" + q + " = new L.LatLng(" + posFinal[0] + "," + posFinal[1] + ");" );
-					var auxString = "var pointList_" + i +" = [" ;
+				var q = 0;
+				var posFinal = [0,0];
+				
+				var auxDistance = 0;
+				var routesFromData = Object.keys( busRoutes );
+				var routeSections = Object.keys(busRoutes[routes[i]]);
 
-					for (let p = 0 ; p < q ; p++){
-						auxString = auxString +  "point_" + i + "_" + p + ",";
-					}
-					auxString = auxString + "point_" + i + "_" + q + "]";
-
-					aux = Math.round( (0.1 + Math.random()*.8) * q)
-					eval( "var busLoc_" + i + " = L.marker([point_" + i + "_" + aux + ".lat" + ",point_" + i + "_" + aux + ".lng], {icon: busIcon}).addTo(map).bindPopup(\"" + lineName + "<br>SOC: \"); ");
-
-					eval( auxString );
-					eval( "var polyline_" + i + " = new L.Polyline(pointList_" + i +", {color: 'red',weight: 5,opacity: 0.6,smoothFactor: 1}); " ) ;
-					eval( "polyline_" + i + ".addTo(map);" );
-					eval( "polyline_" + i + ".bindPopup(\"" + lineName +"\");" );
-
-					eval( "polyline_" + i + ".on('click', function(){ polyline_"+i+".setStyle({ color: \"red\", opacity: 1, weight: 10 }); });" );
-					eval( "polyline_" + i + ".on('popupclose', function(e){ e.target.setStyle({color: \"red\", opacity: 0.6, weight: 5}); });" );
+				for (let k = 0 ; k < routeSections.length ; k++) {
+					eval( "var point_" + i + "_" + k + " = new L.LatLng(" + busRoutes[routes[i]][k]["latA"] + "," + busRoutes[routes[i]][k]["longA"] + ");" );
+					posFinal = [busRoutes[routes[i]][k]["latB"],busRoutes[routes[i]][k]["longB"]];
+					lineName = busRoutes[routes[i]][k]["LineName"];
+					eval( "var auxPoint = new L.LatLng(" + busRoutes[routes[i]][k]["latB"] + "," + busRoutes[routes[i]][k]["longB"] + ");" );
+					eval( "auxDistance = auxDistance + point_" + i + "_" + k + ".distanceTo(auxPoint);" );
 				}
+				routesMileage.push(auxDistance*0.000621371);
+				eval( "var point_" + i + "_" + routeSections.length + " = new L.LatLng(" + posFinal[0] + "," + posFinal[1] + ");" );
+				var auxString = "var pointList_" + i +" = [" ;
+
+				for (let p = 0 ; p < routeSections.length ; p++){
+					auxString = auxString +  "point_" + i + "_" + p + ",";
+				}
+				auxString = auxString + "point_" + i + "_" + routeSections.length + "]";
+
+				eval( auxString );
+				eval( "var polyline_" + i + " = new L.Polyline(pointList_" + i +", {color: 'red',weight: 5,opacity: 0.6,smoothFactor: 1}); " ) ;
+				eval( "polyline_" + i + ".addTo(map);" );
+				eval( "polyline_" + i + ".bindPopup(\"" + lineName +"\");" );
+
+				eval( "polyline_" + i + ".on('click', function(){ polyline_"+i+".setStyle({ color: \"red\", opacity: 1, weight: 10 }); });" );
+				eval( "polyline_" + i + ".on('popupclose', function(e){ e.target.setStyle({color: \"red\", opacity: 0.6, weight: 5}); });" );
+			}
 				// locate the charging stations
 				for (let k = 0; k < eval("ce_data2." + plan + ".Name.length") ; k++){
 					eval( "var station_" + k + " = L.marker([ce_data2."+ plan +".Latitude["+ k + "], ce_data2." + plan +".Longitude[" + k + "]], {icon: chargingStationIcon}).addTo(map).bindPopup(ce_data2." + plan + ".Name[" + k + "]); ");
@@ -1393,79 +1413,79 @@ div.dropdown-menu {
 			eval( "polyline_" + auxRouteIndex + ".setStyle({ color: \"blue\", opacity: 1, weight: 15 });" );
 	}
 
-	d3.select("#plansbutton").on("change", function(d){
-		selectedGroup = this.value
-		delete_beb()
-		delete_ce()
-		delete_table()
-		delete_map()
-		delete_charts()
-		updatelists(selectedGroup)
-		updatece(selectedGroup)
-		updatetable(selectedGroup)
-		updatemap(selectedGroup)
-		updateCharts2()
-		updateBatteryIcon()
-	})  
+		d3.select("#plansbutton").on("change", function(d){
+			selectedGroup = this.value
+			delete_beb()
+			delete_ce()
+			delete_table()
+			delete_map()
+			delete_charts()
+			updatelists(selectedGroup)
+			updatece(selectedGroup)
+			updatetable(selectedGroup)
+			updatemap(selectedGroup)
+			updateCharts2()
+			updateBatteryIcon()
+		})  
 
-	d3.select("#bebbutton").on("change", function(d){
-		selectedBEB = this.value;
-		var currentPlan = document.getElementById("plansbutton").value;
-		delete_charts()
-		updateCharts2()
-		updateBatteryIcon()
-		highlightLine()
-		// a function is needed to reset highlighted lines
-	}) 
-	
-	d3.select("#cebutton").on("change", function(d){
-		selectedCE = this.value
-		var x = Math.random();
-		if (x<0.2){
-			document.getElementById("charging-icon").src = "icons/in-use.png";
-		}
-		else{
-			document.getElementById("charging-icon").src = "icons/free.png";	
-		}
-	}) 
-
-	function updateBatteryIcon(){
-		var currentPlan = document.getElementById("plansbutton").value;
-		var currentBus = document.getElementById("bebbutton").value;
-		var currentTime = document.getElementById("myRange").value;
-		if (!currentTime.includes(".")){
-			currentTime = currentTime + ".0";
-		}
-		var aux1 = finalBEBdata[currentPlan][currentBus][currentTime]["SoC"];
-		if (aux1 >= 80){
-			document.getElementById("battery-icon").src = "icons/battery-green.png";
-		}
-		else{
-			if (aux1 < 80 && aux1 >= 40){
-				document.getElementById("battery-icon").src = "icons/battery-yellow.png";
+		d3.select("#bebbutton").on("change", function(d){
+			selectedBEB = this.value;
+			var currentPlan = document.getElementById("plansbutton").value;
+			delete_charts()
+			updateCharts2()
+			updateBatteryIcon()
+			highlightLine()
+			// a function is needed to reset highlighted lines
+		}) 
+		
+		d3.select("#cebutton").on("change", function(d){
+			selectedCE = this.value
+			var x = Math.random();
+			if (x<0.2){
+				document.getElementById("charging-icon").src = "icons/in-use.png";
 			}
 			else{
-				document.getElementById("battery-icon").src = "icons/battery-red.png";
+				document.getElementById("charging-icon").src = "icons/free.png";	
+			}
+		}) 
+
+		function updateBatteryIcon(){
+			var currentPlan = document.getElementById("plansbutton").value;
+			var currentBus = document.getElementById("bebbutton").value;
+			var currentTime = document.getElementById("myRange").value;
+			if (!currentTime.includes(".")){
+				currentTime = currentTime + ".0";
+			}
+			var aux1 = finalBEBdata[currentPlan][currentBus][currentTime]["SoC"];
+			if (aux1 >= 80){
+				document.getElementById("battery-icon").src = "icons/battery-green.png";
+			}
+			else{
+				if (aux1 < 80 && aux1 >= 40){
+					document.getElementById("battery-icon").src = "icons/battery-yellow.png";
+				}
+				else{
+					document.getElementById("battery-icon").src = "icons/battery-red.png";
+				}
 			}
 		}
-	}
 
-	d3.select("#myRange").on("change", function(d){
-		selectedValueRange = this.value;
-		document.getElementById("timeBox").innerHTML = "Time: " + selectedValueRange;
-		if (!selectedValueRange.includes(".")){
-			selectedValueRange = selectedValueRange + ".0";
-		}
-		//alert(selectedValueRange)
-		var currentPlan = document.getElementById("plansbutton").value;
-		
-		
-		delete_table();
-		updatetable2();
-		delete_charts()
-		updateCharts2()
-		updateBatteryIcon()
-	})
+		d3.select("#myRange").on("change", function(d){
+			selectedValueRange = this.value;
+			document.getElementById("timeBox").innerHTML = "Time: " + selectedValueRange;
+			if (!selectedValueRange.includes(".")){
+				selectedValueRange = selectedValueRange + ".0";
+			}
+			//alert(selectedValueRange)
+			var currentPlan = document.getElementById("plansbutton").value;
+			
+			
+			delete_table();
+			updatetable2();
+			delete_charts()
+			updateCharts2()
+			updateBatteryIcon()
+		})
 		  
 	});
 
