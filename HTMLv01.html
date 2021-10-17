@@ -569,7 +569,8 @@ div.dropdown-menu {
 			.defer(d3.json, "/dataset/charging_stations.json")
 			.defer(d3.json, "/dataset/final_data.json")
 			.defer(d3.json, "/dataset/final_cs.json")
-			.await(function(error, data, data1, data2, data3, ce_data, busRoutes, ce_data2, finalBEBdata, finalChdata) {
+			.defer(d3.json, "../routes/stopsFinal.json")
+			.await(function(error, data, data1, data2, data3, ce_data, busRoutes, ce_data2, finalBEBdata, finalChdata, busStops) {
 			if (error) throw error;
 
 			const plans = d3.keys(data)
@@ -608,6 +609,13 @@ div.dropdown-menu {
 				popupAnchor: [0, -44]
 			});
 
+			var busInChargingStationIcon = L.icon({
+				iconUrl: 'icons/bus-in-station.png',
+				iconSize: [26, 44],
+				iconAnchor: [13, 44],
+				popupAnchor: [0, -44]
+			});
+
 			// add the bus icon
 			var busIcon = L.icon({
 				iconUrl: 'icons/bus-icon.png',
@@ -615,6 +623,8 @@ div.dropdown-menu {
 				iconAnchor: [9.28, 20],
 				popupAnchor: [0, -20]
 			});
+
+			var iconStatus = [];
 
 			routesMileage = [];
 
@@ -859,7 +869,7 @@ div.dropdown-menu {
 					popupAnchor: [0, -20*(1 + (currentZoom-12)/5)]
 				});
 				var zoomedCharging = new L.Icon({
-					iconUrl: 'icons/charging-station.png',
+					iconUrl: 'icons/bus-in-station.png',
 					iconSize: [26*(1 + (currentZoom-12)/5), 44*(1 + (currentZoom-12)/5)],
 					iconAnchor: [13*(1 + (currentZoom-12)/5), 44*(1 + (currentZoom-12)/5)],
 					popupAnchor: [0, -44*(1 + (currentZoom-12)/5)]
@@ -907,6 +917,7 @@ div.dropdown-menu {
 			function locateBuses(){
 				var currentPlan = document.getElementById("plansbutton").value;
 				var currentTime = document.getElementById("myRange").value;
+				iconStatus = []
 				if (!currentTime.includes(".")){
 					currentTime = currentTime + ".0";
 				}
@@ -922,14 +933,35 @@ div.dropdown-menu {
 						for (let p = 0 ; p < routeSections.length ; p++){
 							if (busRoutes[auxRouteNumber][p]["cummulativeDistance"] >= busDistanceFrom){
 								eval( "busLoc_" + k + " = L.marker(["+ busRoutes[auxRouteNumber][p]["latA"] +","+ busRoutes[auxRouteNumber][p]["longA"] +"], {icon: busIcon}).addTo(map).bindPopup(\"" + lineName + "<br>SOC: \"); ");
+								iconStatus.push(1); // bus
 								break;
 							}
 						}
 					}
 					else{
-						eval( "busLoc_" + k + " = L.marker(["+ 0 +","+ 0 +"], {icon: busIcon}).addTo(map).bindPopup(\"" + lineName + "<br>SOC: \"); ");
+						eval( "busLoc_" + k + " = L.marker(["+ 0 +","+ 0 +"], {icon: chargingStationIcon}); ");
+						
+						var found = 0;
+						// check if the station is in the charging list
+						for( let t = 0 ; t < eval("ce_data2." + currentPlan + ".Name.length") ; t++ ){
+							getStationName = eval("ce_data2." + currentPlan + ".Name[" + t + "];") ;
+							if ( getStationName == auxLocation ){
+								//var auxGetSt = "\"" + getStationName + "\""
+								eval( "busLoc_" + k + " = L.marker([ ce_data2[\"" + currentPlan + "\"][\"Latitude\"]["+t+"] , ce_data2[\"" + currentPlan + "\"][\"Longitude\"]["+t+"] ], {icon: busInChargingStationIcon}).addTo(map); ");
+								found = 1;
+								iconStatus.push(2); // charging station
+								break
+							}
+						}
+						if (found == 0){
+							eval( "busLoc_" + k + " = L.marker([" + busStops[auxLocation + " "]["lat"] + "," + busStops[auxLocation + " "]["long"] + " ], {icon: chargingStationIcon}).addTo(map);");
+							iconStatus.push(3); // regular station
+						}
 					}
 				}
+
+				// create a loop to explore all the charging station status (based on plan, time). for those free, add a reg icon. if in use, send to 0,0
+				console.log(iconStatus)
 			}
 
 			function clearBuses(){
@@ -965,11 +997,28 @@ div.dropdown-menu {
 					iconAnchor: [13*(1 + (currentZoom-12)/5), 44*(1 + (currentZoom-12)/5)],
 					popupAnchor: [0, -44*(1 + (currentZoom-12)/5)]
 				});
+				var zoomedBusInCharging = new L.Icon({
+					iconUrl: 'icons/bus-in-station.png',
+					iconSize: [26*(1 + (currentZoom-12)/5), 44*(1 + (currentZoom-12)/5)],
+					iconAnchor: [13*(1 + (currentZoom-12)/5), 44*(1 + (currentZoom-12)/5)],
+					popupAnchor: [0, -44*(1 + (currentZoom-12)/5)]
+				});
 
 				var busNumbers = Object.keys( finalBEBdata[currentPlan] );
 				
 				for( let r = 0 ; r < busNumbers.length ; r++ ){
-					eval( "busLoc_" + r + ".setIcon(zoomedBusIcon);" );
+					if (iconStatus[r] == 1){
+						eval( "busLoc_" + r + ".setIcon(zoomedBusIcon);" );
+					}
+					else{
+						if (iconStatus[r] == 2){
+							eval( "busLoc_" + r + ".setIcon(zoomedBusInCharging);" );
+						}
+						else{
+							eval( "busLoc_" + r + ".setIcon(zoomedCharging);" );
+						}
+					}
+						
 
 				}
 				// for( let t = 0 ; t < eval("ce_data2." + plan + ".Name.length") ; t++ ){
