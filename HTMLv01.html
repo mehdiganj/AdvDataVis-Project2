@@ -392,6 +392,10 @@ div.dropdown-menu {
   
 }
 
+.nav{background-color: rgba(191, 191, 191, 0.8);
+	padding: 5px 5px 5px 5px;
+
+}
 .Free {background-color: #04AA6D;} /* Green */
 
 
@@ -410,18 +414,18 @@ div.dropdown-menu {
 		<ul class="nav nav-pills">
 
 			<li class="nav-item">
-				<a href="/HTMLv01.html" class="nav-link" style="color:rgb(255, 248, 248); background-color: #045aaa;">Home</a>
+				<a href="/HTMLv01.html" class="nav-link" style="color:rgb(255, 248, 248); background-color: #049faa;">Home</a>
 			</li>
-
+			
 			<li class="nav-item">
-				<a class="nav-link" ><b>Plans:</b></a>
+				<a class="nav-link" style="padding-left:100px" ><b>Plans:</b></a>
 			</li>
 			
 			<li class="nav-item" >
 				<select id="plansbutton" class="custom-select" style="width:90px;"></select>
 			</li>
 
-			<div>
+			<div class="nav-item ms-auto">
 				<p class="round" style= "margin:0px 5px 0px 10px;  padding:4px" id="timeBox">Time: </p>
 			</div>
 			
@@ -433,10 +437,44 @@ div.dropdown-menu {
 			<!-- <li class="nav-item ms-auto">
 				<a clss = "active" href="#" class="nav-link">Static Data</a>
 			</li> -->
-			<li class="nav-item ms-auto">
-				<a href="/about.html" class="nav-link" style="color:rgb(255, 248, 248); background-color: #045aaa;">About</a>
+			<li class="nav-item me-auto">
+				<a href="/about.html" class="nav-link" style="color:rgb(255, 248, 248); background-color: #049faa;">Help</a>
 			</li>
+			<li class="nav-item me-auto">
+				<a href="/about.html" class="nav-link" style="color:rgb(255, 248, 248); background-color: #049faa;">About</a>
+			</li>
+
+				
 		</ul>
+	</div>
+
+	<div id="app">
+		<nav class="navbar navbar-expand-md navbar-light bg-light">
+			<div class="collapse navbar-collapse" id="navbarNav">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item active">
+						<a href="/HTMLv01.html" class="nav-link" style="color:rgb(255, 248, 248); background-color: #049faa;">Home</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" style="padding-left:100px" ><b>Plans:</b></a>
+					</li>
+					
+					<li class="nav-item" >
+						<select id="plansbutton" class="custom-select" style="width:90px;"></select>
+					</li>
+
+
+				</ul>
+				<ul class="navbar-nav">
+					<li class="nav-item">
+						<a class="nav-link" href="{{ url('/login') }}">Login</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="{{ url('/register') }}">Register</a>
+					</li>
+				</ul>
+			</div>
+		</nav>
 	</div>
 
 
