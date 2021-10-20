@@ -1672,11 +1672,65 @@ div.dropdown-menu {
 				}
 				var currentRoute = finalBEBdata[currentPlan][currentBus][currentTime]["Route_number"];
 				var auxRouteIndex = routes.findIndex((element) => element == currentRoute);
+				var currentLocation = finalBEBdata[currentPlan][currentBus][currentTime]["Location"];
 
-				for (let k = 0 ; k<routes.length ; k++){
-					eval( "polyline_" + k + ".setStyle({ color: \"red\", opacity: 0.6, weight: 5 });" );
+				var busNumbers = Object.keys( finalBEBdata[currentPlan] );
+				auxBusIndex = busNumbers.findIndex((element) => element == currentBus);
+				if (currentLocation == "On Route"){
+					// el bus esta en ruta, se refresca la linea
+					for (let k = 0 ; k<routes.length ; k++){
+						eval( "polyline_" + k + ".setStyle({ color: \"red\", opacity: 0.6, weight: 5 });" );
+					}
+					eval( "polyline_" + auxRouteIndex + ".setStyle({ color: \"blue\", opacity: 1, weight: 15 });" );
+					var currentZoom = map.getZoom();
+					var highlightedBusIcon = new L.Icon({
+						iconUrl: 'icons/bus-selected.png',
+						iconSize: [1.5*18.56*(1 + (currentZoom-12)/5), 1.5*20*(1 + (currentZoom-12)/5)],
+						iconAnchor: [1.5*9.28*(1 + (currentZoom-12)/5), 20*1.5*(1 + (currentZoom-12)/5)],
+						popupAnchor: [0, -20*1.5*(1 + (currentZoom-12)/5)]
+					});
+					alert("bus grande")
+					eval( "busLoc_" + auxBusIndex + ".setIcon(highlightedBusIcon).setZIndexOffset(500);" );
+				} 
+				else {
+					// el bus esta en estacion. resaltar su icono
+					for (let k = 0 ; k < busNumbers.length ; k++){
+						// reset a los iconos:
+						if (iconStatus[k] == 1){
+							eval( "busLoc_" + k + ".setIcon(busIcon).setZIndexOffset(0);" );
+						}
+						else{
+							if (iconStatus[k] == 2){
+								eval( "busLoc_" + k + ".setIcon(busInChargingStationIcon).setZIndexOffset(0);" );
+							}
+							else{
+								eval( "busLoc_" + k + ".setIcon(chargingStationIcon).setZIndexOffset(0);" );
+							}
+						}
+
+					}
+
+					// encontrar el numero de la ruta en la lista de buses
+					var currentZoom = map.getZoom();
+					if (iconStatus[auxBusIndex] == 2){
+						var highlightedBusInCharging = new L.Icon({
+							iconUrl: 'icons/bus-in-station.png',
+							iconSize: [1.5*26*(1 + (currentZoom-12)/5), 1.5*44*(1 + (currentZoom-12)/5)],
+							iconAnchor: [1.5*13*(1 + (currentZoom-12)/5), 1.5*44*(1 + (currentZoom-12)/5)],
+							popupAnchor: [0, -44*1.5*(1 + (currentZoom-12)/5)]
+						});
+						eval( "busLoc_" + auxBusIndex + ".setIcon(highlightedBusInCharging).setZIndexOffset(500);" );
+					}
+					if (iconStatus[auxBusIndex] == 3){
+						var highlightedCharging = new L.Icon({
+							iconUrl: 'icons/regular-station.png',
+							iconSize: [1.5*26*(1 + (currentZoom-12)/5), 44*1.5*(1 + (currentZoom-12)/5)],
+							iconAnchor: [13*1.5*(1 + (currentZoom-12)/5), 44*1.5*(1 + (currentZoom-12)/5)],
+							popupAnchor: [0, -44*1.5*(1 + (currentZoom-12)/5)]
+						});
+						eval( "busLoc_" + auxBusIndex + ".setIcon(highlightedCharging).setZIndexOffset(500);" );
+					}
 				}
-				eval( "polyline_" + auxRouteIndex + ".setStyle({ color: \"blue\", opacity: 1, weight: 15 });" );
 			}
 
 	d3.select("#plansbutton").on("change", function(d){
