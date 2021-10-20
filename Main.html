@@ -600,19 +600,17 @@ div.dropdown-menu {
 	<script>
 		d3.queue()
 		    .defer(d3.json, "../dataset/BEB_list.json")
-			.defer(d3.csv, "../dataset/BEB_table_p20.csv")
-			.defer(d3.csv, "../dataset/BEB_table_p60.csv")
-			.defer(d3.csv, "../dataset/BEB_table_p180.csv")
 			.defer(d3.json, "../dataset/CE_list.json")
-			.defer(d3.json, "/routes/coordinatesFinal3.json")
+			.defer(d3.json, "/dataset/coordinatesFinal3.json")
 			.defer(d3.json, "/dataset/charging_stations.json")
 			.defer(d3.json, "/dataset/final_data.json")
 			.defer(d3.json, "/dataset/final_cs.json")
-			.defer(d3.json, "../routes/stopsFinal.json")
-			.await(function(error, data, data1, data2, data3, ce_data, busRoutes, ce_data2, finalBEBdata, finalChdata, busStops) {
+			.defer(d3.json, "../dataset/stopsFinal.json")
+			.await(function(error, data, ce_data, busRoutes, ce_data2, finalBEBdata, finalChdata, busStops) {
 			if (error) throw error;
 
-			const plans = d3.keys(data)
+			//const plans = d3.keys(data)
+			const plans = Object.keys( finalBEBdata );
 
 			const plan = 1;
 			var routes = [];
@@ -1782,12 +1780,15 @@ div.dropdown-menu {
 		delete_chart3()
 		updatelists(selectedGroup)
 		updatece(selectedGroup)
-		updatetable(selectedGroup)
+		updatetable2(selectedGroup)
 		updatemap(selectedGroup)
 		updateCharts2()
 		updateChart3()
 		updateBatteryIcon()
 		updateCEIcon()
+		delete_chart3()
+		updateChart3()
+		locateBuses()
 	})  
 
 	d3.select("#bebbutton").on("change", function(d){
@@ -1845,35 +1846,35 @@ div.dropdown-menu {
 		}
 	}
 
-		d3.select("#plansbutton").on("change", function(d){
-			selectedGroup = this.value
-			delete_beb()
-			delete_ce()
-			delete_table()
-			delete_map()
-			delete_charts()
-			updatelists(selectedGroup)
-			updatece(selectedGroup)
-			updatetable(selectedGroup)
-			updatemap(selectedGroup)
-			updateCharts2()
-			updateBatteryIcon()
+		// d3.select("#plansbutton").on("change", function(d){
+		// 	selectedGroup = this.value
+		// 	delete_beb()
+		// 	delete_ce()
+		// 	delete_table()
+		// 	delete_map()
+		// 	delete_charts()
+		// 	updatelists(selectedGroup)
+		// 	updatece(selectedGroup)
+		// 	updatetable(selectedGroup)
+		// 	updatemap(selectedGroup)
+		// 	updateCharts2()
+		// 	updateBatteryIcon()
 
-			delete_chart3()
+		// 	delete_chart3()
 
-			updateChart3()
-			locateBuses()
-		})  
+		// 	updateChart3()
+		// 	locateBuses()
+		// })  
 
-		d3.select("#bebbutton").on("change", function(d){
-			selectedBEB = this.value;
-			var currentPlan = document.getElementById("plansbutton").value;
-			delete_charts()
-			updateCharts2()
-			updateBatteryIcon()
-			highlightLine()
-			// a function is needed to reset highlighted lines
-		}) 
+		// d3.select("#bebbutton").on("change", function(d){
+		// 	selectedBEB = this.value;
+		// 	var currentPlan = document.getElementById("plansbutton").value;
+		// 	delete_charts()
+		// 	updateCharts2()
+		// 	updateBatteryIcon()
+		// 	highlightLine()
+		// 	// a function is needed to reset highlighted lines
+		// }) 
 		
 		// d3.select("#cebutton").on("change", function(d){
 		// 	selectedCE = this.value
