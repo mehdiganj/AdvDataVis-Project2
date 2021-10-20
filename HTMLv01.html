@@ -565,7 +565,7 @@ div.dropdown-menu {
 			.defer(d3.csv, "../dataset/BEB_table_p60.csv")
 			.defer(d3.csv, "../dataset/BEB_table_p180.csv")
 			.defer(d3.json, "../dataset/CE_list.json")
-			.defer(d3.json, "/routes/coordinatesFinal.json")
+			.defer(d3.json, "/routes/coordinatesFinal3.json")
 			.defer(d3.json, "/dataset/charging_stations.json")
 			.defer(d3.json, "/dataset/final_data.json")
 			.defer(d3.json, "/dataset/final_cs.json")
@@ -639,7 +639,7 @@ div.dropdown-menu {
 				for (let k = 0 ; k < routeSections.length ; k++) {
 					eval( "var point_" + i + "_" + k + " = new L.LatLng(" + busRoutes[routes[i]][k]["latA"] + "," + busRoutes[routes[i]][k]["longA"] + ");" );
 					posFinal = [busRoutes[routes[i]][k]["latB"],busRoutes[routes[i]][k]["longB"]];
-					lineName = "Route " + routes[i];
+					lineName = busRoutes[routes[i]][k]["LineName"];
 					eval( "var auxPoint = new L.LatLng(" + busRoutes[routes[i]][k]["latB"] + "," + busRoutes[routes[i]][k]["longB"] + ");" );
 					eval( "auxDistance = auxDistance + point_" + i + "_" + k + ".distanceTo(auxPoint);" );
 				}
@@ -932,7 +932,7 @@ div.dropdown-menu {
 						routeSections = Object.keys(busRoutes[auxRouteNumber]);
 						for (let p = 0 ; p < routeSections.length ; p++){
 							if (busRoutes[auxRouteNumber][p]["cummulativeDistance"] >= busDistanceFrom){
-								eval( "busLoc_" + k + " = L.marker(["+ busRoutes[auxRouteNumber][p]["latA"] +","+ busRoutes[auxRouteNumber][p]["longA"] +"], {icon: busIcon}).addTo(map).bindPopup(\"" + lineName + "<br>SOC: \"); ");
+								eval( "busLoc_" + k + " = L.marker(["+ busRoutes[auxRouteNumber][p]["latA"] +","+ busRoutes[auxRouteNumber][p]["longA"] +"], {icon: busIcon}).addTo(map).bindPopup(\"Bus number: "+ busNumbers[k] +"<br>Route number: " + auxRouteNumber + "<br>Route name: "+ busRoutes[auxRouteNumber][p]["LineName"] +"<br>SOC: " + finalBEBdata[currentPlan][busNumbers[k]][currentTime]["SoC"].toFixed(2) + "% \"); ");
 								iconStatus.push(1); // bus
 								break;
 							}
@@ -947,14 +947,14 @@ div.dropdown-menu {
 							getStationName = eval("ce_data2." + currentPlan + ".Name[" + t + "];") ;
 							if ( getStationName == auxLocation ){
 								//var auxGetSt = "\"" + getStationName + "\""
-								eval( "busLoc_" + k + " = L.marker([ ce_data2[\"" + currentPlan + "\"][\"Latitude\"]["+t+"] , ce_data2[\"" + currentPlan + "\"][\"Longitude\"]["+t+"] ], {icon: busInChargingStationIcon}).addTo(map); ");
+								eval( "busLoc_" + k + " = L.marker([ ce_data2[\"" + currentPlan + "\"][\"Latitude\"]["+t+"] , ce_data2[\"" + currentPlan + "\"][\"Longitude\"]["+t+"] ], {icon: busInChargingStationIcon}).addTo(map).bindPopup(\"Location: "+ getStationName +"<br>Energy consumed: "+ finalChdata[currentPlan][getStationName][currentTime]["energy"] +" kWh\"); ");
 								found = 1;
 								iconStatus.push(2); // charging station
 								break
 							}
 						}
 						if (found == 0){
-							eval( "busLoc_" + k + " = L.marker([" + busStops[auxLocation + " "]["lat"] + "," + busStops[auxLocation + " "]["long"] + " ], {icon: chargingStationIcon}).addTo(map);");
+							eval( "busLoc_" + k + " = L.marker([" + busStops[auxLocation + " "]["lat"] + "," + busStops[auxLocation + " "]["long"] + " ], {icon: chargingStationIcon}).addTo(map).bindPopup(\""+ auxLocation +"\");");
 							iconStatus.push(3); // regular station
 						}
 					}
@@ -1204,7 +1204,7 @@ div.dropdown-menu {
 					for (let k = 0 ; k < routeSections.length ; k++) {
 						eval( "var point_" + i + "_" + k + " = new L.LatLng(" + busRoutes[routes[i]][k]["latA"] + "," + busRoutes[routes[i]][k]["longA"] + ");" );
 						posFinal = [busRoutes[routes[i]][k]["latB"],busRoutes[routes[i]][k]["longB"]];
-						lineName = lineName = "Route " + routes[i];
+						lineName = busRoutes[routes[i]][k]["LineName"];;
 						eval( "var auxPoint = new L.LatLng(" + busRoutes[routes[i]][k]["latB"] + "," + busRoutes[routes[i]][k]["longB"] + ");" );
 						eval( "auxDistance = auxDistance + point_" + i + "_" + k + ".distanceTo(auxPoint);" );
 					}
@@ -1689,7 +1689,6 @@ div.dropdown-menu {
 						iconAnchor: [1.5*9.28*(1 + (currentZoom-12)/5), 20*1.5*(1 + (currentZoom-12)/5)],
 						popupAnchor: [0, -20*1.5*(1 + (currentZoom-12)/5)]
 					});
-					alert("bus grande")
 					eval( "busLoc_" + auxBusIndex + ".setIcon(highlightedBusIcon).setZIndexOffset(500);" );
 				} 
 				else {
