@@ -928,6 +928,7 @@ div.dropdown-menu {
 					auxRouteNumber = finalBEBdata[currentPlan][busNumbers[k]][currentTime]["Route_number"];
 					if (auxLocation == "On Route"){
 						// identify the route
+						//if ( busRoutes[auxRouteNumber][0]["station"] == )
 						busDistanceFrom = finalBEBdata[currentPlan][busNumbers[k]][currentTime]["Distance_from_last_station"];
 						routeSections = Object.keys(busRoutes[auxRouteNumber]);
 						for (let p = 0 ; p < routeSections.length ; p++){
