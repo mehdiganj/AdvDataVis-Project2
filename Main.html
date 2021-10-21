@@ -984,7 +984,7 @@ div.dropdown-menu {
 							getStationName = eval("ce_data2." + currentPlan + ".Name[" + t + "];") ;
 							if ( getStationName == auxLocation ){
 								//var auxGetSt = "\"" + getStationName + "\""
-								eval( "busLoc_" + k + " = L.marker([ ce_data2[\"" + currentPlan + "\"][\"Latitude\"]["+t+"] , ce_data2[\"" + currentPlan + "\"][\"Longitude\"]["+t+"] ], {icon: busInChargingStationIcon}).addTo(map).bindPopup(\"Location: "+ getStationName +"<br>Energy consumed: "+ finalChdata[currentPlan][getStationName][currentTime]["energy"] +" kWh\"); ");
+								eval( "busLoc_" + k + " = L.marker([ ce_data2[\"" + currentPlan + "\"][\"Latitude\"]["+t+"] , ce_data2[\"" + currentPlan + "\"][\"Longitude\"]["+t+"] ], {icon: busInChargingStationIcon}).addTo(map).bindPopup(\"Location: "+ getStationName +"<br>Energy consumed: "+ finalChdata[currentPlan][getStationName][currentTime]["energy"].toFixed(0)/1000 +" MWh\"); ");
 								found = 1;
 								iconStatus.push(2); // charging station
 								break
