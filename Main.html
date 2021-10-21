@@ -599,14 +599,13 @@ div.dropdown-menu {
 
 	<script>
 		d3.queue()
-		    .defer(d3.json, "../dataset/BEB_list.json")
 			.defer(d3.json, "../dataset/CE_list.json")
 			.defer(d3.json, "/dataset/coordinatesFinal3.json")
 			.defer(d3.json, "/dataset/charging_stations.json")
 			.defer(d3.json, "/dataset/final_data.json")
 			.defer(d3.json, "/dataset/final_cs.json")
 			.defer(d3.json, "../dataset/stopsFinal.json")
-			.await(function(error, data, ce_data, busRoutes, ce_data2, finalBEBdata, finalChdata, busStops) {
+			.await(function(error, ce_data, busRoutes, ce_data2, finalBEBdata, finalChdata, busStops) {
 			if (error) throw error;
 
 			//const plans = d3.keys(data)
@@ -1986,8 +1985,8 @@ div.dropdown-menu {
 
 
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script> -->
 
 </div>
 

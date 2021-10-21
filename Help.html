@@ -106,6 +106,9 @@ html {
 .button:hover {
   background-color: #555;
 }
+h2{color:white}
+
+p2{color:white}
 
 @media screen and (max-width: 650px) {
   .column {
@@ -174,11 +177,52 @@ html {
 <div class="about-section">
 
   <h1>Electric Bus Deployment Visualization</h1>
-  <p>This project is done as one of the class projects for Advance Data Visualization (CS 6965) Fall 2021 at the University of Utah.</p>
- 
-      <p>The clients of this project are domain scientists (Cathy Liu, Jianli Chen, Yirong Zhou
-      from the Department of Civil & Environmental Engineering) who
-      work on smart city design.</p>
+  <table class="table">
+    <!-- <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">First</th>
+        <th scope="col">Last</th>
+        <th scope="col">Handle</th>
+      </tr>
+    </thead> -->
+    <tbody>
+      <tr>
+        <td><div>
+          <img src="icons/battery-full.png" alt="battery-full" style="width:10%">
+          <p2><br> Battery is full</p2></td>
+        <td><div>
+          <img src="icons/battery-green.png" alt="battery-green" style="width:10%">
+          <p2><br>Battery is green</p2></td></td>
+        <td><div>
+          <img src="icons/battery-yellow.png" alt="battery-yellow" style="width:10%">
+          <p2> <br>Battery is yellow</p2></td></td>
+      </tr>
+      <tr>
+        <td><div>
+          <img src="icons/battery-red.png" alt="battery-red" style="width:10%">
+          <p2><br>Battery is red</p2></td>
+        <td><div>
+          <img src="icons/bus-icon.png" alt="bus-icon" style="width:10%">
+          <p2><br>bus icon</p2></td></td>
+        <td><div><img src="icons/bus-selected.png" alt="bus-selected" style="width:10%">
+          <p2><br>bus is selected</p2>
+          </td></td>
+      </tr>
+      <tr>
+        <td><div><img src="icons/bus-in-station.png" alt="bus-in-station" style="width:10%">
+          <p2> <br>bus is in station</p2>
+          </td>
+        <td><div>
+          <img src="icons/charging-station.png" alt="charging-station" style="width:10%">
+          <p2><br>charging station</p2></td></td>
+        <td><div>
+          <img src="icons/regular-station.png" alt="battery-yellow" style="width:10%">
+          <p2> <br>regular station</p2></td></td>
+      </tr>
+    </tbody>
+  </table>
+
 
 <div class="row">
   <div class="column" >
@@ -198,37 +242,6 @@ html {
 
 </div>
 
-<h2 style="text-align:center">Our Team</h2>
-<div class="row">
-  <div class="column">
-    <div class="card">
-      <img src="Mehdi1.jpg" alt="Jane" style="width:100%">
-      <div class="container">
-        <h2>Mehdi Ganjkhani</h2>
-        <p class="title">Data scientist and developer</p>
-        <p>The main responsibilty of Mehdi in this project was to perform the data wrangling, data analysis and providing JSON and CSV files 
-          using the deployment plan solutions and UTA runcut potential stop files to use in the visualization.
-        Also, he contributed in HTML file design and implementation and using D3.js to enable the user interaction</p>
-        <p>mehdi.ganjkhani@utah.edu</p>
-      </div>
-    </div>
-  </div>
-
-
-  
-  <div class="column">
-    <div class="card">
-      <img src="Luis1.jpg" alt="John" style="width:100%">
-      <div class="container">
-        <h2>Luis Rodriguez-Garcia</h2>
-        <p class="title">Data scientist and developer</p>
-        <p>Some text that describes me lorem ipsum ipsum lorem.</p>
-        <p>luis.rodriguez@utah.edu </p>
-        <p><button class="button">Contact</button></p>
-      </div>
-    </div>
-  </div>
-</div>
 
 </body>
 </html>
