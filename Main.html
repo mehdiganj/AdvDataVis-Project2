@@ -693,7 +693,7 @@ div.dropdown-menu {
 				eval( "polyline_" + i + ".addTo(map);" );
 				eval( "polyline_" + i + ".bindPopup(\"" + lineName +"\");" );
 
-				eval( "polyline_" + i + ".on('click', function(){ polyline_"+i+".setStyle({ color: \"red\", opacity: 1, weight: 50 }); });" );
+				eval( "polyline_" + i + ".on('click', function(){ polyline_"+i+".setStyle({ color: \"red\", opacity: 1, weight: 5 }); });" );
 				eval( "polyline_" + i + ".on('popupclose', function(e){ e.target.setStyle({color: \"red\", opacity: 0.6, weight: 5}); });" );
 			}
 			console.log(routesMileage)
@@ -1259,7 +1259,7 @@ div.dropdown-menu {
 					eval( "polyline_" + i + ".addTo(map);" );
 					eval( "polyline_" + i + ".bindPopup(\"" + lineName +"\");" );
 
-					eval( "polyline_" + i + ".on('click', function(){ polyline_"+i+".setStyle({ color: \"red\", opacity: 1, weight: 10 }); });" );
+					eval( "polyline_" + i + ".on('click', function(){ polyline_"+i+".setStyle({ color: \"red\", opacity: 1, weight: 5 }); });" );
 					eval( "polyline_" + i + ".on('popupclose', function(e){ e.target.setStyle({color: \"red\", opacity: 0.6, weight: 5}); });" );
 				}
 				// locate the charging stations
@@ -1965,16 +1965,17 @@ div.dropdown-menu {
 				currentTime = currentTime + ".0";
 			}
 			var aux1 = finalBEBdata[currentPlan][currentBus][currentTime]["SoC"];
-			if (aux1 >= 80){
+			if (aux1 == 100){
+				document.getElementById("battery-icon").src = "icons/battery-full.png";
+			}
+			else if (aux1 >= 80 && aux1 < 100) {
 				document.getElementById("battery-icon").src = "icons/battery-green.png";
 			}
-			else{
-				if (aux1 < 80 && aux1 >= 40){
-					document.getElementById("battery-icon").src = "icons/battery-yellow.png";
-				}
-				else{
-					document.getElementById("battery-icon").src = "icons/battery-red.png";
-				}
+			else if (aux1 >= 40 && aux1 < 80) {
+				document.getElementById("battery-icon").src = "icons/battery-yellow.png";
+			}
+			else {
+				document.getElementById("battery-icon").src = "icons/battery-red.png";
 			}
 		}
 
