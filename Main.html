@@ -1713,12 +1713,27 @@ div.dropdown-menu {
 
 				var busNumbers = Object.keys( finalBEBdata[currentPlan] );
 				auxBusIndex = busNumbers.findIndex((element) => element == currentBus);
+				for (let k = 0 ; k < busNumbers.length ; k++){
+					// reset a los iconos:
+					if (iconStatus[k] == 1){
+						eval( "busLoc_" + k + ".setIcon(busIcon).setZIndexOffset(0);" );
+					}
+					else{
+						if (iconStatus[k] == 2){
+							eval( "busLoc_" + k + ".setIcon(busInChargingStationIcon).setZIndexOffset(0);" );
+						}
+						else{
+							eval( "busLoc_" + k + ".setIcon(chargingStationIcon).setZIndexOffset(0);" );
+						}
+					}
+
+				}
 				if (currentLocation == "On Route"){
 					// el bus esta en ruta, se refresca la linea
-					for (let k = 0 ; k<routes.length ; k++){
-						eval( "polyline_" + k + ".setStyle({ color: \"red\", opacity: 0.6, weight: 5 });" );
-					}
-					eval( "polyline_" + auxRouteIndex + ".setStyle({ color: \"blue\", opacity: 1, weight: 15 });" );
+					// for (let k = 0 ; k<routes.length ; k++){
+					// 	eval( "polyline_" + k + ".setStyle({ color: \"red\", opacity: 0.6, weight: 5 });" );
+					// }
+					// eval( "polyline_" + auxRouteIndex + ".setStyle({ color: \"blue\", opacity: 1, weight: 15 });" );
 					var currentZoom = map.getZoom();
 					var highlightedBusIcon = new L.Icon({
 						iconUrl: 'icons/bus-selected.png',
@@ -1730,21 +1745,6 @@ div.dropdown-menu {
 				} 
 				else {
 					// el bus esta en estacion. resaltar su icono
-					for (let k = 0 ; k < busNumbers.length ; k++){
-						// reset a los iconos:
-						if (iconStatus[k] == 1){
-							eval( "busLoc_" + k + ".setIcon(busIcon).setZIndexOffset(0);" );
-						}
-						else{
-							if (iconStatus[k] == 2){
-								eval( "busLoc_" + k + ".setIcon(busInChargingStationIcon).setZIndexOffset(0);" );
-							}
-							else{
-								eval( "busLoc_" + k + ".setIcon(chargingStationIcon).setZIndexOffset(0);" );
-							}
-						}
-
-					}
 
 					// encontrar el numero de la ruta en la lista de buses
 					var currentZoom = map.getZoom();
