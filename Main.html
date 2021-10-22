@@ -959,6 +959,7 @@ div.dropdown-menu {
 					currentTime = currentTime + ".0";
 				}
 				var busNumbers = Object.keys( finalBEBdata[currentPlan] );
+				var times = Object.keys( finalBEBdata[currentPlan][busNumbers[0]] );
 				var auxLocation, auxRouteNumber;
 				for (let k = 0 ; k < busNumbers.length ; k++){
 					auxLocation = finalBEBdata[currentPlan][busNumbers[k]][currentTime]["Location"];
@@ -966,8 +967,20 @@ div.dropdown-menu {
 					if (auxLocation == "On Route"){
 						// identify the route
 						//if ( busRoutes[auxRouteNumber][0]["station"] == )
-						busDistanceFrom = finalBEBdata[currentPlan][busNumbers[k]][currentTime]["Distance_from_last_station"];
+						// identificar el indice del tiempo
+						auxTime = times.findIndex((element) => element == currentTime);
+						var qq = 0;
+						while (finalBEBdata[currentPlan][busNumbers[k]][times[auxTime + qq]]["Location"] == "On Route"){
+							qq += 1
+						}
+						var destination = finalBEBdata[currentPlan][busNumbers[k]][times[auxTime + qq]]["Location"];
+						// verificar que el destino coincida con el ultimo segmento de la ruta
 						routeSections = Object.keys(busRoutes[auxRouteNumber]);
+						if ( busRoutes[auxRouteNumber][routeSections.length - 1]["station"] == destination ){
+							busDistanceFrom = finalBEBdata[currentPlan][busNumbers[k]][currentTime]["Distance_from_last_station"];
+						} else{
+							busDistanceFrom = finalBEBdata[currentPlan][busNumbers[k]][currentTime]["Route_length"] - finalBEBdata[currentPlan][busNumbers[k]][currentTime]["Distance_from_last_station"];
+						}
 						for (let p = 0 ; p < routeSections.length ; p++){
 							if (busRoutes[auxRouteNumber][p]["cummulativeDistance"] >= busDistanceFrom){
 								eval( "busLoc_" + k + " = L.marker(["+ busRoutes[auxRouteNumber][p]["latA"] +","+ busRoutes[auxRouteNumber][p]["longA"] +"], {icon: busIcon}).addTo(map).bindPopup(\"Bus number: "+ busNumbers[k] +"<br>Route number: " + auxRouteNumber + "<br>Route name: "+ busRoutes[auxRouteNumber][p]["LineName"] +"<br>SOC: " + finalBEBdata[currentPlan][busNumbers[k]][currentTime]["SoC"].toFixed(2) + "% \"); ");
@@ -992,6 +1005,7 @@ div.dropdown-menu {
 							}
 						}
 						if (found == 0){
+							alert("\"" + auxLocation + "\"")
 							eval( "busLoc_" + k + " = L.marker([" + busStops[auxLocation + " "]["lat"] + "," + busStops[auxLocation + " "]["long"] + " ], {icon: chargingStationIcon}).addTo(map).bindPopup(\""+ auxLocation +"\");");
 							iconStatus.push(3); // regular station
 						}
