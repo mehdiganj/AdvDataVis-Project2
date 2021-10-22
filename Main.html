@@ -111,14 +111,14 @@ h3 input.search-input {
 }
 
 .box1 {
-	width:211px;
+	width:220px;
 	height:244px;
 	margin:5px;
 	padding:5px;
 	background-color: rgba(191, 191, 191, 0);
 	position: absolute;
 	right: 0px;
-	top: 100px;
+	top: 50px;
 }
 
 .box3 {
@@ -127,9 +127,9 @@ h3 input.search-input {
 	margin:5px;
 	padding:5px;
 	background-color: rgba(138, 28, 28, 0);
-	position: absolute;
+	position: relative;
 	z-index: 9999999999;
-	top: 100px;
+	/* top: 50px; */
 	left: 10px;
 }
 
@@ -142,25 +142,25 @@ h3 input.search-input {
 	position: absolute;
 	z-index: 9999999999;
 	left: 10px;
-	bottom: 120px;
+	bottom: 20px;
 }
 
 .boxRoute {
-	width:340px;
-	height:180px;
+	width:420px;
+	height:250px;
 	background: #c00;
 	padding:5px 10px 5px 10px;
-	border-radius: 0px 25px 25px 0px;
+	border-radius: 0px 0px 0px 0px;
     background-color: rgba(191, 191, 191, 0.8);
     color: rgb(0, 0, 0);
 	display:block;
 }
 .boxBEB {
-	width:320px;
-	height:350px;
+	width:350px;
+	height:320px;
 	background: #c00;
 	padding:5px 10px 5px 10px;
-	border-radius: 0px 25px 25px 0px;
+	border-radius: 0px 0px 0px 0px;
     background-color: rgba(191, 191, 191, 0.8);
     color: rgb(0, 0, 0);
 	position: absolute;
@@ -168,19 +168,19 @@ h3 input.search-input {
 }
 
 .boxCS {
-	width:320px;
+	width:350px;
 	float:right;
 	height:270px;
 	background: #c00;
 	padding:10px 5px 10px 5px;
-	border-radius: 25px 0px 0px 25px;
+	border-radius: 0px 0px 0px 0px;
     background-color: rgba(191, 191, 191, 0.8);
     color: rgb(0, 0, 0);
 }
 
 .tableFixHead {
         overflow-y: auto;
-        height: 128px;
+        height: 195px;
       }
       .tableFixHead thead th {
         position: sticky;
@@ -416,7 +416,7 @@ div.dropdown-menu {
 
 
 </style>
-<title>Rounded Corner Boxes</title>
+<title>BEB deployment paln</title>
 </head>
 <body>
 	<div>
@@ -453,11 +453,12 @@ div.dropdown-menu {
 			</li>
 
 			<div class="nav-item ms-auto">
-				<p class="round" style= "margin:0px 5px 0px 10px;  padding:4px" id="timeBox">Time: </p>
+				<!-- <p class="nav-link" style = " margin-bottom:0px; padding-bottom:0px; "><b>Plans:</b></p> -->
+				<p class="round" style= "color:blue; margin:3px 5px 0px 10px;  padding:4px" id="timeBox"><b>Time: 04:00 </b></p>
 			</div>
 			
-			<div class=" round col-6 slidecontainer" style="height:32px">
-				<input type="range" min="0" max="24" value="0" step="0.5" class="slider" id="myRange">
+			<div class=" round col-6 slidecontainer" style="margin:3px; background-color: white; height:32px">
+				<input type="range" min="4" max="24" value="0" step="0.5" class="slider" id="myRange">
 			</div>
 			
 			<!-- <li class="nav-item ms-auto">
@@ -547,7 +548,7 @@ div.dropdown-menu {
 		<div class="boxBEB">
 			<div class="row">
 				<div class="col-sm-6"><p class="ex1"><b>BEB Info</b></p></div>
-				<div class="col-sm-6" style="left: 30px;">
+				<div class="col-sm-6" style="left: 15px;"> BEB:
 					<select id="bebbutton" class="custom-select" style="width:100px;"></select>
 				</div>
 				<!-- <div class="dropdown">
@@ -562,8 +563,10 @@ div.dropdown-menu {
 				</div> -->
 			</div>
 			<div id="battery-status">
-				<div style="width: 150px; float:left; height:20px; background:none; margin:0px">Battery status:</div>
-				<div style="width: 150px; float:left; height:20px; background:none; margin:0px; text-align:right"> <img src="icons/battery-full.png" id="battery-icon" class="battery-icon"> </div>
+				<div style="width: 140px; float:left; height:20px; background:none; margin:0px">Battery status:</div>
+				<div style="width: 120px; float:left; height:20px; background:none; margin:0px; text-align:right; font-size:0.9em; font-weight: bold;" id="battery-percentage"> SoC: 100.00 %  </div>
+				<div style="width: 60px; float:left; height:20px; background:none; margin:0px; text-align:right"> <img src="icons/battery-full.png" id="battery-icon" class="battery-icon"> </div>
+				
 			</div>
 			<div id="chart1"></div>
 			<div id="chart2"></div>
@@ -705,7 +708,7 @@ div.dropdown-menu {
 			// initial charts
 			var divWidth = document.getElementById("chart1").clientWidth;
 			// set the dimensions and margins of the graph
-			var margin = {top: 10, right: 10, bottom: 30, left: 40},
+			var margin = {top: 10, right: 10, bottom: 30, left: 50},
 				width = divWidth - margin.left - margin.right,
 				height = 110 - margin.top - margin.bottom;
 				height2 = 140 - margin.top - margin.bottom;
@@ -799,16 +802,16 @@ div.dropdown-menu {
 				.attr("text-anchor", "end")
 				.attr("x", width/2)
 				.attr("y", height+30)
-				.text("Time");
+				.text("Time (h)");
 
 			svg1.append("text")
 				.attr("class", "y label")
 				.attr("text-anchor", "end")
-				.attr("x", -height/2+10)
+				.attr("x", -height/2+20)
 				.attr("y", -30)
 				//.attr("dy", ".75em")
 				.attr("transform", "rotate(-90)")
-				.text("SOC");
+				.text("SoC (%)");
 
 			//let xaxis = d3.axisBottom(x);
 			svg2.append("g")
@@ -839,7 +842,7 @@ div.dropdown-menu {
 				.attr("text-anchor", "end")
 				.attr("x", width/2)
 				.attr("y", height+30)
-				.text("Time");
+				.text("Time (h)");
 
 			svg2.append("text")
 				.attr("class", "y label")
@@ -857,7 +860,7 @@ div.dropdown-menu {
 
 			// Add Y axis
 			var y3 = d3.scaleLinear()
-				.domain([0, max3*1.1+1])
+				.domain([0, max3*1.1+0.1])
 				.range([ height2, 0 ]);
 
 			let y3axis = d3.axisLeft(y3);
@@ -886,11 +889,11 @@ div.dropdown-menu {
 			svg3.append("text")
 				.attr("class", "y label")
 				.attr("text-anchor", "end")
-				.attr("x", -height2/2+24)
-				.attr("y", -30)
+				.attr("x", -height2/2+35)
+				.attr("y", -32)
 				//.attr("dy", ".75em")
 				.attr("transform", "rotate(-90)")
-				.text("Energy(MWh)");
+				.text("Energy (MWh)");
 			
 
 			//delete_table();
@@ -969,7 +972,7 @@ div.dropdown-menu {
 						routeSections = Object.keys(busRoutes[auxRouteNumber]);
 						for (let p = 0 ; p < routeSections.length ; p++){
 							if (busRoutes[auxRouteNumber][p]["cummulativeDistance"] >= busDistanceFrom){
-								eval( "busLoc_" + k + " = L.marker(["+ busRoutes[auxRouteNumber][p]["latA"] +","+ busRoutes[auxRouteNumber][p]["longA"] +"], {icon: busIcon}).addTo(map).bindPopup(\"Bus number: "+ busNumbers[k] +"<br>Route number: " + auxRouteNumber + "<br>Route name: "+ busRoutes[auxRouteNumber][p]["LineName"] +"<br>SOC: " + finalBEBdata[currentPlan][busNumbers[k]][currentTime]["SoC"].toFixed(2) + "% \"); ");
+								eval( "busLoc_" + k + " = L.marker(["+ busRoutes[auxRouteNumber][p]["latA"] +","+ busRoutes[auxRouteNumber][p]["longA"] +"], {icon: busIcon}).addTo(map).bindPopup(\"Bus number: "+ busNumbers[k] +"<br>Route number: " + auxRouteNumber + "<br>Route name: "+ busRoutes[auxRouteNumber][p]["LineName"] +"<br>SoC: " + finalBEBdata[currentPlan][busNumbers[k]][currentTime]["SoC"].toFixed(2) + "% \"); ");
 								iconStatus.push(1); // bus
 								break;
 							}
@@ -1094,9 +1097,9 @@ div.dropdown-menu {
 				// append the header row
 				thead.append('tr')
 				.selectAll('th')
-				.data(columns).enter()
+				.data(m_column).enter()
 				.append('th')
-					.text(function (column) { return column; });
+					.text(function (m_column) { return m_column; });
 
 				// create a row for each object in the data
 				var rows = tbody.selectAll('tr')
@@ -1124,13 +1127,13 @@ div.dropdown-menu {
 
 			function updatetable(plan) {
 				if (plan == "Plan1"){
-					tabulate(data1, ['BEB', 'SoC', 'Mileage', 'Route', 'Location']);
+					tabulate(data1, ['BEB', 'SoC (%)', 'Mileage', 'Route', 'Location']);
 				}
 				if (plan == "Plan2"){
-					tabulate(data2, ['BEB', 'SoC', 'Mileage', 'Route', 'Location']);
+					tabulate(data2, ['BEB', 'SoC (%)', 'Mileage', 'Route', 'Location']);
 				}
 				if (plan == "Plan3"){
-					tabulate(data3, ['BEB', 'SoC', 'Mileage', 'Route', 'Location']);
+					tabulate(data3, ['BEB', 'SoC (%)', 'Mileage', 'Route', 'Location']);
 				}
 			}
 
@@ -1148,6 +1151,9 @@ div.dropdown-menu {
 				auxDataTable = auxDataTable + "];";
 				eval(auxDataTable);
 				tabulate(dataTable, ['BEB', 'SoC', 'Mileage', 'Route', 'Location']);
+
+
+
 			}
 
 
@@ -1332,16 +1338,16 @@ div.dropdown-menu {
 					.attr("text-anchor", "end")
 					.attr("x", width/2)
 					.attr("y", height+30)
-					.text("Time");
+					.text("Time (h)");
 
 				svg1.append("text")
 					.attr("class", "y label")
 					.attr("text-anchor", "end")
-					.attr("x", -height/2+10)
+					.attr("x", -height/2+20)
 					.attr("y", -30)
 					//.attr("dy", ".75em")
 					.attr("transform", "rotate(-90)")
-					.text("SOC");
+					.text("SoC (%)");
 
 				//let xaxis = d3.axisBottom(x);
 				svg2.append("g")
@@ -1372,7 +1378,7 @@ div.dropdown-menu {
 					.attr("text-anchor", "end")
 					.attr("x", width/2)
 					.attr("y", height+30)
-					.text("Time");
+					.text("Time (h)");
 
 				svg2.append("text")
 					.attr("class", "y label")
@@ -1431,7 +1437,7 @@ div.dropdown-menu {
 
 				// Add Y axis
 				var y3 = d3.scaleLinear()
-					.domain([0, max3*1.1+1 ])
+					.domain([0, max3*1.1+0.1 ])
 					.range([ height2, 0 ]);
 
 				let y3axis = d3.axisLeft(y3);
@@ -1460,11 +1466,11 @@ div.dropdown-menu {
 				svg3.append("text")
 					.attr("class", "y label")
 					.attr("text-anchor", "end")
-					.attr("x", -height2/2+32)
-					.attr("y", -30)
+					.attr("x", -height2/2+35)
+					.attr("y", -32)
 					//.attr("dy", ".75em")
 					.attr("transform", "rotate(-90)")
-					.text("Energy(MWh)");
+					.text("Energy (MWh)");
 			}
 
 			function updateChartsByPlan(plan){
@@ -1521,16 +1527,16 @@ div.dropdown-menu {
 					.attr("text-anchor", "end")
 					.attr("x", width/2)
 					.attr("y", height+30)
-					.text("Time");
+					.text("Time (h)");
 
 				svg1.append("text")
 					.attr("class", "y label")
 					.attr("text-anchor", "end")
-					.attr("x", -height/2+10)
+					.attr("x", -height/2+20)
 					.attr("y", -30)
 					//.attr("dy", ".75em")
 					.attr("transform", "rotate(-90)")
-					.text("SOC");
+					.text("SoC (%)");
 
 				//let xaxis = d3.axisBottom(x);
 				svg2.append("g")
@@ -1561,7 +1567,7 @@ div.dropdown-menu {
 					.attr("text-anchor", "end")
 					.attr("x", width/2)
 					.attr("y", height+30)
-					.text("Time");
+					.text("Time (h)");
 
 				svg2.append("text")
 					.attr("class", "y label")
@@ -1626,16 +1632,16 @@ div.dropdown-menu {
 					.attr("text-anchor", "end")
 					.attr("x", width/2)
 					.attr("y", height+30)
-					.text("Time");
+					.text("Time (h)");
 
 				svg1.append("text")
 					.attr("class", "y label")
 					.attr("text-anchor", "end")
-					.attr("x", -height/2+10)
+					.attr("x", -height/2+20)
 					.attr("y", -30)
 					//.attr("dy", ".75em")
 					.attr("transform", "rotate(-90)")
-					.text("SOC");
+					.text("SoC (%)");
 
 				//let xaxis = d3.axisBottom(x);
 				svg2.append("g")
@@ -1666,7 +1672,7 @@ div.dropdown-menu {
 					.attr("text-anchor", "end")
 					.attr("x", width/2)
 					.attr("y", height+30)
-					.text("Time");
+					.text("Time (h)");
 
 				svg2.append("text")
 					.attr("class", "y label")
@@ -1833,6 +1839,8 @@ div.dropdown-menu {
 				.style("width", "60px")
 				.attr("class", "btn in_use"); //
 
+		
+
 			d3.select("#bus_text")
 			    .style("font-weight", "bold")
 				.text("Bus #:" + bus_id); // text showed in the menu
@@ -1923,6 +1931,8 @@ div.dropdown-menu {
     return time;
 }
 
+
+
 	d3.select("#myRange").on("change", function(d){
 		selectedValueRange = this.value;
 
@@ -1935,6 +1945,8 @@ div.dropdown-menu {
 
 
 		document.getElementById("timeBox").innerHTML = "Time: " + convertNumToTime(selectedValueRange);
+
+		document.getElementById("timeBox").style.fontWeight = "600"
 
 
 		
@@ -1957,6 +1969,8 @@ div.dropdown-menu {
 		locateBuses()
 	})
 
+	
+
 		function updateBatteryIcon(){
 			var currentPlan = document.getElementById("plansbutton").value;
 			var currentBus = document.getElementById("bebbutton").value;
@@ -1965,6 +1979,13 @@ div.dropdown-menu {
 				currentTime = currentTime + ".0";
 			}
 			var aux1 = finalBEBdata[currentPlan][currentBus][currentTime]["SoC"];
+
+			document.getElementById("battery-percentage").innerHTML = "SoC: " + aux1.toFixed(2) + "%";
+			if (aux1 >= 100){
+				document.getElementById("battery-icon").src = "icons/battery-full.png";
+			}
+			else{
+			
 			if (aux1 >= 80){
 				document.getElementById("battery-icon").src = "icons/battery-green.png";
 			}
@@ -1976,6 +1997,7 @@ div.dropdown-menu {
 					document.getElementById("battery-icon").src = "icons/battery-red.png";
 				}
 			}
+		}
 		}
 
 		  
