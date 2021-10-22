@@ -1054,7 +1054,7 @@ div.dropdown-menu {
 						eval( "nonChStationLoc_" + j + " = L.marker([" + busStops[nonChargingStationNames[j] + " "]["lat"] + "," + busStops[nonChargingStationNames[j] + " "]["long"] + " ], {icon: nonChargingStationIcon}).addTo(map).bindPopup(\""+ nonChargingStationNames[j] +"\");");
 					} catch (error) {
 						console.error(error);
-						eval( "nonChStationLoc_" + j + " = L.marker([" + 0 + "," + 0 + " ], {icon: nonChargingStationIcon}).addTo(map).bindPopup(\""+ stationNames[k] +"\");");
+						eval( "nonChStationLoc_" + j + " = L.marker([" + 0 + "," + 0 + " ], {icon: nonChargingStationIcon}).addTo(map).bindPopup(\""+ nonChargingStationNames[j] +"\");");
 					}
 				}
 			}
