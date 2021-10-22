@@ -401,10 +401,17 @@ def find_list(cs_list, cs_ix):
         cs_l.append(z[0])
     cs_l = np.asarray(cs_l)
     return (cs_l)
+
+
+
+    
         
 
 Charging_stations_list_p20 = find_list(stop_list, Charging_stations_ix_p20)
 Charging_stations_list_p60 = find_list(stop_list, Charging_stations_ix_p60)
+
+
+
         
 Charging_stations_list_p180 = find_list(stop_list, Charging_stations_ix_p180)
 cs_p20 = extract_cs_dic (BEB_list_p20, Charging_stations_list_p20, bus_milage_p20, bus_charge_seq_p20, UTA_Runcut_File)
@@ -418,12 +425,37 @@ jsonFile.write(final_cs)
 jsonFile.close()
 
 
+#%%
+# Extracting non-charging stations:
+def non_cs_list(cs_dic, BEB_Route):
+    cs_list = cs_dic.keys()
+    
+    cs_list = [str(key) for key in cs_list]
+    cs_list = np.array(cs_list)
+    print((cs_list.shape))
+    
+    all_stations_list = np.unique([BEB_Route[:,5], BEB_Route[:,7]])
+    
+    
+    print(all_stations_list.shape)
+    non_cs_l = [i for i in all_stations_list if i not in cs_list]
+    
+    
+    return non_cs_l
 
 
+non_cs_list_p20 = non_cs_list(cs_p20, BEB_Route_p20)
+    
+non_cs_list_p60 = non_cs_list(cs_p60, BEB_Route_p60)
+
+non_cs_list_p180 = non_cs_list(cs_p180, BEB_Route_p180)
 
 
-
-
+non_cs_data = {Plans[0]: non_cs_list_p20, Plans[1]: non_cs_list_p60, Plans[2]: non_cs_list_p180}
+non_cs_data = json.dumps(non_cs_data)  
+jsonFile = open("dataset/non_cs_data.json", "w")
+jsonFile.write(non_cs_data)
+jsonFile.close()
 
     
     
