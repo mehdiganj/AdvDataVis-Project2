@@ -1043,10 +1043,10 @@ div.dropdown-menu {
 				var stationNames = Object.keys( finalChdata[currentPlan] );
 				for (let k = 0; k < stationNames.length ; k++){
 					try {
-						eval( "stationLoc_" + k + " = L.marker([" + busStops[stationNames[k] + " "]["lat"] + "," + busStops[stationNames[k] + " "]["long"] + " ], {icon: chargingStationIcon}).addTo(map).bindPopup(\""+ stationNames[k] +"\");");
+						eval( "stationLoc_" + k + " = L.marker([" + busStops[stationNames[k] + " "]["lat"] + "," + busStops[stationNames[k] + " "]["long"] + " ], {icon: chargingStationIcon}).addTo(map).bindPopup(\""+ stationNames[k] +"<br>Energy consumed: "+ finalChdata[currentPlan][stationNames[k]][currentTime]["energy"].toFixed(0)/1000 +" MWh\"); ");
 					} catch (error) {
 						console.error(error);
-						eval( "stationLoc_" + k + " = L.marker([" + 0 + "," + 0 + " ], {icon: chargingStationIcon}).addTo(map).bindPopup(\""+ stationNames[k] +"\");");
+						eval( "stationLoc_" + k + " = L.marker([" + 0 + "," + 0 + " ], {icon: chargingStationIcon}).addTo(map).bindPopup(\""+ stationNames[k] +"<br>Energy consumed: "+ finalChdata[currentPlan][stationNames[k]][currentTime]["energy"].toFixed(0)/1000 +" MWh\"); ");
 					}
 				}
 
@@ -2066,6 +2066,7 @@ div.dropdown-menu {
 		updatetable2(currentPlan);
 		clearBuses()
 		locateBuses()
+		locateStations()
 	})
 
 	
