@@ -1,4 +1,4 @@
-# AdvDataVis-Project2
+# AdvDataVis-Project2-
 Visualization for project #2
 
 The tool needs to be run using a local server. Node.JS is recommended
