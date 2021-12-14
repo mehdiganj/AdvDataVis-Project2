@@ -1,5 +1,5 @@
 # AdvDataVis-Project2
-Visualization for project #2
+Visualization for project #2 for Adv. Data Visualization course
 
 The tool needs to be run using a local server. Node.JS is recommended
 
